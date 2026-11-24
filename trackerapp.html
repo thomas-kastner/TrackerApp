@@ -68,6 +68,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }   /* also when opened locally, outside the claude.ai skeleton */
 body { background: var(--page); color: var(--body); font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.5; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -178,6 +179,50 @@ td.due.late { color: var(--bad-fg); }
 .empty { padding: 36px 20px; text-align: center; color: var(--muted); }
 .empty strong { display: block; color: var(--heading); font-size: 1rem; margin-bottom: 4px; }
 
+/* Account menu, settings */
+.acct-wrap { position: relative; }
+.acct { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; border-radius: var(--radius); cursor: pointer; color: #ffffff; }
+.acct:hover { background: var(--ink-2); }
+.acct img { width: 24px; height: 24px; border-radius: 50%; }
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: none; border: 1px solid #2c4a66; border-radius: var(--radius); color: var(--on-ink); cursor: pointer; }
+.icon-btn:hover { background: var(--ink-2); color: #ffffff; border-color: var(--teal); }
+.icon-btn svg { width: 18px; height: 18px; }
+.menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; width: min(300px, calc(100vw - 32px)); background: var(--card); color: var(--body); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); box-shadow: 0 8px 24px rgb(11 32 56 / 0.25); display: grid; }
+.menu-head { display: flex; align-items: center; gap: 10px; padding: 14px; border-bottom: 1px solid var(--line); }
+.menu-head img { width: 36px; height: 36px; border-radius: 50%; }
+.menu-head strong { display: block; color: var(--heading); }
+.menu-sec { padding: 10px 14px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); font-size: 0.8125rem; }
+.menu-sec:last-child { border-bottom: 0; }
+.menu-sec .hint { margin: 0; }
+.menu-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: var(--radius); padding: 6px 8px; cursor: pointer; color: var(--heading); font-weight: 600; text-decoration: none; }
+.menu-item:hover { background: var(--tert); }
+.menu-item[aria-checked="true"] { border-color: var(--teal); background: var(--tert); }
+dialog.wide { width: min(640px, calc(100vw - 32px)); }
+.set-body { padding: 16px 20px; display: grid; gap: 14px; }
+.tabs { display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+.tab { background: none; border: 1px solid transparent; border-radius: var(--radius) var(--radius) 0 0; margin-bottom: -1px; padding: 0.45rem 0.9rem; cursor: pointer; color: var(--heading); }
+.tab[aria-selected="true"] { font-weight: 600; background: var(--card); border-color: var(--line) var(--line) var(--card); box-shadow: inset 0 2px 0 var(--teal); }
+.tabpanel { display: grid; gap: 12px; }
+.hint { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+.checks { display: grid; gap: 8px; }
+.check { display: inline-flex; align-items: center; gap: 8px; color: var(--heading); }
+.check input { width: 16px; height: 16px; accent-color: var(--teal); }
+.cfg-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 320px; overflow-y: auto; }
+.cfg-list li { display: flex; align-items: center; gap: 6px; }
+.cfg-list input { flex: 1 1 auto; min-width: 0; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius); padding: 0.3rem 0.6rem; color: var(--body); }
+.cfg-list .n { font-size: 0.75rem; color: var(--muted); min-width: 4.5em; text-align: right; }
+.cfg-add { display: flex; gap: 6px; flex-wrap: wrap; }
+.cfg-add input { flex: 1 1 200px; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius); padding: 0.3rem 0.6rem; color: var(--body); }
+.btn-icon { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; padding: 0; background: none; border: 1px solid var(--line); border-radius: var(--radius); color: var(--heading); cursor: pointer; }
+.btn-icon:hover { background: var(--tert); }
+.btn-icon:disabled { opacity: 0.4; cursor: default; }
+.export-rows { display: grid; gap: 8px; }
+.export-rows > div { display: grid; grid-template-columns: 8rem minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.export-rows strong { color: var(--heading); }
+.actions.pad { padding: 12px 20px 16px; }
+.cfg-list input:focus, .cfg-add input:focus { outline: 0; border-color: var(--teal); box-shadow: var(--focus); }
+@media (max-width: 640px) { .export-rows > div { grid-template-columns: 1fr auto; } .export-rows .hint { display: none; } .acct .who { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } }
+
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Users */
@@ -249,8 +294,16 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <div><div class="brand-name">Tracker<span>App</span></div><div class="brand-sub">Tasks and follow-ups</div></div>
       </div>
       <div class="top-right">
-        <span class="who mono" id="who" hidden></span>
         <span class="sync" id="sync">Connecting</span>
+        <div class="acct-wrap">
+          <button class="acct" id="acctBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="acctMenu">
+            <img id="acctImg" alt="" hidden><span class="who mono" id="who">Sign in</span>
+          </button>
+          <div class="menu" id="acctMenu" hidden></div>
+        </div>
+        <button class="icon-btn" id="gearBtn" type="button" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
       </div>
     </div>
     <div class="hero-row">
@@ -285,7 +338,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
             <option value="late">Overdue</option>
           </select>
           <select id="cat" aria-label="Category"><option value="">All categories</option></select>
-          <select id="comp" aria-label="Company"><option value="">All companies</option><option>ICARO</option><option>Private</option><option>scdsoft</option><option>smarterSec</option><option>Spinifex</option></select>
+          <select id="comp" aria-label="Company"><option value="">All companies</option></select>
           <select id="sort" aria-label="Sort">
             <option value="due">Sort by due date</option>
             <option value="prio">Sort by priority</option>
@@ -303,7 +356,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       </div>
     </section>
 
-    <section aria-labelledby="lgH">
+    <section aria-labelledby="lgH" id="logSec">
       <h2 id="lgH">Change log <small>Every create, edit, status change and delete, newest first</small></h2>
       <div class="panel log">
         <div class="toolbar">
@@ -363,7 +416,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   <form class="edit" id="form" novalidate>
     <div class="field"><label for="fTitle">Item subject</label><input id="fTitle" maxlength="200" autocomplete="off"></div>
     <div class="field"><label for="fCompany">Company</label>
-      <select id="fCompany"><option value="">-</option><option>ICARO</option><option>Private</option><option>scdsoft</option><option>smarterSec</option><option>Spinifex</option></select></div>
+      <select id="fCompany"><option value="">-</option></select></div>
     <div class="grid2">
       <div class="field"><label for="fStatus">Status</label>
         <select id="fStatus"><option value="open">Open</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
@@ -385,6 +438,65 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   </form>
 </dialog>
 
+<dialog id="setDlg" class="wide" aria-labelledby="setTitle">
+  <div class="dlg-head"><h2 id="setTitle">Settings</h2></div>
+  <div class="set-body">
+    <div class="tabs" role="tablist" aria-label="Settings sections">
+      <button class="tab" type="button" role="tab" data-tab="display" aria-selected="true">My display</button>
+      <button class="tab" type="button" role="tab" data-tab="categories" aria-selected="false">Categories</button>
+      <button class="tab" type="button" role="tab" data-tab="companies" aria-selected="false">Companies</button>
+      <button class="tab" type="button" role="tab" data-tab="export" aria-selected="false">Export</button>
+    </div>
+
+    <div class="tabpanel" data-panel="display" role="tabpanel">
+      <p class="hint">Saved for you only.</p>
+      <div class="grid2">
+        <div class="field"><label for="setTheme">Theme</label>
+          <select id="setTheme"><option value="system">Same as Claude</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
+        <div class="field"><label for="setDefSort">Default sort</label>
+          <select id="setDefSort"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest first</option><option value="upd">Recently changed</option><option value="title">Title</option></select></div>
+        <div class="field"><label for="setDefStatus">Default status filter</label>
+          <select id="setDefStatus"><option value="all">All statuses</option><option value="done">Done</option><option value="doing">In progress</option><option value="open">Open</option><option value="active">Open and in progress</option><option value="late">Overdue</option></select></div>
+      </div>
+      <p class="hint">The defaults apply to cards you haven't filtered yet. Cards you have used keep their own filters.</p>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="setShowLog"> Show the change log</label>
+        <label class="check"><input type="checkbox" id="setShowUsers"> Show users</label>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="categories" role="tabpanel" hidden>
+      <p class="hint" id="catHint">Categories appear as overview cards in this order, right after All items. Renaming also renames the category on its items.</p>
+      <ol class="cfg-list" id="catList2"></ol>
+      <div class="cfg-add" id="catAdd">
+        <label class="sr" for="newCat">New category</label>
+        <input id="newCat" maxlength="60" placeholder="New category" autocomplete="off">
+        <button class="btn btn-primary btn-sm" id="addCatBtn" type="button">Add category</button>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="companies" role="tabpanel" hidden>
+      <p class="hint" id="compHint">The Company drop-down lists these in alphabetical order. Renaming also renames the company on its items.</p>
+      <ol class="cfg-list" id="compList"></ol>
+      <div class="cfg-add" id="compAdd">
+        <label class="sr" for="newComp">New company</label>
+        <input id="newComp" maxlength="60" placeholder="New company" autocomplete="off">
+        <button class="btn btn-primary btn-sm" id="addCompBtn" type="button">Add company</button>
+      </div>
+    </div>
+
+    <div class="tabpanel" data-panel="export" role="tabpanel" hidden>
+      <p class="hint">Download the tracker's data. CSV opens in Excel; JSON keeps everything for a backup.</p>
+      <div class="export-rows">
+        <div><strong>Items</strong><span class="hint" id="expItemsN"></span><button class="btn btn-sm" type="button" data-export="items">Download CSV</button></div>
+        <div><strong>Change log</strong><span class="hint" id="expLogN"></span><button class="btn btn-sm" type="button" data-export="log">Download CSV</button></div>
+        <div><strong>Everything</strong><span class="hint">Items, change log, categories, companies</span><button class="btn btn-sm" type="button" data-export="json">Download JSON</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="actions pad"><div class="right"><button class="btn" id="setClose" type="button">Close</button></div></div>
+</dialog>
+
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -404,7 +516,12 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   let catDefs = [];          // categories defined without needing an item
   let prefCat = "";          // category filter in force ("" = All items card)
   // Per-viewer filter memory: the card last used, and each card's own status / company / sort
-  let prefs = { last: "", cards: {} };
+  let prefs = { last: "", cards: {}, display: { theme: "system" } };
+  let catDocs = [];          // [{id, name, order}] defined categories
+  let companies = COMPANIES.slice();
+  let cfgStore = null;       // {saveCategory, deleteCategory, saveCompanies}
+  let localUser = "admin";   // local copy only: test sign-in (admin | member | readonly | "")
+  const hostTheme = document.documentElement.getAttribute("data-theme");
   let prefDoc = null;        // data/users/<id>/prefs — private to this viewer
   let prefsTouched = false;  // the viewer changed something before stored prefs arrived
   let store = null;          // {saveItem, removeItem, addLog}
@@ -425,7 +542,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   let access = {};           // id -> platform share roles (admins only, display only)
   let usersStore = null;     // {setRole, removeUser}
   function computeRole() {
-    if (!dbMode || isEditor) return "admin";
+    if (!dbMode) return localUser || "readonly";
+    if (isEditor) return "admin";
     if (writeAllowed === false) return "readonly";
     if (me && roleDocs[me] && roleDocs[me].role === "readonly") return "readonly";
     return "member";
@@ -691,19 +809,256 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   const roleChip = (r) => el("span", "chip " + (r === "admin" ? "ok" : r === "readonly" ? "idle" : "idle role-member"), ROLE[r]);
 
+  // ---------- account menu ----------
+  const TEST_USERS = { admin: "Test Admin", member: "Test Member", readonly: "Test Read-only" };
+  const myName = () => (!dbMode ? (localUser ? TEST_USERS[localUser] : "") : (profileCache[me] && profileCache[me].name) || (me ? "You" : ""));
   function renderWho() {
-    const w = $("who");
-    if (!dbMode || !me) { w.hidden = true; return; }
-    const p = profileCache[me];
-    w.textContent = ((p && p.name) || "You") + " · " + ROLE[role];
-    w.hidden = false;
+    const w = $("who"), img = $("acctImg"), p = dbMode && me ? profileCache[me] : null;
+    const signedIn = dbMode ? !!me : !!localUser;
+    w.textContent = signedIn ? myName() + " · " + ROLE[role] : "Sign in";
+    if (p && p.avatarUrl) { img.src = p.avatarUrl; img.hidden = false; } else img.hidden = true;
+    if (!$("acctMenu").hidden) renderAcctMenu();
+  }
+  function renderAcctMenu() {
+    const m = $("acctMenu"), parts = [];
+    const head = el("div", "menu-head");
+    const p = dbMode && me ? profileCache[me] : null;
+    if (p && p.avatarUrl) { const i = el("img"); i.src = p.avatarUrl; i.alt = ""; head.append(i); }
+    const hb = el("div");
+    const signedIn = dbMode ? !!me : !!localUser;
+    hb.append(el("strong", null, signedIn ? myName() : "Not signed in"));
+    if (signedIn) hb.append(roleChip(role));
+    head.append(hb); parts.push(head);
+
+    if (dbMode) {
+      const sec = el("div", "menu-sec");
+      if (me) {
+        sec.append(el("p", "hint", "Signed in with your Claude account. Your role comes from the Share menu and the Users section."));
+        const a = el("a", "menu-item", "Manage or switch Claude account"); a.href = "https://claude.ai/settings"; a.target = "_blank"; a.rel = "noopener";
+        sec.append(a);
+      } else {
+        sec.append(el("p", "hint", "You're not signed in, so you can only look. Sign in to Claude to make changes under your name."));
+        const a = el("a", "menu-item", "Sign in to Claude"); a.href = "https://claude.ai/login"; a.target = "_blank"; a.rel = "noopener";
+        sec.append(a);
+      }
+      parts.push(sec);
+    } else {
+      const sec = el("div", "menu-sec");
+      sec.append(el("p", "hint", "Local test mode: pick who you are to try the roles before publishing. This is for testing only and protects nothing."));
+      Object.entries(TEST_USERS).forEach(([k, label]) => {
+        const b = el("button", "menu-item"); b.type = "button"; b.setAttribute("role", "menuitemradio");
+        b.setAttribute("aria-checked", String(localUser === k)); b.dataset.localUser = k;
+        b.append(el("span", null, "Sign in as " + label)); b.append(el("span", "hint", ROLE[k]));
+        sec.append(b);
+      });
+      if (localUser) { const o = el("button", "menu-item", "Sign out"); o.type = "button"; o.dataset.localUser = ""; sec.append(o); }
+      parts.push(sec);
+    }
+    const st = el("div", "menu-sec");
+    const g = el("button", "menu-item", "Settings"); g.type = "button"; g.dataset.openSettings = "1"; st.append(g);
+    parts.push(st);
+    m.replaceChildren(...parts);
+  }
+  function toggleAcct(open) {
+    const m = $("acctMenu"), b = $("acctBtn");
+    const show = open == null ? m.hidden : open;
+    if (show) renderAcctMenu();
+    m.hidden = !show; b.setAttribute("aria-expanded", String(show));
+  }
+  function setLocalUser(u, quiet) {
+    localUser = u; me = u ? "test-" + u : null;
+    Object.entries(TEST_USERS).forEach(([k, n]) => { names["test-" + k] = n; });
+    try { localStorage.setItem("trackerapp.localUser", u); } catch (_) {}
+    applyRole(); render();
+    if (!quiet) toast(u ? "Signed in as " + TEST_USERS[u] : "Signed out");
+  }
+
+  // ---------- categories and companies ----------
+  function setCatDocs(list) {
+    catDocs = list.map((d) => ({ id: d.id, name: s(d.name, 60), order: +d.order || 999 })).filter((d) => d.name)
+      .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+    catDefs = catDocs.map((d) => d.name);
+  }
+  const byName = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" });
+  function setCompanies(list) {
+    companies = (Array.isArray(list) ? [...new Set(list.map((c) => s(c, 60).trim()).filter(Boolean))] : COMPANIES.slice()).sort(byName);
+  }
+  function fillCompanySelects() {
+    const f = $("fCompany"), fv = f.value, c = $("comp"), cv = c.value;
+    const extra = [...new Set(items.map((i) => i.company).filter((x) => x && !companies.includes(x)))].sort(byName);
+    f.replaceChildren(new Option("-", ""), ...companies.map((x) => new Option(x, x)));
+    c.replaceChildren(new Option("All companies", ""), ...[...companies, ...extra].map((x) => new Option(x, x)));
+    if ([...f.options].some((o) => o.value === fv)) f.value = fv;
+    c.value = [...c.options].some((o) => o.value === cv) ? cv : "";
+  }
+  // Rename a value on every item that uses it, with one change log entry per item
+  async function renameOnItems(field, from, to) {
+    const hit = items.filter((i) => i[field] === from);
+    for (const it of hit) {
+      const { id, ...rest } = it;
+      await store.saveItem(id, { ...rest, [field]: to, updatedAt: Date.now(), updatedBy: me || "" });
+      await writeLog("updated", it, [{ field, from, to }]);
+    }
+    return hit.length;
+  }
+  const slug = (t) => (t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "cat") + "-" + Math.random().toString(36).slice(2, 6);
+
+  // ---------- settings dialog ----------
+  let setTab = "display", cfgArmed = null;
+  function openSettings(tab) {
+    toggleAcct(false);
+    if (tab) setTab = tab;
+    renderSettings(); $("setDlg").showModal();
+  }
+  function renderSettings() {
+    document.querySelectorAll("#setDlg .tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === setTab)));
+    document.querySelectorAll("#setDlg .tabpanel").forEach((p) => { p.hidden = p.dataset.panel !== setTab; });
+    const d = prefs.display || {};
+    $("setTheme").value = d.theme || "system";
+    $("setDefSort").value = okVal("setDefSort", d.defSort) ? d.defSort : "due";
+    $("setDefStatus").value = okVal("setDefStatus", d.defStatus) ? d.defStatus : "all";
+    $("setShowLog").checked = !d.hideLog;
+    $("setShowUsers").checked = !d.hideUsers;
+    $("setShowUsers").closest("label").hidden = !dbMode;
+
+    const admin = isAdmin();
+    $("catHint").textContent = admin ? "Categories appear as overview cards in this order, right after All items. Renaming also renames the category on its items." : "Only Admins can change categories.";
+    $("compHint").textContent = admin ? "The Company drop-down lists these in alphabetical order. Renaming also renames the company on its items." : "Only Admins can change companies.";
+    $("catAdd").hidden = $("compAdd").hidden = !admin;
+
+    const count = (field, v) => items.filter((i) => i[field] === v).length;
+    $("catList2").replaceChildren(...catDocs.map((c, n) => cfgRow("cat", c.id, c.name, count("category", c.name), admin, n, catDocs.length)));
+    $("compList").replaceChildren(...companies.map((c) => cfgRow("comp", c, c, count("company", c), admin, -1, 0)));
+    $("expItemsN").textContent = items.length + " items";
+    $("expLogN").textContent = logs.length + " entries";
+  }
+  function cfgRow(kind, key, name, n, admin, idx, total) {
+    const li = el("li");
+    const inp = el("input"); inp.value = name; inp.maxLength = 60; inp.disabled = !admin;
+    inp.dataset.kind = kind; inp.dataset.key = key; inp.setAttribute("aria-label", "Name of " + name);
+    li.append(inp, el("span", "n", n + (n === 1 ? " item" : " items")));
+    if (admin) {
+      if (kind === "cat") {
+        const up = el("button", "btn-icon", "↑"); up.type = "button"; up.disabled = idx === 0; up.dataset.move = "-1"; up.dataset.key = key; up.setAttribute("aria-label", "Move " + name + " up");
+        const dn = el("button", "btn-icon", "↓"); dn.type = "button"; dn.disabled = idx === total - 1; dn.dataset.move = "1"; dn.dataset.key = key; dn.setAttribute("aria-label", "Move " + name + " down");
+        li.append(up, dn);
+      }
+      const armed = cfgArmed === kind + ":" + key;
+      const del = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? "Remove for good" : "Remove");
+      del.type = "button"; del.dataset.remove = kind; del.dataset.key = key;
+      li.append(del);
+    }
+    return li;
+  }
+  async function renameCfg(kind, key, value) {
+    const to = value.trim();
+    if (kind === "cat") {
+      const c = catDocs.find((d) => d.id === key); if (!c || !to || to === c.name) { renderSettings(); return; }
+      if (catDocs.some((d) => d.id !== key && d.name.toLowerCase() === to.toLowerCase())) { toast("A category called " + to + " already exists"); renderSettings(); return; }
+      try {
+        await cfgStore.saveCategory(key, { name: to, order: c.order });
+        const n = await renameOnItems("category", c.name, to);
+        if (prefCat === c.name) { prefCat = to; savePrefs(); }
+        toast("Category renamed to " + to + (n ? " on " + n + (n === 1 ? " item" : " items") : ""));
+      } catch (err) { toast(errText(err)); renderSettings(); }
+    } else {
+      if (!to || to === key) { renderSettings(); return; }
+      if (companies.some((c) => c !== key && c.toLowerCase() === to.toLowerCase())) { toast("A company called " + to + " already exists"); renderSettings(); return; }
+      try {
+        await cfgStore.saveCompanies(companies.map((c) => (c === key ? to : c)));
+        const n = await renameOnItems("company", key, to);
+        toast("Company renamed to " + to + (n ? " on " + n + (n === 1 ? " item" : " items") : ""));
+      } catch (err) { toast(errText(err)); renderSettings(); }
+    }
+  }
+  async function moveCat(key, dir) {
+    const list = catDocs.slice(), i = list.findIndex((d) => d.id === key), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    try {
+      for (let n = 0; n < list.length; n++) if (list[n].order !== n + 1) await cfgStore.saveCategory(list[n].id, { name: list[n].name, order: n + 1 });
+    } catch (err) { toast(errText(err)); }
+  }
+  async function removeCfg(kind, key) {
+    const k = kind + ":" + key;
+    if (cfgArmed !== k) { cfgArmed = k; renderSettings(); return; }
+    cfgArmed = null;
+    try {
+      if (kind === "cat") { const c = catDocs.find((d) => d.id === key); await cfgStore.deleteCategory(key); toast("Category " + (c ? c.name : "") + " removed. Its items keep the category name."); }
+      else { await cfgStore.saveCompanies(companies.filter((c) => c !== key)); toast("Company " + key + " removed. Its items keep the company name."); }
+    } catch (err) { toast(errText(err)); }
+    renderSettings();
+  }
+  async function addCfg(kind) {
+    const inp = kind === "cat" ? $("newCat") : $("newComp"), name = inp.value.trim();
+    if (!name) { inp.focus(); return; }
+    try {
+      if (kind === "cat") {
+        if (catDocs.some((d) => d.name.toLowerCase() === name.toLowerCase())) { toast("A category called " + name + " already exists"); return; }
+        await cfgStore.saveCategory(slug(name), { name, order: catDocs.reduce((m, d) => Math.max(m, d.order < 999 ? d.order : 0), 0) + 1 });
+        toast("Category " + name + " added");
+      } else {
+        if (companies.some((c) => c.toLowerCase() === name.toLowerCase())) { toast("A company called " + name + " already exists"); return; }
+        await cfgStore.saveCompanies([...companies, name]);
+        toast("Company " + name + " added");
+      }
+      inp.value = "";
+    } catch (err) { toast(errText(err)); }
+  }
+
+  // ---------- my display ----------
+  function applyDisplay() {
+    const d = prefs.display || {};
+    const root = document.documentElement;
+    if (d.theme === "light" || d.theme === "dark") root.setAttribute("data-theme", d.theme);
+    else if (hostTheme) root.setAttribute("data-theme", hostTheme); else root.removeAttribute("data-theme");
+    $("logSec").hidden = !!d.hideLog;
+  }
+  function saveDisplay() {
+    prefs.display = {
+      theme: $("setTheme").value, defSort: $("setDefSort").value, defStatus: $("setDefStatus").value,
+      hideLog: !$("setShowLog").checked, hideUsers: !$("setShowUsers").checked,
+    };
+    applyDisplay(); renderUsers(); applyCard(); renderItems(); savePrefs();
+  }
+
+  // ---------- export ----------
+  const csvCell = (v) => { const t = v == null ? "" : String(v); return /[";\n\r]/.test(t) || /^[=+\-@]/.test(t) ? '"' + (/^[=+\-@]/.test(t) ? "'" : "") + t.replace(/"/g, '""') + '"' : t; };
+  const csv = (rows) => "﻿" + rows.map((r) => r.map(csvCell).join(";")).join("\r\n");
+  async function saveFile(filename, data) {
+    const dl = dbMode && window.claude ? await window.claude.use("downloads") : null;
+    if (dl) {
+      try { await dl.save({ filename, data }); toast(filename + " saved"); }
+      catch (err) { if (!err || err.code !== "declined") toast("The file was not saved. " + (err && err.code === "host_unavailable" ? "Open the tracker in a browser to download." : "Try again in a moment.")); }
+      return;
+    }
+    if (dbMode) { toast("Downloads aren't available here. Open the tracker in a browser."); return; }
+    const a = el("a"); a.href = URL.createObjectURL(new Blob([data], { type: "application/octet-stream" })); a.download = filename;
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  function exportData(kind) {
+    const day = todayStr();
+    if (kind === "items") {
+      const rows = [["Item subject", "Status", "Priority", "Company", "Category", "Due date", "Notes", "Created", "Last changed"]];
+      items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, i.due, i.notes, stamp(i.createdAt), stamp(i.updatedAt)]));
+      return saveFile("trackerapp-items-" + day + ".csv", csv(rows));
+    }
+    if (kind === "log") {
+      const label = { created: "Created", updated: "Edited", status: "Status changed", deleted: "Deleted" };
+      const rows = [["When", "Who", "Item", "Change", "Details"]];
+      logs.forEach((l) => rows.push([stamp(l.at), whoName(l.by), l.itemTitle, label[l.action],
+        l.changes.map((c) => (FIELD[c.field] || c.field) + ": " + (l.action === "created" ? showVal(c.field, c.to) : showVal(c.field, c.from) + " -> " + showVal(c.field, c.to))).join(" | ")]));
+      return saveFile("trackerapp-changelog-" + day + ".csv", csv(rows));
+    }
+    const all = { exportedAt: new Date().toISOString(), items, log: logs, categories: catDocs, companies };
+    return saveFile("trackerapp-backup-" + day + ".json", JSON.stringify(all, null, 2));
   }
 
   let removeArmed = null;
   function renderUsers() {
     const sec = $("usersSec");
-    sec.hidden = !dbMode;
-    if (!dbMode) return;
+    sec.hidden = !dbMode || !!(prefs.display && prefs.display.hideUsers);
+    if (sec.hidden) return;
     $("addUser").hidden = !isAdmin();
     $("accCol").hidden = !isAdmin();
     $("checkAccess").hidden = !isAdmin();
@@ -768,7 +1123,11 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     b.disabled = false;
   }
 
-  function render() { renderCards(); renderItems(); renderLog(); renderUsers(); renderWho(); $("newBtn").hidden = !canWrite; }
+  function render() {
+    fillCompanySelects(); renderCards(); renderItems(); renderLog(); renderUsers(); renderWho();
+    $("newBtn").hidden = !canWrite;
+    if ($("setDlg").open) renderSettings();
+  }
 
   // ---------- editor ----------
   function renderHistory(id) {
@@ -788,7 +1147,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     $("fTitle").value = it ? it.title : "";
     $("fStatus").value = it ? it.status : "open";
     $("fPrio").value = it ? it.prio : "med";
-    $("fCompany").value = it ? (COMPANIES.includes(it.company) ? it.company : "") : $("comp").value || "";
+    fillCompanySelects();
+    if (it && it.company && !companies.includes(it.company)) $("fCompany").append(new Option(it.company, it.company));   // keep a removed company on old items
+    $("fCompany").value = it ? it.company || "" : companies.includes($("comp").value) ? $("comp").value : "";
     $("fCat").value = it ? it.category : $("cat").value || "";
     $("fDue").value = it ? it.due : "";
     $("fNotes").value = it ? it.notes : "";
@@ -941,10 +1302,10 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const cardKey = () => prefCat || "__all";
   const okVal = (sel, v) => [...$(sel).options].some((o) => o.value === v);
   function applyCard() {
-    const c = prefs.cards[cardKey()] || {};
-    $("statusF").value = okVal("statusF", c.status) ? c.status : "all";
+    const c = prefs.cards[cardKey()] || {}, d = prefs.display || {};
+    $("statusF").value = okVal("statusF", c.status) ? c.status : okVal("statusF", d.defStatus) ? d.defStatus : "all";
     $("comp").value = okVal("comp", c.comp) ? c.comp : "";
-    $("sort").value = okVal("sort", c.sort) ? c.sort : "due";
+    $("sort").value = okVal("sort", c.sort) ? c.sort : okVal("sort", d.defSort) ? d.defSort : "due";
   }
   function remember() {
     prefs.cards[cardKey()] = { status: $("statusF").value, comp: $("comp").value, sort: $("sort").value };
@@ -956,9 +1317,15 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (p.cards && typeof p.cards === "object") Object.entries(p.cards).slice(0, 100).forEach(([k, v]) => {
       if (v && typeof v === "object") cards[s(k, 60)] = { status: s(v.status, 20), comp: s(v.comp, 60), sort: s(v.sort, 20) };
     });
-    prefs = { last: s(p.last, 60), cards };
+    const d = p.display && typeof p.display === "object" ? p.display : {};
+    const display = {
+      theme: ["light", "dark"].includes(d.theme) ? d.theme : "system",
+      defStatus: s(d.defStatus, 20), defSort: s(d.defSort, 20),
+      hideLog: d.hideLog === true, hideUsers: d.hideUsers === true,
+    };
+    prefs = { last: s(p.last, 60), cards, display };
     prefCat = prefs.last === "__all" ? "" : prefs.last;
-    applyCard();
+    applyCard(); applyDisplay();
   }
   let saveT, saving = Promise.resolve();
   function savePrefs() {
@@ -970,21 +1337,61 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       saving = saving.then(() => prefDoc.set(body)).catch(() => {});   // one write at a time
     }, 500);
   }
+  fillCompanySelects();
   try { loadPrefs(JSON.parse(localStorage.getItem("trackerapp.prefs") || "null")); } catch (_) {}
+
+  // Account menu and settings wiring
+  $("acctBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleAcct(); });
+  $("acctMenu").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const u = e.target.closest("[data-local-user]"); if (u) { setLocalUser(u.dataset.localUser); toggleAcct(false); return; }
+    if (e.target.closest("[data-open-settings]")) openSettings();
+  });
+  document.addEventListener("click", () => { if (!$("acctMenu").hidden) toggleAcct(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("acctMenu").hidden) { toggleAcct(false); $("acctBtn").focus(); } });
+  $("gearBtn").addEventListener("click", () => openSettings());
+  $("setClose").addEventListener("click", () => $("setDlg").close());
+  document.querySelectorAll("#setDlg .tab").forEach((t) => t.addEventListener("click", () => { setTab = t.dataset.tab; cfgArmed = null; renderSettings(); }));
+  ["setTheme", "setDefSort", "setDefStatus", "setShowLog", "setShowUsers"].forEach((id) => $(id).addEventListener("change", saveDisplay));
+  ["catList2", "compList"].forEach((id) => {
+    const list = $(id);
+    list.addEventListener("change", (e) => { const i = e.target; if (i.dataset.kind) renameCfg(i.dataset.kind, i.dataset.key, i.value); });
+    list.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.dataset.kind) { e.preventDefault(); e.target.blur(); } });
+    list.addEventListener("click", (e) => {
+      const mv = e.target.closest("[data-move]"); if (mv) { moveCat(mv.dataset.key, +mv.dataset.move); return; }
+      const rm = e.target.closest("[data-remove]"); if (rm) removeCfg(rm.dataset.remove, rm.dataset.key);
+    });
+  });
+  $("addCatBtn").addEventListener("click", () => addCfg("cat"));
+  $("addCompBtn").addEventListener("click", () => addCfg("comp"));
+  $("newCat").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCfg("cat"); } });
+  $("newComp").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCfg("comp"); } });
+  document.querySelectorAll("[data-export]").forEach((b) => b.addEventListener("click", () => exportData(b.dataset.export)));
 
   render();
 
   // ---------- storage ----------
   function useLocal() {
     const K = "trackerapp.local";
-    let st = { items: {}, log: [] };
+    let st = { items: {}, log: [], cats: {}, companies: null };
     try { st = Object.assign(st, JSON.parse(localStorage.getItem(K) || "{}")); } catch (_) {}
+    if (!st.cats || typeof st.cats !== "object") st.cats = {};
     const flush = () => { try { localStorage.setItem(K, JSON.stringify(st)); } catch (_) {} };
     const sync = () => {
       items = Object.entries(st.items).map(([id, d]) => cleanItem(id, d));
       logs = st.log.map((d, n) => cleanLog("l" + n, d)).sort((a, b) => b.at - a.at);
+      setCatDocs(Object.entries(st.cats).map(([id, d]) => ({ id, ...d })));
+      setCompanies(st.companies);
       render();
     };
+    cfgStore = {
+      async saveCategory(id, d) { st.cats[id] = d; flush(); sync(); },
+      async deleteCategory(id) { delete st.cats[id]; flush(); sync(); },
+      async saveCompanies(list) { st.companies = list; flush(); sync(); },
+    };
+    // Local test sign-in: who you are while testing roles before publishing
+    try { const u = localStorage.getItem("trackerapp.localUser"); if (u !== null) localUser = ["admin", "member", "readonly", ""].includes(u) ? u : "admin"; } catch (_) {}
+    setLocalUser(localUser, true);
     store = {
       async saveItem(id, d) { st.items[id] = d; flush(); sync(); },
       async removeItem(id) { delete st.items[id]; flush(); sync(); },
@@ -1061,11 +1468,19 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     };
     const fail = (err) => { clearTimeout(timer); setSync(err && err.code === "revoked" ? "Access changed" : "Live updates stopped · reload to reconnect", "warn"); };
     itemsCol.onSnapshot((snap) => { items = snap.docs.filter((d) => d.exists).map((d) => cleanItem(d.id, d.data() || {})); settle(snap); render(); }, fail);
-    db.collection("categories").onSnapshot((snap) => {
-      catDefs = snap.docs.filter((d) => d.exists).map((d) => d.data() || {})
-        .sort((a, b) => (+a.order || 999) - (+b.order || 999))
-        .map((d) => s(d.name, 60)).filter(Boolean);
-      render();
+    const catsCol = db.collection("categories"), compDoc = db.doc("settings/companies");
+    cfgStore = {
+      saveCategory: (id, d) => catsCol.doc(id).set(d),
+      deleteCategory: (id) => catsCol.doc(id).delete(),
+      saveCompanies: (list) => compDoc.set({ list, updatedAt: Date.now(), updatedBy: me || "" }),
+    };
+    catsCol.onSnapshot((snap) => {
+      setCatDocs(snap.docs.filter((d) => d.exists).map((d) => ({ id: d.id, ...(d.data() || {}) })));
+      render(); renderSettings();
+    }, () => {});
+    compDoc.onSnapshot((snap) => {
+      setCompanies(snap.exists ? (snap.data() || {}).list : null);
+      render(); renderSettings();
     }, () => {});
     logCol.orderBy("at", "desc").limit(1000).onSnapshot((snap) => {
       logs = snap.docs.filter((d) => d.exists).map((d) => cleanLog(d.id, d.data() || {}));
