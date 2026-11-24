@@ -1,0 +1,1078 @@
+<title>TrackerApp</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: smarterSec platform look — Tiefsee header band with a teal rule, Nebel content area,
+   overview cards with label/value rows, then the item table and the change log. */
+:root {
+  --ink: #0b2038;            /* Tiefsee */
+  --ink-2: #0e2a47;          /* Ebene */
+  --teal: #17bba4;           /* Signal-Teal */
+  --teal-hover: #6fdccb;
+  --teal-text: #0b7a74;
+  --mint: #8fe3d4;
+  --mint-surface: #ddf3ee;
+  --on-ink: #e7f0f5;
+  --on-ink-muted: #9fb4c6;
+  --page: #e7f0f5;           /* Nebel */
+  --card: #ffffff;
+  --tert: #f4f7f8;           /* Mist */
+  --sec-bg: #e7f0f5;
+  --line: #d3dee6;
+  --line-soft: rgba(11, 32, 56, 0.12);
+  --body: #31404c;
+  --heading: #0b2038;
+  --muted: #4a5a66;
+  --primary: #0b2038;
+  --primary-hover: #0e2a47;
+  --on-primary: #ffffff;
+  --ok-bg: #e3f4ea; --ok-line: #b7e2cc; --ok-fg: #1f6b45;
+  --bad-bg: #fbefec; --bad-line: #ebc3ba; --bad-fg: #8a2f1f;
+  --quiet-bg: #edeff1; --quiet-line: #d3dee6; --quiet-fg: #31404c;
+  --red: #b8442c;
+  --sev-vhigh: #8a2f1f; --sev-vhigh-fg: #ffffff;
+  --sev-high: #b8442c; --sev-high-fg: #ffffff;
+  --sev-med: #e8a33d; --sev-med-fg: #0b2038;
+  --sev-low: #e7f0f5; --sev-low-fg: #0b2038; --sev-low-line: #5e7a92;
+  --brand-accent: #0b7a74;   /* small teal text on light */
+  --focus: 0 0 0 0.25rem rgba(23, 187, 164, 0.35);
+  --radius: 0.375rem; --radius-lg: 0.5rem; --radius-chip: 1rem;
+  --font-sans: "Archivo", Arial, Helvetica, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #12171d; --card: #181f27; --tert: #1d252f; --sec-bg: #212a34; --line: #34404d; --line-soft: rgba(230, 235, 239, 0.15);
+    --body: #e6ebef; --heading: #ffffff; --muted: #a6b2be;
+    --primary: #17bba4; --primary-hover: #6fdccb; --on-primary: #0b2038;
+    --ok-bg: #10372f; --ok-line: #2e6e52; --ok-fg: #8fd9b3;
+    --bad-bg: #3a1f22; --bad-line: #7a3424; --bad-fg: #f0a491;
+    --quiet-bg: #212a34; --quiet-line: #34404d; --quiet-fg: #c9d2da;
+    --sev-low: #212a34; --sev-low-fg: #e6ebef; --sev-low-line: #a6b2be;
+    --brand-accent: #8fe3d4; --red: #e07a63;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #12171d; --card: #181f27; --tert: #1d252f; --sec-bg: #212a34; --line: #34404d; --line-soft: rgba(230, 235, 239, 0.15);
+  --body: #e6ebef; --heading: #ffffff; --muted: #a6b2be;
+  --primary: #17bba4; --primary-hover: #6fdccb; --on-primary: #0b2038;
+  --ok-bg: #10372f; --ok-line: #2e6e52; --ok-fg: #8fd9b3;
+  --bad-bg: #3a1f22; --bad-line: #7a3424; --bad-fg: #f0a491;
+  --quiet-bg: #212a34; --quiet-line: #34404d; --quiet-fg: #c9d2da;
+  --sev-low: #212a34; --sev-low-fg: #e6ebef; --sev-low-line: #a6b2be;
+  --brand-accent: #8fe3d4; --red: #e07a63;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--body); font-family: var(--font-sans); font-size: 0.875rem; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
+.mono { font-family: var(--font-mono); font-weight: 500; font-variant-numeric: tabular-nums; }
+.inner {
+  max-width: 1280px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Header band */
+.hero {
+  background: var(--ink); color: var(--on-ink); border-bottom: 4px solid var(--teal);
+  margin-top: calc(-1 * env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.hero .inner { padding-block: 22px 30px; display: grid; gap: 22px; }
+.topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: inline-flex; align-items: center; gap: 14px; }
+.brand svg { width: 34px; height: 34px; flex: none; }
+.brand-name { font-weight: 700; font-size: 1.6rem; line-height: 1; color: #ffffff; letter-spacing: -0.02em; }
+.brand-name span { color: var(--teal); }
+.brand-sub { font-size: 0.72rem; color: var(--on-ink-muted); margin-top: 3px; }
+.sync { font-family: var(--font-mono); font-weight: 500; font-size: 0.78rem; color: var(--on-ink-muted); display: inline-flex; align-items: center; gap: 8px; }
+.sync::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--on-ink-muted); }
+.sync.live::before { background: var(--teal); }
+.sync.warn::before { background: var(--sev-med); }
+.kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.125rem; color: var(--teal); margin: 0 0 8px; }
+.hero h1 { margin: 0; font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.25rem); line-height: 1.15; letter-spacing: -0.02em; color: #ffffff; text-wrap: balance; }
+.hero p.lead { margin: 10px 0 0; color: var(--on-ink); font-size: 0.95rem; max-width: 70ch; }
+.hero-row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; font-weight: 600;
+  border: 1px solid var(--line); background: var(--card); color: var(--heading); border-radius: var(--radius); cursor: pointer;
+}
+.btn:hover { background: var(--tert); }
+.btn-accent { background: var(--teal); border-color: var(--teal); color: var(--ink); }
+.btn-accent:hover { background: var(--teal-hover); border-color: var(--teal-hover); }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+.btn-danger { color: var(--red); border-color: var(--red); background: transparent; }
+.btn-danger.armed { background: var(--red); color: #ffffff; }
+.btn:disabled { opacity: .65; cursor: default; }
+.link { background: none; border: 0; padding: 0; color: var(--heading); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.link:hover { color: var(--brand-accent); }
+
+/* Main */
+main .inner { padding-block: 28px 56px; display: grid; gap: 32px; }
+section > h2 { margin: 0 0 14px; font-size: 1.35rem; font-weight: 700; color: var(--heading); letter-spacing: -0.02em; line-height: 1.15; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+section > h2 small { font-size: 0.8125rem; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--card); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card-head h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--heading); min-width: 0; overflow-wrap: anywhere; }
+.card .desc { margin: 0; font-size: 0.78rem; color: var(--muted); }
+.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; margin: 4px 0 0; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; text-align: right; font-family: var(--font-mono); font-weight: 500; color: var(--heading); font-variant-numeric: tabular-nums; }
+.kv dd.bad { color: var(--bad-fg); }
+.card .asof { font-size: 0.75rem; color: var(--muted); margin-top: auto; padding-top: 6px; }
+.card .links { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+
+/* Status chips */
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 0.125rem 0.625rem; border-radius: var(--radius-chip); font-size: 0.75rem; font-weight: 600; border: 1px solid transparent; white-space: nowrap; line-height: 1.5; }
+.chip.ok { background: var(--mint-surface); color: var(--teal-text); }
+.chip.attn { background: var(--bad-bg); color: var(--bad-fg); border-color: var(--bad-line); }
+.chip.idle { background: var(--quiet-bg); color: var(--quiet-fg); border-color: var(--quiet-line); }
+:root[data-theme="dark"] .chip.ok { background: #10372f; color: var(--mint); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip.ok { background: #10372f; color: var(--mint); } }
+
+.st { cursor: pointer; }
+.st[disabled] { cursor: default; }
+.st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.st.open { background: var(--quiet-bg); color: var(--quiet-fg); border-color: var(--quiet-line); }
+.st.doing { background: var(--teal); color: var(--ink); }
+.st.done { background: var(--ok-bg); color: var(--ok-fg); border-color: var(--ok-line); }
+.prio { display: inline-flex; padding: 0.2em 0.55em; border-radius: var(--radius); font-size: 0.72rem; font-weight: 600; line-height: 1.2; border: 1px solid transparent; }
+.prio.vhigh { background: var(--sev-vhigh); color: var(--sev-vhigh-fg); }
+.prio.high { background: var(--sev-high); color: var(--sev-high-fg); }
+.prio.med { background: var(--sev-med); color: var(--sev-med-fg); }
+.prio.low { background: var(--sev-low); color: var(--sev-low-fg); border-color: var(--sev-low-line); }
+
+/* Panels (items, change log) */
+.panel { background: var(--card); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); overflow: hidden; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); background: var(--tert); }
+.toolbar input, .toolbar select, .field input, .field select, .field textarea {
+  border: 1px solid var(--line); background: var(--card); border-radius: var(--radius); padding: 0.375rem 0.75rem; color: var(--body); min-width: 0;
+}
+.toolbar input:focus, .toolbar select:focus, .field :is(input, select, textarea):focus { outline: 0; border-color: var(--teal); box-shadow: var(--focus); }
+.toolbar .grow { flex: 1 1 220px; }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.55rem 0.75rem; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--sec-bg); }
+thead th { color: var(--muted); font-weight: 600; border-bottom: 2px solid var(--heading); white-space: nowrap; background: var(--card); }
+tbody tr:hover > * { background: var(--tert); }
+tbody tr.item { cursor: pointer; }
+tbody tr:last-child > * { border-bottom: 0; }
+td.t strong { font-weight: 600; color: var(--heading); display: block; overflow-wrap: anywhere; }
+td.t small { color: var(--muted); display: block; max-width: 48ch; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+tr.is-done td.t strong { color: var(--muted); font-weight: 400; text-decoration: line-through; }
+td.due { white-space: nowrap; }
+td.due.late { color: var(--bad-fg); }
+.dash { color: var(--muted); }
+.empty { padding: 36px 20px; text-align: center; color: var(--muted); }
+.empty strong { display: block; color: var(--heading); font-size: 1rem; margin-bottom: 4px; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Users */
+.top-right { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.who { color: #ffffff; font-size: 0.8125rem; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--teal); }
+.btn-sm { padding: 0.25rem 0.5rem; font-size: 0.8125rem; border-radius: 0.25rem; }
+.person { display: flex; align-items: center; gap: 8px; min-width: 180px; }
+.person img { width: 24px; height: 24px; border-radius: 50%; flex: none; }
+.person span:not(.you) { font-weight: 600; color: var(--heading); }
+.you { font-size: 0.72rem; color: var(--muted); border: 1px solid var(--line); border-radius: var(--radius-chip); padding: 0 6px; }
+td.num { text-align: right; }
+td.act-cell { text-align: right; white-space: nowrap; }
+#userRows select { border: 1px solid var(--line); background: var(--card); border-radius: var(--radius); padding: 0.25rem 0.5rem; }
+.add-user { position: relative; display: flex; align-items: center; gap: 8px; flex: 1 1 320px; flex-wrap: wrap; }
+.add-user label { font-weight: 600; color: var(--heading); }
+.add-user input { flex: 1 1 200px; }
+.hits { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
+.hits:empty { display: none; }
+.hit { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius-chip); padding: 2px 10px 2px 4px; cursor: pointer; color: var(--heading); }
+.hit:hover { border-color: var(--teal); }
+.hit img { width: 20px; height: 20px; border-radius: 50%; }
+.foot.roles-help { display: block; line-height: 1.6; }
+.roles-help b { color: var(--heading); }
+
+/* Change log */
+.range { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.range label { font-size: 0.8125rem; color: var(--muted); }
+.log td.when { white-space: nowrap; color: var(--muted); font-size: 0.8125rem; }
+.log td.who { white-space: nowrap; }
+.act { font-weight: 600; color: var(--heading); }
+.diff { display: block; color: var(--muted); font-size: 0.8125rem; overflow-wrap: anywhere; }
+.diff b { font-weight: 600; color: var(--body); }
+.diff s { color: var(--muted); }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); background: var(--tert); color: var(--muted); font-size: 0.8125rem; flex-wrap: wrap; }
+
+/* Dialog */
+dialog { border: 1px solid var(--line-soft); border-radius: var(--radius-lg); background: var(--card); color: var(--body); padding: 0; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 48px); }
+dialog::backdrop { background: rgb(11 32 56 / 0.55); }
+.dlg-head { background: var(--ink); color: #ffffff; padding: 14px 20px; border-bottom: 3px solid var(--teal); }
+.dlg-head h2 { margin: 0; font-size: 1.1rem; font-weight: 700; }
+form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-size: 0.75rem; font-weight: 600; color: var(--heading); }
+.field textarea { min-height: 84px; resize: vertical; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.err { margin: 0; padding: 6px 10px; border-radius: var(--radius); background: var(--bad-bg); color: var(--bad-fg); font-size: 0.8125rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 14px; border-top: 1px solid var(--line); }
+.actions .right { display: flex; gap: 8px; margin-left: auto; }
+.history { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 8px; }
+.history h3 { margin: 0; font-size: 0.875rem; font-weight: 700; color: var(--heading); }
+.history ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 200px; overflow-y: auto; }
+.history li { display: grid; gap: 1px; padding-left: 12px; border-left: 2px solid var(--line); }
+.history li .meta { font-size: 0.75rem; color: var(--muted); }
+
+.toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(16px + env(safe-area-inset-top, 0px)); background: var(--ink); color: #ffffff; padding: 8px 14px; border-radius: var(--radius); border-left: 4px solid var(--teal); font-size: 0.875rem; z-index: 20; }
+
+@media (max-width: 640px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .hide-sm { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="hero">
+  <div class="inner">
+    <div class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="2" y="5" width="5" height="4" rx="1" fill="#17bba4"/><rect x="10" y="5" width="22" height="4" rx="1" fill="#e7f0f5"/><rect x="2" y="15" width="5" height="4" rx="1" fill="#17bba4"/><rect x="10" y="15" width="16" height="4" rx="1" fill="#e7f0f5"/><rect x="2" y="25" width="5" height="4" rx="1" fill="#6fdccb"/><rect x="10" y="25" width="19" height="4" rx="1" fill="#e7f0f5"/></svg>
+        <div><div class="brand-name">Tracker<span>App</span></div><div class="brand-sub">Tasks and follow-ups</div></div>
+      </div>
+      <div class="top-right">
+        <span class="who mono" id="who" hidden></span>
+        <span class="sync" id="sync">Connecting</span>
+      </div>
+    </div>
+    <div class="hero-row">
+      <div>
+        <p class="kicker">Work tracking</p>
+        <h1>TrackerApp – tasks, follow-ups and changes</h1>
+        <p class="lead">One place for open work, its status and every change made to it.</p>
+      </div>
+      <button class="btn btn-accent" id="newBtn" type="button">New item</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="inner">
+    <section aria-labelledby="ovH">
+      <h2 id="ovH">Overview</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section aria-labelledby="itH">
+      <h2 id="itH">Items <small id="itCount"></small></h2>
+      <div class="panel">
+        <div class="toolbar">
+          <input class="grow" id="q" type="search" placeholder="Search subject, notes, category, company" aria-label="Search items">
+          <select id="statusF" aria-label="Status">
+            <option value="all" selected>All statuses</option>
+            <option value="done">Done</option>
+            <option value="doing">In progress</option>
+            <option value="open">Open</option>
+            <option value="active">Open and in progress</option>
+            <option value="late">Overdue</option>
+          </select>
+          <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+          <select id="comp" aria-label="Company"><option value="">All companies</option><option>ICARO</option><option>Private</option><option>scdsoft</option><option>smarterSec</option><option>Spinifex</option></select>
+          <select id="sort" aria-label="Sort">
+            <option value="due">Sort by due date</option>
+            <option value="prio">Sort by priority</option>
+            <option value="new">Newest first</option>
+            <option value="upd">Recently changed</option>
+            <option value="title">Sort by title</option>
+          </select>
+        </div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Status</th><th>Item</th><th>Priority</th><th class="hide-sm">Company</th><th class="hide-sm">Category</th><th>Due</th><th><span class="sr">Actions</span></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="lgH">
+      <h2 id="lgH">Change log <small>Every create, edit, status change and delete, newest first</small></h2>
+      <div class="panel log">
+        <div class="toolbar">
+          <select id="logItem" aria-label="Filter change log by item"><option value="">All items</option></select>
+          <select id="logAct" aria-label="Filter change log by change type">
+            <option value="">All changes</option>
+            <option value="created">Created</option>
+            <option value="status">Status changed</option>
+            <option value="updated">Edited</option>
+            <option value="deleted">Deleted</option>
+          </select>
+          <span class="range" id="delRange">
+            <label for="delFrom">Delete entries from</label><input type="date" id="delFrom">
+            <label for="delTo">to</label><input type="date" id="delTo">
+            <button class="btn btn-danger" id="delLogBtn" type="button" disabled>Delete entries</button>
+            <button class="btn" id="delLogCancel" type="button" hidden>Cancel</button>
+          </span>
+        </div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>When</th><th>Who</th><th>Item</th><th>Change</th></tr></thead>
+            <tbody id="logRows"></tbody>
+          </table>
+        </div>
+        <div class="foot"><span id="logInfo"></span><button class="link" id="logMore" type="button" hidden>Show more</button></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="usH" id="usersSec" hidden>
+      <h2 id="usH">Users <small id="userCount"></small></h2>
+      <div class="panel">
+        <div class="toolbar">
+          <div class="add-user" id="addUser" hidden>
+            <label for="userSearch">Add user</label>
+            <input id="userSearch" type="search" placeholder="Search your organization by name" autocomplete="off">
+            <div class="hits" id="userHits"></div>
+          </div>
+          <button class="btn btn-sm" id="checkAccess" type="button" hidden>Check Share access</button>
+        </div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>User</th><th>Role</th><th id="accCol" hidden>Share access</th><th>Last opened</th><th>Changes</th><th></th></tr></thead>
+            <tbody id="userRows"></tbody>
+          </table>
+        </div>
+        <div class="foot roles-help">
+          <span><b>Admin</b> manages users, deletes items and change log entries. <b>Member</b> adds and edits items. <b>Read-only</b> looks only.
+          Admins are the people with Editor or Owner access in the Share menu. Who can open the tracker at all is set in the Share menu; to block a Read-only person from changes completely, give them Viewer access there.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="dlg-head"><h2 id="dlgTitle">New item</h2></div>
+  <form class="edit" id="form" novalidate>
+    <div class="field"><label for="fTitle">Item subject</label><input id="fTitle" maxlength="200" autocomplete="off"></div>
+    <div class="field"><label for="fCompany">Company</label>
+      <select id="fCompany"><option value="">-</option><option>ICARO</option><option>Private</option><option>scdsoft</option><option>smarterSec</option><option>Spinifex</option></select></div>
+    <div class="grid2">
+      <div class="field"><label for="fStatus">Status</label>
+        <select id="fStatus"><option value="open">Open</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
+      <div class="field"><label for="fPrio">Priority</label>
+        <select id="fPrio"><option value="vhigh">Very high</option><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>
+      <div class="field"><label for="fCat">Category</label><input id="fCat" list="catList" maxlength="60" autocomplete="off" placeholder="e.g. Outlook"><datalist id="catList"></datalist></div>
+      <div class="field"><label for="fDue">Due date</label><input id="fDue" type="date"></div>
+    </div>
+    <div class="field"><label for="fNotes">Notes</label><textarea id="fNotes" maxlength="4000"></textarea></div>
+    <p class="err" id="fErr" hidden></p>
+    <div class="history" id="hist" hidden><h3>History</h3><ol id="histList"></ol></div>
+    <div class="actions">
+      <button class="btn btn-danger" id="delBtn" type="button" hidden>Delete</button>
+      <div class="right">
+        <button class="btn" id="cancelBtn" type="button">Cancel</button>
+        <button class="btn btn-primary" id="saveBtn" type="submit">Save</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const STATUS = { open: "Open", doing: "In progress", done: "Done" };
+  const NEXT = { open: "doing", doing: "done", done: "open" };
+  const PRIO_RANK = { vhigh: 0, high: 1, med: 2, low: 3 };
+  const PRIO = { vhigh: "Very high", high: "High", med: "Medium", low: "Low" };
+  const COMPANIES = ["ICARO", "Private", "scdsoft", "smarterSec", "Spinifex"];
+  const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due date", notes: "Notes" };
+  const LOG_PAGE = 50;
+
+  let items = [];
+  let logs = [];
+  let catDefs = [];          // categories defined without needing an item
+  let prefCat = "";          // category filter in force ("" = All items card)
+  // Per-viewer filter memory: the card last used, and each card's own status / company / sort
+  let prefs = { last: "", cards: {} };
+  let prefDoc = null;        // data/users/<id>/prefs — private to this viewer
+  let prefsTouched = false;  // the viewer changed something before stored prefs arrived
+  let store = null;          // {saveItem, removeItem, addLog}
+  let canWrite = true;
+  let me = null;             // viewer id
+  let userApi = null;
+  let names = {};            // id -> display name
+  let profileCache = {};     // id -> Profile (render only, never stored)
+  // ---- user management ----
+  // Roles: admin (Editor/Owner in the Share menu), member (adds and edits), readonly (looks only).
+  const ROLE = { admin: "Admin", member: "Member", readonly: "Read-only" };
+  let dbMode = false;        // false = local fallback, everything allowed
+  let isEditor = false;      // platform admin level (Editor or Owner)
+  let writeAllowed = null;   // platform: may write shared data (null = not told)
+  let role = "admin";        // this viewer's effective role
+  let roleDocs = {};         // id -> {role}
+  let memberDocs = {};       // id -> {firstSeen, lastSeen, editor}
+  let access = {};           // id -> platform share roles (admins only, display only)
+  let usersStore = null;     // {setRole, removeUser}
+  function computeRole() {
+    if (!dbMode || isEditor) return "admin";
+    if (writeAllowed === false) return "readonly";
+    if (me && roleDocs[me] && roleDocs[me].role === "readonly") return "readonly";
+    return "member";
+  }
+  function applyRole() { role = computeRole(); canWrite = role !== "readonly"; }
+  const isAdmin = () => role === "admin";
+  let lastSync = null;
+  let editingId = null;
+  let logLimit = LOG_PAGE;
+
+  // ---------- helpers ----------
+  const p2 = (n) => String(n).padStart(2, "0");
+  const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`; };
+  const stamp = (ms) => { if (!ms) return "-"; const d = new Date(ms); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+  const isLate = (it) => it.status !== "done" && it.due && it.due < todayStr();
+  const s = (v, max) => (typeof v === "string" ? v : "").slice(0, max);
+  const cleanItem = (id, d) => ({
+    id,
+    title: s(d.title, 200) || "(untitled)",
+    status: STATUS[d.status] ? d.status : "open",
+    prio: PRIO[d.prio] ? d.prio : "med",
+    category: s(d.category, 60),
+    company: s(d.company, 60),
+    due: /^\d{4}-\d{2}-\d{2}$/.test(d.due || "") ? d.due : "",
+    notes: s(d.notes, 4000),
+    createdAt: +d.createdAt || 0,
+    updatedAt: +d.updatedAt || 0,
+  });
+  const cleanLog = (id, d) => ({
+    id,
+    at: +d.at || 0,
+    action: ["created", "updated", "status", "deleted"].includes(d.action) ? d.action : "updated",
+    itemId: s(d.itemId, 80),
+    itemTitle: s(d.itemTitle, 200),
+    by: s(d.by, 200),
+    changes: Array.isArray(d.changes) ? d.changes.slice(0, 10).map((c) => ({ field: s(c && c.field, 20), from: s(c && c.from, 300), to: s(c && c.to, 300) })) : [],
+  });
+  const showVal = (field, v) => {
+    if (!v) return "-";
+    if (field === "status") return STATUS[v] || v;
+    if (field === "prio") return PRIO[v] || v;
+    if (field === "notes") return v.length > 60 ? v.slice(0, 60) + "…" : v;
+    return v;
+  };
+  const whoName = (id) => (!id ? "Someone" : id === me ? "You" : names[id] || "Someone");
+  let toastT;
+  const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 2400); };
+  const setSync = (msg, state) => { const x = $("sync"); x.textContent = msg; x.className = "sync" + (state ? " " + state : ""); };
+
+  // ---------- overview cards ----------
+  function statsFor(list) {
+    const active = list.filter((i) => i.status !== "done");
+    const late = list.filter(isLate).length;
+    const done = list.length - active.length;
+    const last = list.reduce((m, i) => Math.max(m, i.updatedAt), 0);
+    return { total: list.length, open: list.filter((i) => i.status === "open").length, doing: list.filter((i) => i.status === "doing").length, late, done, pct: list.length ? Math.round((100 * done) / list.length) : 0, last };
+  }
+  function card(title, desc, st, onShow) {
+    const c = el("article", "card");
+    const h = el("div", "card-head");
+    h.append(el("h3", null, title));
+    const chip = st.late ? el("span", "chip attn", st.late + " overdue") : st.total && st.open + st.doing === 0 ? el("span", "chip ok", "Done") : el("span", "chip ok", "OK");
+    if (!st.total) { chip.className = "chip idle"; chip.textContent = "Empty"; }
+    h.append(chip);
+    c.append(h, el("p", "desc", desc));
+    const dl = el("dl", "kv");
+    const row = (k, v, bad) => { dl.append(el("dt", null, k)); const dd = el("dd", bad ? "bad" : null, String(v)); dl.append(dd); };
+    row("Open", st.open); row("In progress", st.doing); row("Overdue", st.late, st.late > 0); row("Done", st.done); row("Completed", st.pct + " %");
+    c.append(dl);
+    c.append(el("div", "asof", st.last ? "Last change " + stamp(st.last) : "No changes yet"));
+    const links = el("div", "links");
+    const a = el("button", "link", "Show items"); a.type = "button"; a.addEventListener("click", onShow);
+    links.append(a);
+    if (st.late) { const b = el("button", "link", "Show overdue"); b.type = "button"; b.addEventListener("click", () => onShow("late")); links.append(b); }
+    c.append(links);
+    return c;
+  }
+  function renderCards() {
+    const cards = [card("All items", "Every task and follow-up in this tracker", statsFor(items), (f) => jump("", f))];
+    // Defined categories sit right after "All items" in their set order, then the rest alphabetically
+    const rank = (c) => { const i = catDefs.indexOf(c); return i < 0 ? 1e6 : i; };
+    const cats = categories().sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+    cats.forEach((cat) => cards.push(card(cat, "Items in the category " + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f))));
+    const none = items.filter((i) => !i.category);
+    if (none.length && cats.length) cards.push(card("Uncategorized", "Items without a category", statsFor(none), (f) => jump("", f)));
+    $("cards").replaceChildren(...cards);
+  }
+  function jump(cat, f) {
+    prefCat = cat; applyCard();
+    if (f === "late") { $("statusF").value = "late"; remember(); }
+    prefs.last = cardKey(); prefsTouched = true;
+    renderItems(); savePrefs(); $("itH").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+  const categories = () => [...new Set([...catDefs, ...items.map((i) => i.category)].filter(Boolean))].sort((a, b) => a.localeCompare(b));
+
+  // ---------- items table ----------
+  function renderItems() {
+    const cats = categories();
+    const catSel = $("cat");
+    catSel.replaceChildren(new Option("All categories", ""), ...cats.map((c) => new Option(c, c)));
+    catSel.value = cats.includes(prefCat) ? prefCat : "";   // keep the remembered choice until its category has loaded
+    $("catList").replaceChildren(...cats.map((c) => new Option(c)));
+
+    const q = $("q").value.trim().toLowerCase(), f = $("statusF").value;
+    const list = items.filter((i) => {
+      if (f === "active" && i.status === "done") return false;
+      if (STATUS[f] && i.status !== f) return false;
+      if (f === "late" && !isLate(i)) return false;
+      if (catSel.value && i.category !== catSel.value) return false;
+      if ($("comp").value && i.company !== $("comp").value) return false;
+      if (q && !(i.title + " " + i.notes + " " + i.category + " " + i.company).toLowerCase().includes(q)) return false;
+      return true;
+    });
+    const sort = $("sort").value;
+    const byDue = (a, b) => (a.due || "9999").localeCompare(b.due || "9999");
+    list.sort((a, b) =>
+      sort === "prio" ? PRIO_RANK[a.prio] - PRIO_RANK[b.prio] || byDue(a, b)
+      : sort === "new" ? b.createdAt - a.createdAt
+      : sort === "upd" ? b.updatedAt - a.updatedAt
+      : sort === "title" ? a.title.localeCompare(b.title)
+      : byDue(a, b) || PRIO_RANK[a.prio] - PRIO_RANK[b.prio]);
+    $("itCount").textContent = list.length + " of " + items.length + " shown";
+
+    const tb = $("rows");
+    if (!list.length) {
+      const td = el("td", "empty"); td.colSpan = 7;
+      td.append(el("strong", null, items.length ? "No items match" : "No items yet"),
+        el("span", null, items.length ? "Change the status, category or search." : canWrite ? "Add the first task or follow-up with New item." : "Nothing has been added yet."));
+      const tr = el("tr"); tr.append(td); tb.replaceChildren(tr); return;
+    }
+    const today = todayStr();
+    tb.replaceChildren(...list.map((it) => {
+      const tr = el("tr", "item" + (it.status === "done" ? " is-done" : ""));
+      tr.tabIndex = 0; tr.dataset.id = it.id; tr.setAttribute("aria-label", "Open " + it.title);
+      const st = el("button", "chip st " + it.status, STATUS[it.status]); st.type = "button"; st.dataset.cycle = it.id; st.disabled = !canWrite;
+      st.title = canWrite ? "Set to " + STATUS[NEXT[it.status]] : STATUS[it.status];
+      const t = el("td", "t"); t.append(el("strong", null, it.title)); if (it.notes) t.append(el("small", null, it.notes.split("\n")[0]));
+      const pr = el("td"); pr.append(el("span", "prio " + it.prio, PRIO[it.prio]));
+      const comp = el("td", "hide-sm" + (it.company ? "" : " dash"), it.company || "-");
+      const cat = el("td", "hide-sm" + (it.category ? "" : " dash"), it.category || "-");
+      const late = isLate(it);
+      const due = el("td", "due mono" + (late ? " late" : it.due ? "" : " dash"), it.due ? (it.due === today && it.status !== "done" ? it.due + " today" : it.due) : "-");
+      if (late) due.title = "Overdue";
+      const c0 = el("td"); c0.append(st);
+      // Done items get their own delete button (Admins only), with a confirm click
+      const act = el("td", "act-cell");
+      if (it.status === "done" && isAdmin()) {
+        const armed = delItemArmed === it.id;
+        const b = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? "Delete for good" : "Delete");
+        b.type = "button"; b.dataset.delItem = it.id; b.setAttribute("aria-label", (armed ? "Confirm delete of " : "Delete ") + it.title);
+        act.append(b);
+      }
+      tr.append(c0, t, pr, comp, cat, due, act);
+      return tr;
+    }));
+  }
+
+  // ---------- change log ----------
+  function describe(l) {
+    const wrap = el("div");
+    const label = { created: "Created", updated: "Edited", status: "Status changed", deleted: "Deleted" }[l.action];
+    wrap.append(el("span", "act", label));
+    l.changes.forEach((c) => {
+      const d = el("span", "diff");
+      d.append(el("b", null, (FIELD[c.field] || c.field) + ": "));
+      if (l.action === "created") d.append(document.createTextNode(showVal(c.field, c.to)));
+      else { d.append(el("s", null, showVal(c.field, c.from)), document.createTextNode(" → " + showVal(c.field, c.to))); }
+      wrap.append(d);
+    });
+    return wrap;
+  }
+  function renderLog() {
+    const titles = new Map();
+    logs.forEach((l) => { if (l.itemId && !titles.has(l.itemId)) titles.set(l.itemId, l.itemTitle || "(untitled)"); });
+    items.forEach((i) => titles.set(i.id, i.title));
+    const sel = $("logItem"), cur = sel.value;
+    const opts = [...titles.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+    sel.replaceChildren(new Option("All items", ""), ...opts.map(([id, t]) => new Option(t, id)));
+    sel.value = titles.has(cur) ? cur : "";
+
+    const act = $("logAct").value;
+    const list = logs.filter((l) => (!sel.value || l.itemId === sel.value) && (!act || l.action === act));
+    const tb = $("logRows");
+    if (!list.length) {
+      const td = el("td", "empty"); td.colSpan = 4;
+      td.append(el("strong", null, logs.length ? "No changes match" : "No changes recorded yet"), el("span", null, logs.length ? "Change the filter." : "Changes appear here as soon as an item is added or edited."));
+      const tr = el("tr"); tr.append(td); tb.replaceChildren(tr);
+    } else {
+      tb.replaceChildren(...list.slice(0, logLimit).map((l) => {
+        const tr = el("tr");
+        const it = el("td"); const live = items.find((i) => i.id === l.itemId);
+        if (live) { const b = el("button", "link", live.title); b.type = "button"; b.addEventListener("click", () => openEditor(live.id)); it.append(b); }
+        else it.append(el("span", null, l.itemTitle || "(untitled)"));
+        const ch = el("td"); ch.append(describe(l));
+        tr.append(el("td", "when mono", stamp(l.at)), el("td", "who", whoName(l.by)), it, ch);
+        return tr;
+      }));
+    }
+    $("logInfo").textContent = list.length ? `Showing ${Math.min(list.length, logLimit)} of ${list.length} changes` : "";
+    $("logMore").hidden = list.length <= logLimit;
+    updateDelBtn();
+  }
+
+  // ---------- delete change log entries by date range ----------
+  let delArmed = false;
+  function logRange() {
+    const f = $("delFrom").value, t = $("delTo").value;
+    if (!f || !t) return null;
+    const a = new Date(f + "T00:00:00").getTime(), b = new Date(t + "T23:59:59.999").getTime();
+    return a <= b ? [a, b] : null;
+  }
+  const inRange = () => { const r = logRange(); return r ? logs.filter((l) => l.at >= r[0] && l.at <= r[1]) : []; };
+  function updateDelBtn() {
+    $("delRange").hidden = !isAdmin();
+    const n = inRange().length, b = $("delLogBtn");
+    if (!n) delArmed = false;
+    b.disabled = !n;
+    b.classList.toggle("armed", delArmed);
+    b.textContent = !n ? (logRange() || !$("delFrom").value || !$("delTo").value ? "Delete entries" : "Check the dates") : `Delete ${n} entr${n === 1 ? "y" : "ies"}` + (delArmed ? " for good" : "");
+    $("delLogCancel").hidden = !delArmed;
+  }
+  function disarm() { delArmed = false; updateDelBtn(); }
+  async function deleteLogRange() {
+    const list = inRange(); if (!list.length) return;
+    if (!delArmed) { delArmed = true; updateDelBtn(); return; }
+    const b = $("delLogBtn"); b.disabled = true; b.textContent = "Deleting…";
+    try {
+      await store.removeLogs(list.map((l) => l.id));
+      toast(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted");
+      $("delFrom").value = ""; $("delTo").value = "";
+    } catch (err) { toast(errText(err)); }
+    delArmed = false; updateDelBtn();
+  }
+
+  async function resolveNames() {
+    if (!userApi) return;
+    const ids = [...new Set([...logs.map((l) => l.by), ...userIds()].filter((id) => id && !(id in profileCache)))];
+    if (!ids.length) return;
+    try {
+      const ps = await userApi.profiles(ids);
+      ids.forEach((id) => { const p = ps && ps[id]; profileCache[id] = p || null; if (id !== me) names[id] = (p && p.name) || ""; });
+      renderLog(); renderUsers(); renderWho(); if ($("dlg").open && editingId) renderHistory(editingId);
+    } catch (_) {}
+  }
+
+  // ---------- users ----------
+  const userIds = () => [...new Set([...Object.keys(memberDocs), ...Object.keys(roleDocs), ...(me ? [me] : [])])];
+  function roleOf(id) {
+    if (id === me) return role;
+    const a = access[id];
+    if ((memberDocs[id] && memberDocs[id].editor) || (a && (a.includes("editor") || a.includes("owner") || a.includes("manager")))) return "admin";
+    if (roleDocs[id] && roleDocs[id].role === "readonly") return "readonly";
+    return "member";
+  }
+  function accessLabel(r) {
+    if (!r) return "-";
+    if (r.includes("owner") || r.includes("manager")) return "Owner";
+    if (r.includes("editor")) return "Editor";
+    if (r.includes("contributor")) return "Contributor";
+    if (r.includes("commenter")) return "Commenter";
+    if (r.includes("viewer")) return "Viewer";
+    return "No access found";
+  }
+  const roleChip = (r) => el("span", "chip " + (r === "admin" ? "ok" : r === "readonly" ? "idle" : "idle role-member"), ROLE[r]);
+
+  function renderWho() {
+    const w = $("who");
+    if (!dbMode || !me) { w.hidden = true; return; }
+    const p = profileCache[me];
+    w.textContent = ((p && p.name) || "You") + " · " + ROLE[role];
+    w.hidden = false;
+  }
+
+  let removeArmed = null;
+  function renderUsers() {
+    const sec = $("usersSec");
+    sec.hidden = !dbMode;
+    if (!dbMode) return;
+    $("addUser").hidden = !isAdmin();
+    $("accCol").hidden = !isAdmin();
+    $("checkAccess").hidden = !isAdmin();
+    const counts = {};
+    logs.forEach((l) => { if (l.by) counts[l.by] = (counts[l.by] || 0) + 1; });
+    const rank = { admin: 0, member: 1, readonly: 2 };
+    const nm = (id) => (id === me ? (profileCache[id] && profileCache[id].name) || "You" : names[id] || "Someone");
+    const ids = userIds().sort((a, b) => rank[roleOf(a)] - rank[roleOf(b)] || nm(a).localeCompare(nm(b)));
+    $("userCount").textContent = ids.length + (ids.length === 1 ? " person" : " people");
+    $("userRows").replaceChildren(...ids.map((id) => {
+      const r = roleOf(id), tr = el("tr");
+      const cell = el("td"), who = el("div", "person"); cell.append(who);
+      const p = profileCache[id];
+      if (p && p.avatarUrl) { const img = el("img"); img.src = p.avatarUrl; img.alt = ""; who.append(img); }
+      const nameEl = el("span", null, nm(id)); who.append(nameEl);
+      if (id === me) who.append(el("span", "you", "you"));
+      if (p && p.guest) who.append(el("span", "you", "guest"));
+      const rc = el("td");
+      if (isAdmin() && id !== me && r !== "admin") {
+        const sel = el("select"); sel.dataset.roleFor = id; sel.setAttribute("aria-label", "Role for " + nm(id));
+        sel.append(new Option("Member", "member"), new Option("Read-only", "readonly")); sel.value = r;
+        rc.append(sel);
+      } else rc.append(roleChip(r));
+      const ac = el("td", "mono acc", accessLabel(access[id])); ac.hidden = !isAdmin();
+      const m = memberDocs[id];
+      const seen = el("td", "mono when", m && m.lastSeen ? stamp(m.lastSeen) : "Not opened yet");
+      const ch = el("td", "mono num", String(counts[id] || 0));
+      const act = el("td", "act-cell");
+      if (isAdmin() && id !== me && r !== "admin") {
+        const b = el("button", "btn btn-sm btn-danger" + (removeArmed === id ? " armed" : ""), removeArmed === id ? "Remove for good" : "Remove");
+        b.type = "button"; b.dataset.removeUser = id; act.append(b);
+      }
+      tr.append(cell, rc, ac, seen, ch, act);
+      return tr;
+    }));
+  }
+
+  async function setRole(id, r) {
+    try { await usersStore.setRole(id, r); toast(nm2(id) + " is now " + ROLE[r]); }
+    catch (err) { toast(errText(err)); renderUsers(); }
+  }
+  const nm2 = (id) => names[id] || "This person";
+  async function removeUser(id) {
+    if (removeArmed !== id) { removeArmed = id; renderUsers(); return; }
+    removeArmed = null;
+    try { await usersStore.removeUser(id); toast(nm2(id) + " removed from the user list"); }
+    catch (err) { toast(errText(err)); }
+    renderUsers();
+  }
+
+  let accessChecked = false;
+  async function checkAccess() {
+    if (!userApi || !isAdmin()) return;
+    const ids = userIds().filter((id) => id !== me).slice(0, 31);
+    if (!ids.length) return;
+    const b = $("checkAccess"); b.disabled = true;
+    try {
+      const ps = await userApi.profiles(ids, { roles: true });
+      ids.forEach((id) => { const r = ps && ps[id] && ps[id].roles; if (r) access[id] = r.slice(); });
+      applyRole(); renderUsers();
+    } catch (_) {}
+    b.disabled = false;
+  }
+
+  function render() { renderCards(); renderItems(); renderLog(); renderUsers(); renderWho(); $("newBtn").hidden = !canWrite; }
+
+  // ---------- editor ----------
+  function renderHistory(id) {
+    const entries = logs.filter((l) => l.itemId === id);
+    $("hist").hidden = !entries.length;
+    $("histList").replaceChildren(...entries.slice(0, 30).map((l) => {
+      const li = el("li");
+      li.append(el("span", "meta mono", stamp(l.at) + " · " + whoName(l.by)), describe(l));
+      return li;
+    }));
+  }
+  function openEditor(id) {
+    if (!canWrite && !id) return;
+    editingId = id || null;
+    const it = id ? items.find((i) => i.id === id) : null;
+    $("dlgTitle").textContent = it ? (canWrite ? "Edit item" : "Item") : "New item";
+    $("fTitle").value = it ? it.title : "";
+    $("fStatus").value = it ? it.status : "open";
+    $("fPrio").value = it ? it.prio : "med";
+    $("fCompany").value = it ? (COMPANIES.includes(it.company) ? it.company : "") : $("comp").value || "";
+    $("fCat").value = it ? it.category : $("cat").value || "";
+    $("fDue").value = it ? it.due : "";
+    $("fNotes").value = it ? it.notes : "";
+    $("fErr").hidden = true;
+    const d = $("delBtn"); d.hidden = !it || !isAdmin(); d.classList.remove("armed"); d.textContent = "Delete";
+    $("saveBtn").hidden = !canWrite;
+    $("cancelBtn").textContent = canWrite ? "Cancel" : "Close";
+    $("form").querySelectorAll("input,select,textarea").forEach((x) => (x.disabled = !canWrite));
+    if (it) renderHistory(it.id); else $("hist").hidden = true;
+    $("dlg").showModal();
+    if (canWrite) $("fTitle").focus();
+  }
+
+  function diff(prev, next) {
+    return Object.keys(FIELD).filter((k) => (prev[k] || "") !== (next[k] || "")).map((k) => ({ field: k, from: prev[k] || "", to: next[k] || "" }));
+  }
+  async function writeLog(action, item, changes) {
+    try { await store.addLog({ at: Date.now(), action, itemId: item.id, itemTitle: item.title, by: me || "", changes }); }
+    catch (_) { toast("Saved, but the change log entry failed"); }
+  }
+
+  async function save(e) {
+    e.preventDefault();
+    const title = $("fTitle").value.trim();
+    if (!title) { $("fErr").textContent = "Enter an item subject."; $("fErr").hidden = false; $("fTitle").focus(); return; }
+    const prev = editingId ? items.find((i) => i.id === editingId) : null;
+    const now = Date.now();
+    const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: $("fDue").value, notes: $("fNotes").value.trim() };
+    const id = editingId || "i" + now.toString(36) + Math.random().toString(36).slice(2, 7);
+    const changes = prev ? diff(prev, next) : Object.keys(FIELD).filter((k) => next[k] && k !== "notes").map((k) => ({ field: k, from: "", to: next[k] }));
+    if (prev && !changes.length) { $("dlg").close(); return; }
+    const btn = $("saveBtn"); btn.disabled = true;
+    try {
+      await store.saveItem(id, { ...next, createdAt: prev ? prev.createdAt : now, updatedAt: now, updatedBy: me || "" });
+      const onlyStatus = prev && changes.length === 1 && changes[0].field === "status";
+      await writeLog(prev ? (onlyStatus ? "status" : "updated") : "created", { id, title }, changes);
+      $("dlg").close();
+      toast(prev ? "Item " + title + " saved" : "Item " + title + " added");
+    } catch (err) { $("fErr").textContent = errText(err); $("fErr").hidden = false; }
+    finally { btn.disabled = false; }
+  }
+
+  async function cycle(id, btn) {
+    const it = items.find((i) => i.id === id); if (!it || !canWrite) return;
+    const to = NEXT[it.status];
+    btn.disabled = true;
+    try {
+      const { id: _, ...rest } = it;
+      await store.saveItem(id, { ...rest, status: to, updatedAt: Date.now(), updatedBy: me || "" });
+      await writeLog("status", it, [{ field: "status", from: it.status, to }]);
+    } catch (err) { toast(errText(err)); btn.disabled = false; }
+  }
+
+  async function del() {
+    const b = $("delBtn");
+    if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "Delete for good"; return; }
+    const it = items.find((i) => i.id === editingId); if (!it) return;
+    b.disabled = true;
+    try {
+      await store.removeItem(it.id);
+      await writeLog("deleted", it, []);
+      $("dlg").close(); toast("Item " + it.title + " deleted");
+    } catch (err) { $("fErr").textContent = errText(err); $("fErr").hidden = false; }
+    finally { b.disabled = false; }
+  }
+
+  let delItemArmed = null, delItemT;
+  async function deleteDoneItem(id, btn) {
+    const it = items.find((i) => i.id === id); if (!it || !isAdmin()) return;
+    if (delItemArmed !== id) {
+      delItemArmed = id; renderItems();
+      clearTimeout(delItemT); delItemT = setTimeout(() => { delItemArmed = null; renderItems(); }, 5000);   // confirm expires
+      return;
+    }
+    clearTimeout(delItemT); delItemArmed = null; btn.disabled = true;
+    try {
+      await store.removeItem(id);
+      await writeLog("deleted", it, []);
+      toast("Item " + it.title + " deleted");
+    } catch (err) { toast(errText(err)); renderItems(); }
+  }
+
+  function errText(err) {
+    const c = err && err.code;
+    if (c === "invalid_argument") { writeAllowed = false; applyRole(); render(); return "You can view this tracker but not change it."; }
+    if (c === "quota_exceeded") return "The tracker is full. Delete finished items, then try again.";
+    if (c === "resource_exhausted") return "Too many changes at once. Wait a moment, then try again.";
+    return "The change was not saved. Check the connection and try again.";
+  }
+
+  // ---------- wiring ----------
+  $("newBtn").addEventListener("click", () => openEditor(null));
+  $("form").addEventListener("submit", save);
+  $("cancelBtn").addEventListener("click", () => $("dlg").close());
+  $("delBtn").addEventListener("click", del);
+  $("rows").addEventListener("click", (e) => {
+    const d = e.target.closest("[data-del-item]");
+    if (d) { e.stopPropagation(); deleteDoneItem(d.dataset.delItem, d); return; }
+    const c = e.target.closest("[data-cycle]");
+    if (c) { e.stopPropagation(); cycle(c.dataset.cycle, c); return; }
+    const r = e.target.closest("tr.item"); if (r) openEditor(r.dataset.id);
+  });
+  $("rows").addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr.item")) { e.preventDefault(); openEditor(e.target.dataset.id); }
+  });
+  $("q").addEventListener("input", renderItems);
+  $("cat").addEventListener("input", () => {
+    prefCat = $("cat").value; applyCard(); prefs.last = cardKey(); prefsTouched = true;
+    renderItems(); savePrefs();
+  });
+  ["statusF", "comp", "sort"].forEach((id) => $(id).addEventListener("input", () => {
+    remember(); prefsTouched = true; renderItems(); savePrefs();
+  }));
+  ["logItem", "logAct"].forEach((id) => $(id).addEventListener("input", () => { logLimit = LOG_PAGE; renderLog(); }));
+  $("logMore").addEventListener("click", () => { logLimit += LOG_PAGE; renderLog(); });
+  ["delFrom", "delTo"].forEach((id) => $(id).addEventListener("input", disarm));
+  $("delLogBtn").addEventListener("click", deleteLogRange);
+  $("delLogCancel").addEventListener("click", disarm);
+
+  // Users section
+  $("userRows").addEventListener("change", (e) => { const id = e.target.dataset.roleFor; if (id) setRole(id, e.target.value); });
+  $("userRows").addEventListener("click", (e) => { const b = e.target.closest("[data-remove-user]"); if (b) removeUser(b.dataset.removeUser); });
+  $("checkAccess").addEventListener("click", checkAccess);
+  const hitsBox = $("userHits");
+  async function searchUsers() {
+    if (!userApi) return;
+    const q = $("userSearch").value.trim();
+    const hits = await userApi.search(q);
+    const known = new Set(userIds());
+    hitsBox.replaceChildren(...hits.filter((h) => !known.has(h.id)).map((h) => {
+      const b = el("button", "hit"); b.type = "button"; b.dataset.addUser = h.id;
+      if (h.avatarUrl) { const img = el("img"); img.src = h.avatarUrl; img.alt = ""; b.append(img); }
+      b.append(el("span", null, h.name));
+      if (h.guest) b.append(el("span", "you", "guest"));
+      profileCache[h.id] = h; names[h.id] = h.name;
+      return b;
+    }));
+    if (!hitsBox.children.length) hitsBox.append(el("span", "dash", q ? "No one new found" : "Type a name"));
+  }
+  $("userSearch").addEventListener("input", searchUsers);
+  $("userSearch").addEventListener("focus", searchUsers);
+  hitsBox.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-add-user]"); if (!b) return;
+    b.disabled = true;
+    await setRole(b.dataset.addUser, "member");
+    $("userSearch").value = ""; hitsBox.replaceChildren();
+  });
+
+  // ---------- filter memory (per card, per viewer) ----------
+  const cardKey = () => prefCat || "__all";
+  const okVal = (sel, v) => [...$(sel).options].some((o) => o.value === v);
+  function applyCard() {
+    const c = prefs.cards[cardKey()] || {};
+    $("statusF").value = okVal("statusF", c.status) ? c.status : "all";
+    $("comp").value = okVal("comp", c.comp) ? c.comp : "";
+    $("sort").value = okVal("sort", c.sort) ? c.sort : "due";
+  }
+  function remember() {
+    prefs.cards[cardKey()] = { status: $("statusF").value, comp: $("comp").value, sort: $("sort").value };
+    prefs.last = cardKey();
+  }
+  function loadPrefs(p) {
+    if (!p || typeof p !== "object") return;
+    const cards = {};
+    if (p.cards && typeof p.cards === "object") Object.entries(p.cards).slice(0, 100).forEach(([k, v]) => {
+      if (v && typeof v === "object") cards[s(k, 60)] = { status: s(v.status, 20), comp: s(v.comp, 60), sort: s(v.sort, 20) };
+    });
+    prefs = { last: s(p.last, 60), cards };
+    prefCat = prefs.last === "__all" ? "" : prefs.last;
+    applyCard();
+  }
+  let saveT, saving = Promise.resolve();
+  function savePrefs() {
+    try { localStorage.setItem("trackerapp.prefs", JSON.stringify(prefs)); } catch (_) {}
+    clearTimeout(saveT);
+    saveT = setTimeout(() => {
+      if (!prefDoc) return;
+      const body = JSON.parse(JSON.stringify(prefs));
+      saving = saving.then(() => prefDoc.set(body)).catch(() => {});   // one write at a time
+    }, 500);
+  }
+  try { loadPrefs(JSON.parse(localStorage.getItem("trackerapp.prefs") || "null")); } catch (_) {}
+
+  render();
+
+  // ---------- storage ----------
+  function useLocal() {
+    const K = "trackerapp.local";
+    let st = { items: {}, log: [] };
+    try { st = Object.assign(st, JSON.parse(localStorage.getItem(K) || "{}")); } catch (_) {}
+    const flush = () => { try { localStorage.setItem(K, JSON.stringify(st)); } catch (_) {} };
+    const sync = () => {
+      items = Object.entries(st.items).map(([id, d]) => cleanItem(id, d));
+      logs = st.log.map((d, n) => cleanLog("l" + n, d)).sort((a, b) => b.at - a.at);
+      render();
+    };
+    store = {
+      async saveItem(id, d) { st.items[id] = d; flush(); sync(); },
+      async removeItem(id) { delete st.items[id]; flush(); sync(); },
+      async addLog(d) { st.log.push(d); st.log = st.log.slice(-2000); flush(); sync(); },
+      async removeLogs(ids) { const set = new Set(ids); st.log = st.log.filter((_, n) => !set.has("l" + n)); flush(); sync(); },
+    };
+    setSync("Saved in this browser only", "warn");
+    sync();
+  }
+
+  async function init() {
+    const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
+    if (!db) { useLocal(); return; }
+    dbMode = true;
+    userApi = await window.claude.use("user");
+    if (userApi) {
+      try { me = await userApi.id(); } catch (_) {}
+      try { isEditor = !!(await userApi.canEdit()); } catch (_) {}
+      try { writeAllowed = await userApi.can("data.write"); } catch (_) {}
+    }
+    applyRole(); render(); resolveNames();
+
+    // Users: roles are written only by Admins (server rule); each person records their own visit.
+    const rolesCol = db.collection("roles"), membersCol = db.collection("members");
+    usersStore = {
+      setRole: (id, r) => rolesCol.doc(id).set({ role: r, updatedAt: Date.now(), updatedBy: me || "" }),
+      async removeUser(id) { await rolesCol.doc(id).delete(); await membersCol.doc(id).delete(); },
+    };
+    if (me && writeAllowed !== false) {
+      const ref = membersCol.doc(me);
+      ref.get().then((snap) => {
+        const d = (snap.exists && snap.data()) || {};
+        if (!snap.exists || d.lastDay !== todayStr() || !!d.editor !== isEditor) {
+          return ref.set({ firstSeen: +d.firstSeen || Date.now(), lastSeen: Date.now(), lastDay: todayStr(), editor: isEditor });
+        }
+      }).catch(() => {});
+    }
+    rolesCol.onSnapshot((snap) => {
+      roleDocs = {};
+      snap.docs.forEach((d) => { if (d.exists) roleDocs[d.id] = d.data() || {}; });
+      applyRole(); render(); resolveNames();
+    }, () => {});
+    membersCol.onSnapshot((snap) => {
+      memberDocs = {};
+      snap.docs.forEach((d) => { if (d.exists) memberDocs[d.id] = d.data() || {}; });
+      renderUsers(); resolveNames();
+      if (isAdmin() && !accessChecked) { accessChecked = true; setTimeout(checkAccess, 1500); }
+    }, () => {});
+    if (me) {
+      // Load this viewer's saved filters without holding up the item list
+      try {
+        const ref = db.doc("data/users/" + me + "/prefs");
+        ref.get().then((snap) => {
+          prefDoc = ref;
+          if (snap.exists && !prefsTouched) { loadPrefs(snap.data()); render(); }
+          else if (prefsTouched) savePrefs();
+        }).catch(() => {});
+      } catch (_) {}
+    }
+    const itemsCol = db.collection("items"), logCol = db.collection("log");
+    store = {
+      saveItem: (id, d) => itemsCol.doc(id).set(d),
+      removeItem: (id) => itemsCol.doc(id).delete(),
+      addLog: (d) => logCol.add(d),
+      async removeLogs(ids) {
+        for (let n = 0; n < ids.length; n += 10) await Promise.all(ids.slice(n, n + 10).map((id) => logCol.doc(id).delete()));
+      },
+    };
+    let got = 0;
+    const timer = setTimeout(() => setSync("Can't reach the shared data yet", "warn"), 10000);
+    const settle = (snap) => {
+      if (snap.metadata.fromCache) return;
+      if (++got >= 2) { clearTimeout(timer); lastSync = Date.now(); setSync(canWrite ? "Shared · live" : "Shared · view only", "live"); }
+    };
+    const fail = (err) => { clearTimeout(timer); setSync(err && err.code === "revoked" ? "Access changed" : "Live updates stopped · reload to reconnect", "warn"); };
+    itemsCol.onSnapshot((snap) => { items = snap.docs.filter((d) => d.exists).map((d) => cleanItem(d.id, d.data() || {})); settle(snap); render(); }, fail);
+    db.collection("categories").onSnapshot((snap) => {
+      catDefs = snap.docs.filter((d) => d.exists).map((d) => d.data() || {})
+        .sort((a, b) => (+a.order || 999) - (+b.order || 999))
+        .map((d) => s(d.name, 60)).filter(Boolean);
+      render();
+    }, () => {});
+    logCol.orderBy("at", "desc").limit(1000).onSnapshot((snap) => {
+      logs = snap.docs.filter((d) => d.exists).map((d) => cleanLog(d.id, d.data() || {}));
+      settle(snap); renderLog(); resolveNames();
+      if ($("dlg").open && editingId) renderHistory(editingId);
+    }, fail);
+  }
+  init();
+})();
+</script>
