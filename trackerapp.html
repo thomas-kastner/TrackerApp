@@ -221,6 +221,13 @@ td.due.late { color: var(--bad-fg); }
 .att.pending { opacity: 0.6; }
 .clip { margin-left: 6px; font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
 
+/* Language flags */
+.langs { display: inline-flex; gap: 6px; }
+.flag { width: 32px; height: 22px; padding: 0; border: 2px solid transparent; border-radius: 3px; background: none; cursor: pointer; opacity: 0.55; overflow: hidden; display: inline-flex; }
+.flag:hover { opacity: 0.85; }
+.flag[aria-pressed="true"] { opacity: 1; border-color: var(--teal); }
+.flag svg { width: 100%; height: 100%; display: block; }
+
 /* Account menu, settings */
 .acct-wrap { position: relative; }
 .acct { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; border-radius: var(--radius); cursor: pointer; color: #ffffff; }
@@ -333,7 +340,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     <div class="topbar">
       <div class="brand">
         <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="2" y="5" width="5" height="4" rx="1" fill="#17bba4"/><rect x="10" y="5" width="22" height="4" rx="1" fill="#e7f0f5"/><rect x="2" y="15" width="5" height="4" rx="1" fill="#17bba4"/><rect x="10" y="15" width="16" height="4" rx="1" fill="#e7f0f5"/><rect x="2" y="25" width="5" height="4" rx="1" fill="#6fdccb"/><rect x="10" y="25" width="19" height="4" rx="1" fill="#e7f0f5"/></svg>
-        <div><div class="brand-name">Tracker<span>App</span></div><div class="brand-sub">Tasks and follow-ups</div></div>
+        <div><div class="brand-name">Tracker<span>App</span></div><div class="brand-sub" data-de="Aufgaben und Nachverfolgung">Tasks and follow-ups</div></div>
       </div>
       <div class="top-right">
         <span class="sync" id="sync">Connecting</span>
@@ -343,18 +350,26 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
           </button>
           <div class="menu" id="acctMenu" hidden></div>
         </div>
-        <button class="icon-btn" id="gearBtn" type="button" aria-label="Settings" title="Settings">
+        <button class="icon-btn" id="gearBtn" type="button" aria-label="Settings" title="Settings" data-de-aria="Einstellungen" data-de-title="Einstellungen">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
+        <div class="langs" role="group" aria-label="Language / Sprache">
+          <button class="flag" type="button" data-lang="en" aria-pressed="true" title="English" aria-label="English">
+            <svg viewBox="0 0 60 30" preserveAspectRatio="none" aria-hidden="true"><clipPath id="ujClip"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#ffffff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ujClip)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#ffffff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+          </button>
+          <button class="flag" type="button" data-lang="de" aria-pressed="false" title="Deutsch" aria-label="Deutsch">
+            <svg viewBox="0 0 5 3" preserveAspectRatio="none" aria-hidden="true"><rect width="5" height="1" y="0" fill="#000000"/><rect width="5" height="1" y="1" fill="#DD0000"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>
+          </button>
+        </div>
       </div>
     </div>
     <div class="hero-row">
       <div>
-        <p class="kicker">Work tracking</p>
-        <h1>TrackerApp – tasks, follow-ups and changes</h1>
-        <p class="lead">One place for open work, its status and every change made to it.</p>
+        <p class="kicker" data-de="Aufgabenverfolgung">Work tracking</p>
+        <h1 data-de="TrackerApp – Aufgaben, Nachverfolgung und Änderungen">TrackerApp – tasks, follow-ups and changes</h1>
+        <p class="lead" data-de="Ein Ort für offene Arbeit, ihren Status und jede Änderung daran.">One place for open work, its status and every change made to it.</p>
       </div>
-      <button class="btn btn-accent" id="newBtn" type="button">New item</button>
+      <button class="btn btn-accent" id="newBtn" type="button" data-de="Neuer Eintrag">New item</button>
     </div>
   </div>
 </header>
@@ -362,38 +377,38 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 <main>
   <div class="inner">
     <section aria-labelledby="ovH">
-      <h2 id="ovH">Overview</h2>
+      <h2 id="ovH" data-de="Übersicht">Overview</h2>
       <div class="cards" id="cards"></div>
     </section>
 
     <section aria-labelledby="itH">
-      <h2 id="itH">Items <small id="itCount"></small></h2>
+      <h2 id="itH"><span data-de="Einträge">Items</span> <small id="itCount"></small></h2>
       <div class="panel">
         <div class="toolbar">
-          <input class="grow" id="q" type="search" placeholder="Search subject, notes, category, company" aria-label="Search items">
+          <input class="grow" id="q" type="search" placeholder="Search subject, notes, category, company" aria-label="Search items" data-de-ph="Betreff, Notizen, Kategorie, Firma durchsuchen" data-de-aria="Einträge durchsuchen">
           <select id="statusF" aria-label="Status">
-            <option value="all" selected>All statuses</option>
-            <option value="open">New</option>
+            <option value="all" selected data-de="Alle Status">All statuses</option>
+            <option value="open" data-de="Neu">New</option>
             <option value="backlog">Backlog</option>
-            <option value="started">Started</option>
-            <option value="doing">In progress</option>
-            <option value="done">Done</option>
-            <option value="active">Not done</option>
-            <option value="late">Overdue</option>
+            <option value="started" data-de="Begonnen">Started</option>
+            <option value="doing" data-de="In Arbeit">In progress</option>
+            <option value="done" data-de="Erledigt">Done</option>
+            <option value="active" data-de="Nicht erledigt">Not done</option>
+            <option value="late" data-de="Überfällig">Overdue</option>
           </select>
-          <select id="cat" aria-label="Category"><option value="">All categories</option></select>
-          <select id="comp" aria-label="Company"><option value="">All companies</option></select>
-          <select id="sort" aria-label="Sort">
-            <option value="due">Sort by due date</option>
-            <option value="prio">Sort by priority</option>
-            <option value="new">Newest first</option>
-            <option value="upd">Recently changed</option>
-            <option value="title">Sort by title</option>
+          <select id="cat" aria-label="Category" data-de-aria="Kategorie"><option value="">All categories</option></select>
+          <select id="comp" aria-label="Company" data-de-aria="Firma"><option value="">All companies</option></select>
+          <select id="sort" aria-label="Sort" data-de-aria="Sortierung">
+            <option value="due" data-de="Nach Fälligkeit">Sort by due date</option>
+            <option value="prio" data-de="Nach Priorität">Sort by priority</option>
+            <option value="new" data-de="Neueste zuerst">Newest first</option>
+            <option value="upd" data-de="Zuletzt geändert">Recently changed</option>
+            <option value="title" data-de="Nach Betreff">Sort by title</option>
           </select>
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>Status</th><th>Item</th><th>Priority</th><th class="hide-sm">Company</th><th class="hide-sm">Category</th><th>Due</th><th><span class="sr">Actions</span></th></tr></thead>
+            <thead><tr><th>Status</th><th data-de="Eintrag">Item</th><th data-de="Priorität">Priority</th><th class="hide-sm" data-de="Firma">Company</th><th class="hide-sm" data-de="Kategorie">Category</th><th data-de="Fällig">Due</th><th><span class="sr" data-de="Aktionen">Actions</span></th></tr></thead>
             <tbody id="rows"></tbody>
           </table>
         </div>
@@ -401,54 +416,56 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     </section>
 
     <section aria-labelledby="lgH" id="logSec">
-      <h2 id="lgH">Change log <small>Every create, edit, status change and delete, newest first</small></h2>
+      <h2 id="lgH"><span data-de="Änderungsprotokoll">Change log</span> <small data-de="Jedes Anlegen, Bearbeiten, Status-Änderung und Löschen, neueste zuerst">Every create, edit, status change and delete, newest first</small></h2>
       <div class="panel log">
         <div class="toolbar">
-          <select id="logItem" aria-label="Filter change log by item"><option value="">All items</option></select>
-          <select id="logAct" aria-label="Filter change log by change type">
-            <option value="">All changes</option>
-            <option value="created">Created</option>
-            <option value="status">Status changed</option>
-            <option value="updated">Edited</option>
-            <option value="deleted">Deleted</option>
+          <select id="logItem" aria-label="Filter change log by item" data-de-aria="Protokoll nach Eintrag filtern"><option value="">All items</option></select>
+          <select id="logAct" aria-label="Filter change log by change type" data-de-aria="Protokoll nach Art der Änderung filtern">
+            <option value="" data-de="Alle Änderungen">All changes</option>
+            <option value="created" data-de="Angelegt">Created</option>
+            <option value="status" data-de="Status geändert">Status changed</option>
+            <option value="updated" data-de="Bearbeitet">Edited</option>
+            <option value="deleted" data-de="Gelöscht">Deleted</option>
           </select>
           <span class="range" id="delRange">
-            <label for="delFrom">Delete entries from</label><input type="date" id="delFrom">
-            <label for="delTo">to</label><input type="date" id="delTo">
+            <label for="delFrom" data-de="Einträge löschen von">Delete entries from</label><input type="date" id="delFrom">
+            <label for="delTo" data-de="bis">to</label><input type="date" id="delTo">
             <button class="btn btn-danger" id="delLogBtn" type="button" disabled>Delete entries</button>
-            <button class="btn" id="delLogCancel" type="button" hidden>Cancel</button>
+            <button class="btn" id="delLogCancel" type="button" hidden data-de="Abbrechen">Cancel</button>
           </span>
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>When</th><th>Who</th><th>Item</th><th>Change</th></tr></thead>
+            <thead><tr><th data-de="Wann">When</th><th data-de="Wer">Who</th><th data-de="Eintrag">Item</th><th data-de="Änderung">Change</th></tr></thead>
             <tbody id="logRows"></tbody>
           </table>
         </div>
-        <div class="foot"><span id="logInfo"></span><button class="link" id="logMore" type="button" hidden>Show more</button></div>
+        <div class="foot"><span id="logInfo"></span><button class="link" id="logMore" type="button" hidden data-de="Mehr anzeigen">Show more</button></div>
       </div>
     </section>
 
     <section aria-labelledby="usH" id="usersSec" hidden>
-      <h2 id="usH">Users <small id="userCount"></small></h2>
+      <h2 id="usH"><span data-de="Benutzer">Users</span> <small id="userCount"></small></h2>
       <div class="panel">
         <div class="toolbar">
           <div class="add-user" id="addUser" hidden>
-            <label for="userSearch">Add user</label>
-            <input id="userSearch" type="search" placeholder="Search your organization by name" autocomplete="off">
+            <label for="userSearch" data-de="Benutzer hinzufügen">Add user</label>
+            <input id="userSearch" type="search" placeholder="Search your organization by name" autocomplete="off" data-de-ph="In Ihrer Organisation nach Namen suchen">
             <div class="hits" id="userHits"></div>
           </div>
-          <button class="btn btn-sm" id="checkAccess" type="button" hidden>Check Share access</button>
+          <button class="btn btn-sm" id="checkAccess" type="button" hidden data-de="Freigabe-Zugriff prüfen">Check Share access</button>
         </div>
         <div class="scroll">
           <table>
-            <thead><tr><th>User</th><th>Role</th><th id="accCol" hidden>Share access</th><th>Last opened</th><th>Changes</th><th></th></tr></thead>
+            <thead><tr><th data-de="Benutzer">User</th><th data-de="Rolle">Role</th><th id="accCol" hidden data-de="Freigabe-Zugriff">Share access</th><th data-de="Zuletzt geöffnet">Last opened</th><th data-de="Änderungen">Changes</th><th></th></tr></thead>
             <tbody id="userRows"></tbody>
           </table>
         </div>
         <div class="foot roles-help">
-          <span><b>Admin</b> manages users, deletes items and change log entries. <b>Member</b> adds and edits items. <b>Read-only</b> looks only.
+          <span data-lang-only="en"><b>Admin</b> manages users, deletes items and change log entries. <b>Member</b> adds and edits items. <b>Read-only</b> looks only.
           Admins are the people with Editor or Owner access in the Share menu. Who can open the tracker at all is set in the Share menu; to block a Read-only person from changes completely, give them Viewer access there.</span>
+          <span data-lang-only="de" hidden><b>Admin</b> verwaltet Benutzer und löscht Einträge und Protokolleinträge. <b>Mitglied</b> legt Einträge an und bearbeitet sie. <b>Nur lesen</b> kann nur ansehen.
+          Admins sind die Personen mit Bearbeiter- oder Eigentümer-Zugriff im Freigabe-Menü. Wer den Tracker überhaupt öffnen kann, wird im Freigabe-Menü festgelegt; um eine Person mit „Nur lesen“ vollständig von Änderungen auszuschließen, geben Sie ihr dort Betrachter-Zugriff.</span>
         </div>
       </div>
     </section>
@@ -458,82 +475,82 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 <dialog id="dlg" aria-labelledby="dlgTitle">
   <div class="dlg-head"><h2 id="dlgTitle">New item</h2></div>
   <form class="edit" id="form" novalidate>
-    <div class="field"><label for="fTitle">Item subject</label><input id="fTitle" maxlength="200" autocomplete="off"></div>
-    <div class="field"><label for="fCompany">Company</label>
+    <div class="field"><label for="fTitle" data-de="Betreff">Item subject</label><input id="fTitle" maxlength="200" autocomplete="off"></div>
+    <div class="field"><label for="fCompany" data-de="Firma">Company</label>
       <select id="fCompany"><option value="">-</option></select></div>
     <div class="grid2">
       <div class="field"><label for="fStatus">Status</label>
-        <select id="fStatus"><option value="open">New</option><option value="backlog">Backlog</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
-      <div class="field"><label for="fPrio">Priority</label>
-        <select id="fPrio"><option value="vhigh">Very high</option><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>
-      <div class="field"><label for="fCat">Category</label><select id="fCat"><option value="">-</option></select></div>
-      <div class="field"><label for="fDue">Due date</label><input id="fDue" type="date"></div>
+        <select id="fStatus"><option value="open" data-de="Neu">New</option><option value="backlog">Backlog</option><option value="started" data-de="Begonnen">Started</option><option value="doing" data-de="In Arbeit">In progress</option><option value="done" data-de="Erledigt">Done</option></select></div>
+      <div class="field"><label for="fPrio" data-de="Priorität">Priority</label>
+        <select id="fPrio"><option value="vhigh" data-de="Sehr hoch">Very high</option><option value="high" data-de="Hoch">High</option><option value="med" selected data-de="Mittel">Medium</option><option value="low" data-de="Niedrig">Low</option></select></div>
+      <div class="field"><label for="fCat" data-de="Kategorie">Category</label><select id="fCat"><option value="">-</option></select></div>
+      <div class="field"><label for="fDue" data-de="Fällig am">Due date</label><input id="fDue" type="date"></div>
     </div>
     <div class="field">
-      <span class="lbl" id="fNotesLbl">Notes</span>
+      <span class="lbl" id="fNotesLbl" data-de="Notizen">Notes</span>
       <div class="rt-wrap">
-        <div class="rt-bar" id="rtBar" role="toolbar" aria-label="Format notes">
-          <button type="button" class="rt-btn" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold"><b>B</b></button>
-          <button type="button" class="rt-btn" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic"><i>I</i></button>
-          <button type="button" class="rt-btn" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline"><u>U</u></button>
+        <div class="rt-bar" id="rtBar" role="toolbar" aria-label="Format notes" data-de-aria="Notizen formatieren">
+          <button type="button" class="rt-btn" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold" data-de-title="Fett (Strg+B)" data-de-aria="Fett"><b>B</b></button>
+          <button type="button" class="rt-btn" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic" data-de-title="Kursiv (Strg+I)" data-de-aria="Kursiv"><i>I</i></button>
+          <button type="button" class="rt-btn" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline" data-de-title="Unterstrichen (Strg+U)" data-de-aria="Unterstrichen"><u>U</u></button>
           <span class="rt-sep"></span>
           <div class="rt-pop-wrap">
-            <button type="button" class="rt-btn" data-pal="fore" title="Text colour" aria-label="Text colour" aria-haspopup="true"><span class="rt-a">A</span><span class="rt-swatch" id="foreSw"></span></button>
+            <button type="button" class="rt-btn" data-pal="fore" title="Text colour" aria-label="Text colour" data-de-title="Textfarbe" data-de-aria="Textfarbe" aria-haspopup="true"><span class="rt-a">A</span><span class="rt-swatch" id="foreSw"></span></button>
             <div class="rt-pop" id="palFore" hidden></div>
           </div>
           <div class="rt-pop-wrap">
-            <button type="button" class="rt-btn" data-pal="hilite" title="Highlight" aria-label="Highlight colour" aria-haspopup="true"><span class="rt-hl">ab</span><span class="rt-swatch" id="hiliteSw"></span></button>
+            <button type="button" class="rt-btn" data-pal="hilite" title="Highlight" aria-label="Highlight colour" data-de-title="Hervorheben" data-de-aria="Hervorhebungsfarbe" aria-haspopup="true"><span class="rt-hl">ab</span><span class="rt-swatch" id="hiliteSw"></span></button>
             <div class="rt-pop" id="palHilite" hidden></div>
           </div>
-          <button type="button" class="rt-btn" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">•≡</button>
-          <button type="button" class="rt-btn" data-cmd="removeFormat" title="Clear formatting" aria-label="Clear formatting">T<sub>×</sub></button>
+          <button type="button" class="rt-btn" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list" data-de-title="Aufzählung" data-de-aria="Aufzählung">•≡</button>
+          <button type="button" class="rt-btn" data-cmd="removeFormat" title="Clear formatting" aria-label="Clear formatting" data-de-title="Formatierung entfernen" data-de-aria="Formatierung entfernen">T<sub>×</sub></button>
           <span class="rt-sep"></span>
-          <button type="button" class="rt-btn wide" id="imgBtn" title="Insert screenshot or image (you can also paste or drop it)">Image</button>
-          <button type="button" class="rt-btn wide" id="attBtn" title="Attach a file">Attach</button>
+          <button type="button" class="rt-btn wide" id="imgBtn" title="Insert screenshot or image (you can also paste or drop it)" data-de-title="Screenshot oder Bild einfügen (auch per Strg+V oder Ziehen)" data-de="Bild">Image</button>
+          <button type="button" class="rt-btn wide" id="attBtn" title="Attach a file" data-de-title="Datei anhängen" data-de="Anhang">Attach</button>
           <input type="file" id="imgFile" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
           <input type="file" id="attFile" multiple hidden>
         </div>
-        <div class="rt" id="fNotes" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="fNotesLbl" data-placeholder="Notes. Paste screenshots straight in."></div>
+        <div class="rt" id="fNotes" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="fNotesLbl" data-placeholder="Notes. Paste screenshots straight in." data-de-dph="Notizen. Screenshots einfach einfügen."></div>
       </div>
       <div class="atts" id="atts"></div>
       <p class="hint" id="attHint" hidden></p>
     </div>
     <p class="err" id="fErr" hidden></p>
-    <div class="history" id="hist" hidden><h3>History</h3><ol id="histList"></ol></div>
+    <div class="history" id="hist" hidden><h3 data-de="Verlauf">History</h3><ol id="histList"></ol></div>
     <div class="actions">
       <button class="btn btn-danger" id="delBtn" type="button" hidden>Delete</button>
       <div class="right">
         <button class="btn" id="cancelBtn" type="button">Cancel</button>
-        <button class="btn btn-primary" id="saveBtn" type="submit">Save</button>
+        <button class="btn btn-primary" id="saveBtn" type="submit" data-de="Speichern">Save</button>
       </div>
     </div>
   </form>
 </dialog>
 
 <dialog id="setDlg" class="wide" aria-labelledby="setTitle">
-  <div class="dlg-head"><h2 id="setTitle">Settings</h2></div>
+  <div class="dlg-head"><h2 id="setTitle" data-de="Einstellungen">Settings</h2></div>
   <div class="set-body">
-    <div class="tabs" role="tablist" aria-label="Settings sections">
-      <button class="tab" type="button" role="tab" data-tab="display" aria-selected="true">My display</button>
-      <button class="tab" type="button" role="tab" data-tab="categories" aria-selected="false">Categories</button>
-      <button class="tab" type="button" role="tab" data-tab="companies" aria-selected="false">Companies</button>
+    <div class="tabs" role="tablist" aria-label="Settings sections" data-de-aria="Bereiche der Einstellungen">
+      <button class="tab" type="button" role="tab" data-tab="display" aria-selected="true" data-de="Meine Anzeige">My display</button>
+      <button class="tab" type="button" role="tab" data-tab="categories" aria-selected="false" data-de="Kategorien">Categories</button>
+      <button class="tab" type="button" role="tab" data-tab="companies" aria-selected="false" data-de="Firmen">Companies</button>
       <button class="tab" type="button" role="tab" data-tab="export" aria-selected="false">Export</button>
     </div>
 
     <div class="tabpanel" data-panel="display" role="tabpanel">
-      <p class="hint">Saved for you only.</p>
+      <p class="hint" data-de="Nur für Sie gespeichert.">Saved for you only.</p>
       <div class="grid2">
-        <div class="field"><label for="setTheme">Theme</label>
-          <select id="setTheme"><option value="system">Same as Claude</option><option value="light">Light</option><option value="dark">Dark</option></select></div>
-        <div class="field"><label for="setDefSort">Default sort</label>
-          <select id="setDefSort"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest first</option><option value="upd">Recently changed</option><option value="title">Title</option></select></div>
-        <div class="field"><label for="setDefStatus">Default status filter</label>
-          <select id="setDefStatus"><option value="all">All statuses</option><option value="open">New</option><option value="backlog">Backlog</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option><option value="active">Not done</option><option value="late">Overdue</option></select></div>
+        <div class="field"><label for="setTheme" data-de="Design">Theme</label>
+          <select id="setTheme"><option value="system" data-de="Wie Claude">Same as Claude</option><option value="light" data-de="Hell">Light</option><option value="dark" data-de="Dunkel">Dark</option></select></div>
+        <div class="field"><label for="setDefSort" data-de="Standard-Sortierung">Default sort</label>
+          <select id="setDefSort"><option value="due" data-de="Fälligkeit">Due date</option><option value="prio" data-de="Priorität">Priority</option><option value="new" data-de="Neueste zuerst">Newest first</option><option value="upd" data-de="Zuletzt geändert">Recently changed</option><option value="title" data-de="Betreff">Title</option></select></div>
+        <div class="field"><label for="setDefStatus" data-de="Standard-Statusfilter">Default status filter</label>
+          <select id="setDefStatus"><option value="all" data-de="Alle Status">All statuses</option><option value="open" data-de="Neu">New</option><option value="backlog">Backlog</option><option value="started" data-de="Begonnen">Started</option><option value="doing" data-de="In Arbeit">In progress</option><option value="done" data-de="Erledigt">Done</option><option value="active" data-de="Nicht erledigt">Not done</option><option value="late" data-de="Überfällig">Overdue</option></select></div>
       </div>
-      <p class="hint">The defaults apply to cards you haven't filtered yet. Cards you have used keep their own filters.</p>
+      <p class="hint" data-de="Die Standards gelten für Karten, die Sie noch nicht gefiltert haben. Benutzte Karten behalten ihre eigenen Filter.">The defaults apply to cards you haven't filtered yet. Cards you have used keep their own filters.</p>
       <div class="checks">
-        <label class="check"><input type="checkbox" id="setShowLog"> Show the change log</label>
-        <label class="check"><input type="checkbox" id="setShowUsers"> Show users</label>
+        <label class="check"><input type="checkbox" id="setShowLog"> <span data-de="Änderungsprotokoll anzeigen">Show the change log</span></label>
+        <label class="check"><input type="checkbox" id="setShowUsers"> <span data-de="Benutzer anzeigen">Show users</span></label>
       </div>
     </div>
 
@@ -541,9 +558,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       <p class="hint" id="catHint">Categories appear as overview cards in this order, right after All items. Renaming also renames the category on its items.</p>
       <ol class="cfg-list" id="catList2"></ol>
       <div class="cfg-add" id="catAdd">
-        <label class="sr" for="newCat">New category</label>
-        <input id="newCat" maxlength="60" placeholder="New category" autocomplete="off">
-        <button class="btn btn-primary btn-sm" id="addCatBtn" type="button">Add category</button>
+        <label class="sr" for="newCat" data-de="Neue Kategorie">New category</label>
+        <input id="newCat" maxlength="60" placeholder="New category" autocomplete="off" data-de-ph="Neue Kategorie">
+        <button class="btn btn-primary btn-sm" id="addCatBtn" type="button" data-de="Kategorie hinzufügen">Add category</button>
       </div>
     </div>
 
@@ -551,22 +568,22 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       <p class="hint" id="compHint">The Company drop-down lists these in alphabetical order. Renaming also renames the company on its items.</p>
       <ol class="cfg-list" id="compList"></ol>
       <div class="cfg-add" id="compAdd">
-        <label class="sr" for="newComp">New company</label>
-        <input id="newComp" maxlength="60" placeholder="New company" autocomplete="off">
-        <button class="btn btn-primary btn-sm" id="addCompBtn" type="button">Add company</button>
+        <label class="sr" for="newComp" data-de="Neue Firma">New company</label>
+        <input id="newComp" maxlength="60" placeholder="New company" autocomplete="off" data-de-ph="Neue Firma">
+        <button class="btn btn-primary btn-sm" id="addCompBtn" type="button" data-de="Firma hinzufügen">Add company</button>
       </div>
     </div>
 
     <div class="tabpanel" data-panel="export" role="tabpanel" hidden>
-      <p class="hint">Download the tracker's data. CSV opens in Excel; JSON keeps everything for a backup.</p>
+      <p class="hint" data-de="Laden Sie die Daten des Trackers herunter. CSV öffnet sich in Excel; JSON enthält alles für eine Sicherung.">Download the tracker's data. CSV opens in Excel; JSON keeps everything for a backup.</p>
       <div class="export-rows">
-        <div><strong>Items</strong><span class="hint" id="expItemsN"></span><button class="btn btn-sm" type="button" data-export="items">Download CSV</button></div>
-        <div><strong>Change log</strong><span class="hint" id="expLogN"></span><button class="btn btn-sm" type="button" data-export="log">Download CSV</button></div>
-        <div><strong>Everything</strong><span class="hint">Items, change log, categories, companies</span><button class="btn btn-sm" type="button" data-export="json">Download JSON</button></div>
+        <div><strong data-de="Einträge">Items</strong><span class="hint" id="expItemsN"></span><button class="btn btn-sm" type="button" data-export="items" data-de="CSV herunterladen">Download CSV</button></div>
+        <div><strong data-de="Änderungsprotokoll">Change log</strong><span class="hint" id="expLogN"></span><button class="btn btn-sm" type="button" data-export="log" data-de="CSV herunterladen">Download CSV</button></div>
+        <div><strong data-de="Alles">Everything</strong><span class="hint" data-de="Einträge, Protokoll, Kategorien, Firmen">Items, change log, categories, companies</span><button class="btn btn-sm" type="button" data-export="json" data-de="JSON herunterladen">Download JSON</button></div>
       </div>
     </div>
   </div>
-  <div class="actions pad"><div class="right"><button class="btn" id="setClose" type="button">Close</button></div></div>
+  <div class="actions pad"><div class="right"><button class="btn" id="setClose" type="button" data-de="Schließen">Close</button></div></div>
 </dialog>
 
 <div class="toast" id="toast" role="status" hidden></div>
@@ -575,6 +592,10 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 (() => {
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  // ---------- language: English / German ----------
+  let lang = "en";
+  const L = (en, de) => (lang === "de" ? de : en);
+  const nItems = (n) => n + " " + (n === 1 ? L("item", "Eintrag") : L("items", "Einträge"));
   // Status sequence: New → Backlog → Started → In progress → Done ("open" is the stored key for New)
   const STATUS = { open: "New", backlog: "Backlog", started: "Started", doing: "In progress", done: "Done" };
   const NEXT = { open: "backlog", backlog: "started", started: "doing", doing: "done", done: "open" };
@@ -583,6 +604,14 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const COMPANIES = ["ICARO", "Private", "scdsoft", "smarterSec", "Spinifex"];
   const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due date", notes: "Notes", attachments: "Attachments" };
   const LOG_PAGE = 50;
+  // Label sets that switch with the language (keys stay the same)
+  const LABELS = {
+    status: { open: ["New", "Neu"], backlog: ["Backlog", "Backlog"], started: ["Started", "Begonnen"], doing: ["In progress", "In Arbeit"], done: ["Done", "Erledigt"] },
+    prio: { vhigh: ["Very high", "Sehr hoch"], high: ["High", "Hoch"], med: ["Medium", "Mittel"], low: ["Low", "Niedrig"] },
+    field: { title: ["Item subject", "Betreff"], status: ["Status", "Status"], prio: ["Priority", "Priorität"], company: ["Company", "Firma"], category: ["Category", "Kategorie"], due: ["Due date", "Fällig am"], notes: ["Notes", "Notizen"], attachments: ["Attachments", "Anhänge"] },
+    role: { admin: ["Admin", "Admin"], member: ["Member", "Mitglied"], readonly: ["Read-only", "Nur lesen"] },
+    test: { admin: ["Test Admin", "Test-Admin"], member: ["Test Member", "Test-Mitglied"], readonly: ["Test Read-only", "Test-Nur-lesen"] },
+  };
 
   let items = [];
   let logs = [];
@@ -606,6 +635,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   // ---- user management ----
   // Roles: admin (Editor/Owner in the Share menu), member (adds and edits), readonly (looks only).
   const ROLE = { admin: "Admin", member: "Member", readonly: "Read-only" };
+  let syncMsg = ["Connecting", "Verbinde", ""];
   let dbMode = false;        // false = local fallback, everything allowed
   let isEditor = false;      // platform admin level (Editor or Owner)
   let writeAllowed = null;   // platform: may write shared data (null = not told)
@@ -747,10 +777,10 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (field === "notes") return v.length > 60 ? v.slice(0, 60) + "…" : v;
     return v;
   };
-  const whoName = (id) => (!id ? "Someone" : id === me ? "You" : names[id] || "Someone");
+  const whoName = (id) => (!id ? L("Someone", "Jemand") : id === me ? L("You", "Sie") : names[id] || L("Someone", "Jemand"));
   let toastT;
   const toast = (msg) => { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 2400); };
-  const setSync = (msg, state) => { const x = $("sync"); x.textContent = msg; x.className = "sync" + (state ? " " + state : ""); };
+  const setSync = (en, de, state) => { syncMsg = [en, de, state || ""]; const x = $("sync"); x.textContent = L(en, de); x.className = "sync" + (state ? " " + state : ""); };
 
   // ---------- overview cards ----------
   function statsFor(list) {
@@ -764,30 +794,30 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const c = el("article", "card");
     const h = el("div", "card-head");
     h.append(el("h3", null, title));
-    const chip = st.late ? el("span", "chip attn", st.late + " overdue") : st.total && st.open + st.backlog + st.started + st.doing === 0 ? el("span", "chip ok", "Done") : el("span", "chip ok", "OK");
-    if (!st.total) { chip.className = "chip idle"; chip.textContent = "Empty"; }
+    const chip = st.late ? el("span", "chip attn", st.late + L(" overdue", " überfällig")) : st.total && st.open + st.backlog + st.started + st.doing === 0 ? el("span", "chip ok", STATUS.done) : el("span", "chip ok", "OK");
+    if (!st.total) { chip.className = "chip idle"; chip.textContent = L("Empty", "Leer"); }
     h.append(chip);
     c.append(h, el("p", "desc", desc));
     const dl = el("dl", "kv");
     const row = (k, v, bad) => { dl.append(el("dt", null, k)); const dd = el("dd", bad ? "bad" : null, String(v)); dl.append(dd); };
-    row("New", st.open); row("Backlog", st.backlog); row("Started", st.started); row("In progress", st.doing); row("Overdue", st.late, st.late > 0); row("Done", st.done); row("Completed", st.pct + " %");
+    row(STATUS.open, st.open); row(STATUS.backlog, st.backlog); row(STATUS.started, st.started); row(STATUS.doing, st.doing); row(L("Overdue", "Überfällig"), st.late, st.late > 0); row(STATUS.done, st.done); row(L("Completed", "Abgeschlossen"), st.pct + " %");
     c.append(dl);
-    c.append(el("div", "asof", st.last ? "Last change " + stamp(st.last) : "No changes yet"));
+    c.append(el("div", "asof", st.last ? L("Last change ", "Letzte Änderung ") + stamp(st.last) : L("No changes yet", "Noch keine Änderungen")));
     const links = el("div", "links");
-    const a = el("button", "link", "Show items"); a.type = "button"; a.addEventListener("click", onShow);
+    const a = el("button", "link", L("Show items", "Einträge anzeigen")); a.type = "button"; a.addEventListener("click", onShow);
     links.append(a);
-    if (st.late) { const b = el("button", "link", "Show overdue"); b.type = "button"; b.addEventListener("click", () => onShow("late")); links.append(b); }
+    if (st.late) { const b = el("button", "link", L("Show overdue", "Überfällige anzeigen")); b.type = "button"; b.addEventListener("click", () => onShow("late")); links.append(b); }
     c.append(links);
     return c;
   }
   function renderCards() {
-    const cards = [card("All items", "Every task and follow-up in this tracker", statsFor(items), (f) => jump("", f))];
+    const cards = [card(L("All items", "Alle Einträge"), L("Every task and follow-up in this tracker", "Alle Aufgaben und Nachverfolgungen in diesem Tracker"), statsFor(items), (f) => jump("", f))];
     // Defined categories sit right after "All items" in their set order, then the rest alphabetically
     const rank = (c) => { const i = catDefs.indexOf(c); return i < 0 ? 1e6 : i; };
     const cats = categories().sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
-    cats.forEach((cat) => cards.push(card(cat, "Items in the category " + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f))));
+    cats.forEach((cat) => cards.push(card(cat, L("Items in the category ", "Einträge der Kategorie ") + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f))));
     const none = items.filter((i) => !i.category);
-    if (none.length && cats.length) cards.push(card("Uncategorized", "Items without a category", statsFor(none), (f) => jump("", f)));
+    if (none.length && cats.length) cards.push(card(L("Uncategorized", "Ohne Kategorie"), L("Items without a category", "Einträge ohne Kategorie"), statsFor(none), (f) => jump("", f)));
     $("cards").replaceChildren(...cards);
   }
   function jump(cat, f) {
@@ -802,7 +832,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function renderItems() {
     const cats = categories();
     const catSel = $("cat");
-    catSel.replaceChildren(new Option("All categories", ""), ...cats.map((c) => new Option(c, c)));
+    catSel.replaceChildren(new Option(L("All categories", "Alle Kategorien"), ""), ...cats.map((c) => new Option(c, c)));
     catSel.value = cats.includes(prefCat) ? prefCat : "";   // keep the remembered choice until its category has loaded
 
     const q = $("q").value.trim().toLowerCase(), f = $("statusF").value;
@@ -823,37 +853,37 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       : sort === "upd" ? b.updatedAt - a.updatedAt
       : sort === "title" ? a.title.localeCompare(b.title)
       : byDue(a, b) || PRIO_RANK[a.prio] - PRIO_RANK[b.prio]);
-    $("itCount").textContent = list.length + " of " + items.length + " shown";
+    $("itCount").textContent = L(list.length + " of " + items.length + " shown", list.length + " von " + items.length + " angezeigt");
 
     const tb = $("rows");
     if (!list.length) {
       const td = el("td", "empty"); td.colSpan = 7;
-      td.append(el("strong", null, items.length ? "No items match" : "No items yet"),
-        el("span", null, items.length ? "Change the status, category or search." : canWrite ? "Add the first task or follow-up with New item." : "Nothing has been added yet."));
+      td.append(el("strong", null, items.length ? L("No items match", "Keine passenden Einträge") : L("No items yet", "Noch keine Einträge")),
+        el("span", null, items.length ? L("Change the status, category or search.", "Ändern Sie Status, Kategorie oder Suche.") : canWrite ? L("Add the first task or follow-up with New item.", "Legen Sie die erste Aufgabe mit „Neuer Eintrag“ an.") : L("Nothing has been added yet.", "Es wurde noch nichts angelegt.")));
       const tr = el("tr"); tr.append(td); tb.replaceChildren(tr); return;
     }
     const today = todayStr();
     tb.replaceChildren(...list.map((it) => {
       const tr = el("tr", "item" + (it.status === "done" ? " is-done" : ""));
-      tr.tabIndex = 0; tr.dataset.id = it.id; tr.setAttribute("aria-label", "Open " + it.title);
+      tr.tabIndex = 0; tr.dataset.id = it.id; tr.setAttribute("aria-label", L("Open ", "Öffnen: ") + it.title);
       const st = el("button", "chip st " + it.status, STATUS[it.status]); st.type = "button"; st.dataset.cycle = it.id; st.disabled = !canWrite;
-      st.title = canWrite ? "Set to " + STATUS[NEXT[it.status]] : STATUS[it.status];
+      st.title = canWrite ? L("Set to ", "Setzen auf ") + STATUS[NEXT[it.status]] : STATUS[it.status];
       const t = el("td", "t"); const st0 = el("strong", null, it.title); t.append(st0);
-      if (it.attachments.length) st0.append(el("span", "clip", "+" + it.attachments.length + (it.attachments.length === 1 ? " file" : " files")));
+      if (it.attachments.length) st0.append(el("span", "clip", "+" + it.attachments.length + (it.attachments.length === 1 ? L(" file", " Datei") : L(" files", " Dateien"))));
       if (it.notes) t.append(el("small", null, it.notes.split("\n")[0]));
       const pr = el("td"); pr.append(el("span", "prio " + it.prio, PRIO[it.prio]));
       const comp = el("td", "hide-sm" + (it.company ? "" : " dash"), it.company || "-");
       const cat = el("td", "hide-sm" + (it.category ? "" : " dash"), it.category || "-");
       const late = isLate(it);
-      const due = el("td", "due mono" + (late ? " late" : it.due ? "" : " dash"), it.due ? (it.due === today && it.status !== "done" ? it.due + " today" : it.due) : "-");
-      if (late) due.title = "Overdue";
+      const due = el("td", "due mono" + (late ? " late" : it.due ? "" : " dash"), it.due ? (it.due === today && it.status !== "done" ? it.due + L(" today", " heute") : it.due) : "-");
+      if (late) due.title = L("Overdue", "Überfällig");
       const c0 = el("td"); c0.append(st);
       // Done items get their own delete button (Admins only), with a confirm click
       const act = el("td", "act-cell");
       if (it.status === "done" && isAdmin()) {
         const armed = delItemArmed === it.id;
-        const b = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? "Delete for good" : "Delete");
-        b.type = "button"; b.dataset.delItem = it.id; b.setAttribute("aria-label", (armed ? "Confirm delete of " : "Delete ") + it.title);
+        const b = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? L("Delete for good", "Endgültig löschen") : L("Delete", "Löschen"));
+        b.type = "button"; b.dataset.delItem = it.id; b.setAttribute("aria-label", (armed ? L("Confirm delete of ", "Löschen bestätigen: ") : L("Delete ", "Löschen: ")) + it.title);
         act.append(b);
       }
       tr.append(c0, t, pr, comp, cat, due, act);
@@ -864,7 +894,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   // ---------- change log ----------
   function describe(l) {
     const wrap = el("div");
-    const label = { created: "Created", updated: "Edited", status: "Status changed", deleted: "Deleted" }[l.action];
+    const label = { created: L("Created", "Angelegt"), updated: L("Edited", "Bearbeitet"), status: L("Status changed", "Status geändert"), deleted: L("Deleted", "Gelöscht") }[l.action];
     wrap.append(el("span", "act", label));
     l.changes.forEach((c) => {
       const d = el("span", "diff");
@@ -877,11 +907,11 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   function renderLog() {
     const titles = new Map();
-    logs.forEach((l) => { if (l.itemId && !titles.has(l.itemId)) titles.set(l.itemId, l.itemTitle || "(untitled)"); });
+    logs.forEach((l) => { if (l.itemId && !titles.has(l.itemId)) titles.set(l.itemId, l.itemTitle || L("(untitled)", "(ohne Titel)")); });
     items.forEach((i) => titles.set(i.id, i.title));
     const sel = $("logItem"), cur = sel.value;
     const opts = [...titles.entries()].sort((a, b) => a[1].localeCompare(b[1]));
-    sel.replaceChildren(new Option("All items", ""), ...opts.map(([id, t]) => new Option(t, id)));
+    sel.replaceChildren(new Option(L("All items", "Alle Einträge"), ""), ...opts.map(([id, t]) => new Option(t, id)));
     sel.value = titles.has(cur) ? cur : "";
 
     const act = $("logAct").value;
@@ -889,20 +919,20 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const tb = $("logRows");
     if (!list.length) {
       const td = el("td", "empty"); td.colSpan = 4;
-      td.append(el("strong", null, logs.length ? "No changes match" : "No changes recorded yet"), el("span", null, logs.length ? "Change the filter." : "Changes appear here as soon as an item is added or edited."));
+      td.append(el("strong", null, logs.length ? L("No changes match", "Keine passenden Änderungen") : L("No changes recorded yet", "Noch keine Änderungen aufgezeichnet")), el("span", null, logs.length ? L("Change the filter.", "Ändern Sie den Filter.") : L("Changes appear here as soon as an item is added or edited.", "Änderungen erscheinen hier, sobald ein Eintrag angelegt oder bearbeitet wird.")));
       const tr = el("tr"); tr.append(td); tb.replaceChildren(tr);
     } else {
       tb.replaceChildren(...list.slice(0, logLimit).map((l) => {
         const tr = el("tr");
         const it = el("td"); const live = items.find((i) => i.id === l.itemId);
         if (live) { const b = el("button", "link", live.title); b.type = "button"; b.addEventListener("click", () => openEditor(live.id)); it.append(b); }
-        else it.append(el("span", null, l.itemTitle || "(untitled)"));
+        else it.append(el("span", null, l.itemTitle || L("(untitled)", "(ohne Titel)")));
         const ch = el("td"); ch.append(describe(l));
         tr.append(el("td", "when mono", stamp(l.at)), el("td", "who", whoName(l.by)), it, ch);
         return tr;
       }));
     }
-    $("logInfo").textContent = list.length ? `Showing ${Math.min(list.length, logLimit)} of ${list.length} changes` : "";
+    $("logInfo").textContent = list.length ? L(`Showing ${Math.min(list.length, logLimit)} of ${list.length} changes`, `${Math.min(list.length, logLimit)} von ${list.length} Änderungen angezeigt`) : "";
     $("logMore").hidden = list.length <= logLimit;
     updateDelBtn();
   }
@@ -922,17 +952,19 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (!n) delArmed = false;
     b.disabled = !n;
     b.classList.toggle("armed", delArmed);
-    b.textContent = !n ? (logRange() || !$("delFrom").value || !$("delTo").value ? "Delete entries" : "Check the dates") : `Delete ${n} entr${n === 1 ? "y" : "ies"}` + (delArmed ? " for good" : "");
+    const what = L(`${n} entr${n === 1 ? "y" : "ies"}`, `${n} ${n === 1 ? "Eintrag" : "Einträge"}`);
+    b.textContent = !n ? (logRange() || !$("delFrom").value || !$("delTo").value ? L("Delete entries", "Einträge löschen") : L("Check the dates", "Datum prüfen"))
+      : delArmed ? L("Delete " + what + " for good", what + " endgültig löschen") : L("Delete " + what, what + " löschen");
     $("delLogCancel").hidden = !delArmed;
   }
   function disarm() { delArmed = false; updateDelBtn(); }
   async function deleteLogRange() {
     const list = inRange(); if (!list.length) return;
     if (!delArmed) { delArmed = true; updateDelBtn(); return; }
-    const b = $("delLogBtn"); b.disabled = true; b.textContent = "Deleting…";
+    const b = $("delLogBtn"); b.disabled = true; b.textContent = L("Deleting…", "Wird gelöscht…");
     try {
       await store.removeLogs(list.map((l) => l.id));
-      toast(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted");
+      toast(L(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted", list.length + (list.length === 1 ? " Protokolleintrag" : " Protokolleinträge") + " gelöscht"));
       $("delFrom").value = ""; $("delTo").value = "";
     } catch (err) { toast(errText(err)); }
     delArmed = false; updateDelBtn();
@@ -960,22 +992,22 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   function accessLabel(r) {
     if (!r) return "-";
-    if (r.includes("owner") || r.includes("manager")) return "Owner";
-    if (r.includes("editor")) return "Editor";
-    if (r.includes("contributor")) return "Contributor";
-    if (r.includes("commenter")) return "Commenter";
-    if (r.includes("viewer")) return "Viewer";
-    return "No access found";
+    if (r.includes("owner") || r.includes("manager")) return L("Owner", "Eigentümer");
+    if (r.includes("editor")) return L("Editor", "Bearbeiter");
+    if (r.includes("contributor")) return L("Contributor", "Mitwirkender");
+    if (r.includes("commenter")) return L("Commenter", "Kommentator");
+    if (r.includes("viewer")) return L("Viewer", "Betrachter");
+    return L("No access found", "Kein Zugriff gefunden");
   }
   const roleChip = (r) => el("span", "chip " + (r === "admin" ? "ok" : r === "readonly" ? "idle" : "idle role-member"), ROLE[r]);
 
   // ---------- account menu ----------
   const TEST_USERS = { admin: "Test Admin", member: "Test Member", readonly: "Test Read-only" };
-  const myName = () => (!dbMode ? (localUser ? TEST_USERS[localUser] : "") : (profileCache[me] && profileCache[me].name) || (me ? "You" : ""));
+  const myName = () => (!dbMode ? (localUser ? TEST_USERS[localUser] : "") : (profileCache[me] && profileCache[me].name) || (me ? L("You", "Sie") : ""));
   function renderWho() {
     const w = $("who"), img = $("acctImg"), p = dbMode && me ? profileCache[me] : null;
     const signedIn = dbMode ? !!me : !!localUser;
-    w.textContent = signedIn ? myName() + " · " + ROLE[role] : "Sign in";
+    w.textContent = signedIn ? myName() + " · " + ROLE[role] : L("Sign in", "Anmelden");
     if (p && p.avatarUrl) { img.src = p.avatarUrl; img.hidden = false; } else img.hidden = true;
     if (!$("acctMenu").hidden) renderAcctMenu();
   }
@@ -986,36 +1018,36 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (p && p.avatarUrl) { const i = el("img"); i.src = p.avatarUrl; i.alt = ""; head.append(i); }
     const hb = el("div");
     const signedIn = dbMode ? !!me : !!localUser;
-    hb.append(el("strong", null, signedIn ? myName() : "Not signed in"));
+    hb.append(el("strong", null, signedIn ? myName() : L("Not signed in", "Nicht angemeldet")));
     if (signedIn) hb.append(roleChip(role));
     head.append(hb); parts.push(head);
 
     if (dbMode) {
       const sec = el("div", "menu-sec");
       if (me) {
-        sec.append(el("p", "hint", "Signed in with your Claude account. Your role comes from the Share menu and the Users section."));
-        const a = el("a", "menu-item", "Manage or switch Claude account"); a.href = "https://claude.ai/settings"; a.target = "_blank"; a.rel = "noopener";
+        sec.append(el("p", "hint", L("Signed in with your Claude account. Your role comes from the Share menu and the Users section.", "Angemeldet mit Ihrem Claude-Konto. Ihre Rolle ergibt sich aus dem Freigabe-Menü und dem Bereich Benutzer.")));
+        const a = el("a", "menu-item", L("Manage or switch Claude account", "Claude-Konto verwalten oder wechseln")); a.href = "https://claude.ai/settings"; a.target = "_blank"; a.rel = "noopener";
         sec.append(a);
       } else {
-        sec.append(el("p", "hint", "You're not signed in, so you can only look. Sign in to Claude to make changes under your name."));
-        const a = el("a", "menu-item", "Sign in to Claude"); a.href = "https://claude.ai/login"; a.target = "_blank"; a.rel = "noopener";
+        sec.append(el("p", "hint", L("You're not signed in, so you can only look. Sign in to Claude to make changes under your name.", "Sie sind nicht angemeldet und können nur ansehen. Melden Sie sich bei Claude an, um Änderungen unter Ihrem Namen zu machen.")));
+        const a = el("a", "menu-item", L("Sign in to Claude", "Bei Claude anmelden")); a.href = "https://claude.ai/login"; a.target = "_blank"; a.rel = "noopener";
         sec.append(a);
       }
       parts.push(sec);
     } else {
       const sec = el("div", "menu-sec");
-      sec.append(el("p", "hint", "Local test mode: pick who you are to try the roles before publishing. This is for testing only and protects nothing."));
+      sec.append(el("p", "hint", L("Local test mode: pick who you are to try the roles before publishing. This is for testing only and protects nothing.", "Lokaler Testmodus: Wählen Sie, wer Sie sind, um die Rollen vor dem Veröffentlichen zu testen. Nur zum Testen, schützt nichts.")));
       Object.entries(TEST_USERS).forEach(([k, label]) => {
         const b = el("button", "menu-item"); b.type = "button"; b.setAttribute("role", "menuitemradio");
         b.setAttribute("aria-checked", String(localUser === k)); b.dataset.localUser = k;
-        b.append(el("span", null, "Sign in as " + label)); b.append(el("span", "hint", ROLE[k]));
+        b.append(el("span", null, L("Sign in as ", "Anmelden als ") + label)); b.append(el("span", "hint", ROLE[k]));
         sec.append(b);
       });
-      if (localUser) { const o = el("button", "menu-item", "Sign out"); o.type = "button"; o.dataset.localUser = ""; sec.append(o); }
+      if (localUser) { const o = el("button", "menu-item", L("Sign out", "Abmelden")); o.type = "button"; o.dataset.localUser = ""; sec.append(o); }
       parts.push(sec);
     }
     const st = el("div", "menu-sec");
-    const g = el("button", "menu-item", "Settings"); g.type = "button"; g.dataset.openSettings = "1"; st.append(g);
+    const g = el("button", "menu-item", L("Settings", "Einstellungen")); g.type = "button"; g.dataset.openSettings = "1"; st.append(g);
     parts.push(st);
     m.replaceChildren(...parts);
   }
@@ -1030,7 +1062,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     Object.entries(TEST_USERS).forEach(([k, n]) => { names["test-" + k] = n; });
     try { localStorage.setItem("trackerapp.localUser", u); } catch (_) {}
     applyRole(); render();
-    if (!quiet) toast(u ? "Signed in as " + TEST_USERS[u] : "Signed out");
+    if (!quiet) toast(u ? L("Signed in as ", "Angemeldet als ") + TEST_USERS[u] : L("Signed out", "Abgemeldet"));
   }
 
   // ---------- categories and companies ----------
@@ -1047,7 +1079,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const f = $("fCompany"), fv = f.value, c = $("comp"), cv = c.value;
     const extra = [...new Set(items.map((i) => i.company).filter((x) => x && !companies.includes(x)))].sort(byName);
     f.replaceChildren(new Option("-", ""), ...companies.map((x) => new Option(x, x)));
-    c.replaceChildren(new Option("All companies", ""), ...[...companies, ...extra].map((x) => new Option(x, x)));
+    c.replaceChildren(new Option(L("All companies", "Alle Firmen"), ""), ...[...companies, ...extra].map((x) => new Option(x, x)));
     if ([...f.options].some((o) => o.value === fv)) f.value = fv;
     c.value = [...c.options].some((o) => o.value === cv) ? cv : "";
   }
@@ -1082,29 +1114,29 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     $("setShowUsers").closest("label").hidden = !dbMode;
 
     const admin = isAdmin();
-    $("catHint").textContent = admin ? "Categories appear as overview cards in this order, right after All items. Renaming also renames the category on its items." : "Only Admins can change categories.";
-    $("compHint").textContent = admin ? "The Company drop-down lists these in alphabetical order. Renaming also renames the company on its items." : "Only Admins can change companies.";
+    $("catHint").textContent = admin ? L("Categories appear as overview cards in this order, right after All items. Renaming also renames the category on its items.", "Kategorien erscheinen in dieser Reihenfolge als Übersichtskarten direkt nach „Alle Einträge“. Beim Umbenennen wird die Kategorie auch in ihren Einträgen umbenannt.") : L("Only Admins can change categories.", "Nur Admins können Kategorien ändern.");
+    $("compHint").textContent = admin ? L("The Company drop-down lists these in alphabetical order. Renaming also renames the company on its items.", "Die Firmen-Auswahl listet diese alphabetisch. Beim Umbenennen wird die Firma auch in ihren Einträgen umbenannt.") : L("Only Admins can change companies.", "Nur Admins können Firmen ändern.");
     $("catAdd").hidden = $("compAdd").hidden = !admin;
 
     const count = (field, v) => items.filter((i) => i[field] === v).length;
     $("catList2").replaceChildren(...catDocs.map((c, n) => cfgRow("cat", c.id, c.name, count("category", c.name), admin, n, catDocs.length)));
     $("compList").replaceChildren(...companies.map((c) => cfgRow("comp", c, c, count("company", c), admin, -1, 0)));
-    $("expItemsN").textContent = items.length + " items";
-    $("expLogN").textContent = logs.length + " entries";
+    $("expItemsN").textContent = nItems(items.length);
+    $("expLogN").textContent = logs.length + " " + L(logs.length === 1 ? "entry" : "entries", logs.length === 1 ? "Eintrag" : "Einträge");
   }
   function cfgRow(kind, key, name, n, admin, idx, total) {
     const li = el("li");
     const inp = el("input"); inp.value = name; inp.maxLength = 60; inp.disabled = !admin;
-    inp.dataset.kind = kind; inp.dataset.key = key; inp.setAttribute("aria-label", "Name of " + name);
-    li.append(inp, el("span", "n", n + (n === 1 ? " item" : " items")));
+    inp.dataset.kind = kind; inp.dataset.key = key; inp.setAttribute("aria-label", L("Name of ", "Name von ") + name);
+    li.append(inp, el("span", "n", nItems(n)));
     if (admin) {
       if (kind === "cat") {
-        const up = el("button", "btn-icon", "↑"); up.type = "button"; up.disabled = idx === 0; up.dataset.move = "-1"; up.dataset.key = key; up.setAttribute("aria-label", "Move " + name + " up");
-        const dn = el("button", "btn-icon", "↓"); dn.type = "button"; dn.disabled = idx === total - 1; dn.dataset.move = "1"; dn.dataset.key = key; dn.setAttribute("aria-label", "Move " + name + " down");
+        const up = el("button", "btn-icon", "↑"); up.type = "button"; up.disabled = idx === 0; up.dataset.move = "-1"; up.dataset.key = key; up.setAttribute("aria-label", L("Move " + name + " up", name + " nach oben"));
+        const dn = el("button", "btn-icon", "↓"); dn.type = "button"; dn.disabled = idx === total - 1; dn.dataset.move = "1"; dn.dataset.key = key; dn.setAttribute("aria-label", L("Move " + name + " down", name + " nach unten"));
         li.append(up, dn);
       }
       const armed = cfgArmed === kind + ":" + key;
-      const del = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? "Remove for good" : "Remove");
+      const del = el("button", "btn btn-sm btn-danger" + (armed ? " armed" : ""), armed ? L("Remove for good", "Endgültig entfernen") : L("Remove", "Entfernen"));
       del.type = "button"; del.dataset.remove = kind; del.dataset.key = key;
       li.append(del);
     }
@@ -1114,20 +1146,20 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const to = value.trim();
     if (kind === "cat") {
       const c = catDocs.find((d) => d.id === key); if (!c || !to || to === c.name) { renderSettings(); return; }
-      if (catDocs.some((d) => d.id !== key && d.name.toLowerCase() === to.toLowerCase())) { toast("A category called " + to + " already exists"); renderSettings(); return; }
+      if (catDocs.some((d) => d.id !== key && d.name.toLowerCase() === to.toLowerCase())) { toast(L("A category called " + to + " already exists", "Eine Kategorie „" + to + "“ gibt es schon")); renderSettings(); return; }
       try {
         await cfgStore.saveCategory(key, { name: to, order: c.order });
         const n = await renameOnItems("category", c.name, to);
         if (prefCat === c.name) { prefCat = to; savePrefs(); }
-        toast("Category renamed to " + to + (n ? " on " + n + (n === 1 ? " item" : " items") : ""));
+        toast(L("Category renamed to ", "Kategorie umbenannt in ") + to + (n ? " (" + nItems(n) + ")" : ""));
       } catch (err) { toast(errText(err)); renderSettings(); }
     } else {
       if (!to || to === key) { renderSettings(); return; }
-      if (companies.some((c) => c !== key && c.toLowerCase() === to.toLowerCase())) { toast("A company called " + to + " already exists"); renderSettings(); return; }
+      if (companies.some((c) => c !== key && c.toLowerCase() === to.toLowerCase())) { toast(L("A company called " + to + " already exists", "Eine Firma „" + to + "“ gibt es schon")); renderSettings(); return; }
       try {
         await cfgStore.saveCompanies(companies.map((c) => (c === key ? to : c)));
         const n = await renameOnItems("company", key, to);
-        toast("Company renamed to " + to + (n ? " on " + n + (n === 1 ? " item" : " items") : ""));
+        toast(L("Company renamed to ", "Firma umbenannt in ") + to + (n ? " (" + nItems(n) + ")" : ""));
       } catch (err) { toast(errText(err)); renderSettings(); }
     }
   }
@@ -1144,8 +1176,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (cfgArmed !== k) { cfgArmed = k; renderSettings(); return; }
     cfgArmed = null;
     try {
-      if (kind === "cat") { const c = catDocs.find((d) => d.id === key); await cfgStore.deleteCategory(key); toast("Category " + (c ? c.name : "") + " removed. Its items keep the category name."); }
-      else { await cfgStore.saveCompanies(companies.filter((c) => c !== key)); toast("Company " + key + " removed. Its items keep the company name."); }
+      if (kind === "cat") { const c = catDocs.find((d) => d.id === key); await cfgStore.deleteCategory(key); toast(L("Category " + (c ? c.name : "") + " removed. Its items keep the category name.", "Kategorie " + (c ? c.name : "") + " entfernt. Ihre Einträge behalten den Kategorienamen.")); }
+      else { await cfgStore.saveCompanies(companies.filter((c) => c !== key)); toast(L("Company " + key + " removed. Its items keep the company name.", "Firma " + key + " entfernt. Ihre Einträge behalten den Firmennamen.")); }
     } catch (err) { toast(errText(err)); }
     renderSettings();
   }
@@ -1154,13 +1186,13 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (!name) { inp.focus(); return; }
     try {
       if (kind === "cat") {
-        if (catDocs.some((d) => d.name.toLowerCase() === name.toLowerCase())) { toast("A category called " + name + " already exists"); return; }
+        if (catDocs.some((d) => d.name.toLowerCase() === name.toLowerCase())) { toast(L("A category called " + name + " already exists", "Eine Kategorie „" + name + "“ gibt es schon")); return; }
         await cfgStore.saveCategory(slug(name), { name, order: catDocs.reduce((m, d) => Math.max(m, d.order < 999 ? d.order : 0), 0) + 1 });
-        toast("Category " + name + " added");
+        toast(L("Category " + name + " added", "Kategorie " + name + " hinzugefügt"));
       } else {
-        if (companies.some((c) => c.toLowerCase() === name.toLowerCase())) { toast("A company called " + name + " already exists"); return; }
+        if (companies.some((c) => c.toLowerCase() === name.toLowerCase())) { toast(L("A company called " + name + " already exists", "Eine Firma „" + name + "“ gibt es schon")); return; }
         await cfgStore.saveCompanies([...companies, name]);
-        toast("Company " + name + " added");
+        toast(L("Company " + name + " added", "Firma " + name + " hinzugefügt"));
       }
       inp.value = "";
     } catch (err) { toast(errText(err)); }
@@ -1177,7 +1209,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function saveDisplay() {
     prefs.display = {
       theme: $("setTheme").value, defSort: $("setDefSort").value, defStatus: $("setDefStatus").value,
-      hideLog: !$("setShowLog").checked, hideUsers: !$("setShowUsers").checked,
+      hideLog: !$("setShowLog").checked, hideUsers: !$("setShowUsers").checked, lang,
     };
     applyDisplay(); renderUsers(); applyCard(); renderItems(); savePrefs();
   }
@@ -1188,24 +1220,24 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   async function saveFile(filename, data) {
     const dl = dbMode && window.claude ? await window.claude.use("downloads") : null;
     if (dl) {
-      try { await dl.save({ filename, data }); toast(filename + " saved"); }
-      catch (err) { if (!err || err.code !== "declined") toast("The file was not saved. " + (err && err.code === "host_unavailable" ? "Open the tracker in a browser to download." : "Try again in a moment.")); }
+      try { await dl.save({ filename, data }); toast(filename + L(" saved", " gespeichert")); }
+      catch (err) { if (!err || err.code !== "declined") toast(L("The file was not saved. ", "Die Datei wurde nicht gespeichert. ") + (err && err.code === "host_unavailable" ? L("Open the tracker in a browser to download.", "Öffnen Sie den Tracker im Browser zum Herunterladen.") : L("Try again in a moment.", "Versuchen Sie es gleich noch einmal."))); }
       return;
     }
-    if (dbMode) { toast("Downloads aren't available here. Open the tracker in a browser."); return; }
+    if (dbMode) { toast(L("Downloads aren't available here. Open the tracker in a browser.", "Downloads sind hier nicht verfügbar. Öffnen Sie den Tracker im Browser.")); return; }
     const a = el("a"); a.href = URL.createObjectURL(new Blob([data], { type: "application/octet-stream" })); a.download = filename;
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
   function exportData(kind) {
     const day = todayStr();
     if (kind === "items") {
-      const rows = [["Item subject", "Status", "Priority", "Company", "Category", "Due date", "Notes", "Attachments", "Created", "Last changed"]];
+      const rows = [[FIELD.title, FIELD.status, FIELD.prio, FIELD.company, FIELD.category, FIELD.due, FIELD.notes, FIELD.attachments, L("Created", "Angelegt"), L("Last changed", "Zuletzt geändert")]];
       items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, i.due, i.notes, attNames(i.attachments), stamp(i.createdAt), stamp(i.updatedAt)]));
       return saveFile("trackerapp-items-" + day + ".csv", csv(rows));
     }
     if (kind === "log") {
-      const label = { created: "Created", updated: "Edited", status: "Status changed", deleted: "Deleted" };
-      const rows = [["When", "Who", "Item", "Change", "Details"]];
+      const label = { created: L("Created", "Angelegt"), updated: L("Edited", "Bearbeitet"), status: L("Status changed", "Status geändert"), deleted: L("Deleted", "Gelöscht") };
+      const rows = [[L("When", "Wann"), L("Who", "Wer"), L("Item", "Eintrag"), L("Change", "Änderung"), L("Details", "Details")]];
       logs.forEach((l) => rows.push([stamp(l.at), whoName(l.by), l.itemTitle, label[l.action],
         l.changes.map((c) => (FIELD[c.field] || c.field) + ": " + (l.action === "created" ? showVal(c.field, c.to) : showVal(c.field, c.from) + " -> " + showVal(c.field, c.to))).join(" | ")]));
       return saveFile("trackerapp-changelog-" + day + ".csv", csv(rows));
@@ -1225,30 +1257,30 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const counts = {};
     logs.forEach((l) => { if (l.by) counts[l.by] = (counts[l.by] || 0) + 1; });
     const rank = { admin: 0, member: 1, readonly: 2 };
-    const nm = (id) => (id === me ? (profileCache[id] && profileCache[id].name) || "You" : names[id] || "Someone");
+    const nm = (id) => (id === me ? (profileCache[id] && profileCache[id].name) || L("You", "Sie") : names[id] || L("Someone", "Jemand"));
     const ids = userIds().sort((a, b) => rank[roleOf(a)] - rank[roleOf(b)] || nm(a).localeCompare(nm(b)));
-    $("userCount").textContent = ids.length + (ids.length === 1 ? " person" : " people");
+    $("userCount").textContent = ids.length + (ids.length === 1 ? L(" person", " Person") : L(" people", " Personen"));
     $("userRows").replaceChildren(...ids.map((id) => {
       const r = roleOf(id), tr = el("tr");
       const cell = el("td"), who = el("div", "person"); cell.append(who);
       const p = profileCache[id];
       if (p && p.avatarUrl) { const img = el("img"); img.src = p.avatarUrl; img.alt = ""; who.append(img); }
       const nameEl = el("span", null, nm(id)); who.append(nameEl);
-      if (id === me) who.append(el("span", "you", "you"));
-      if (p && p.guest) who.append(el("span", "you", "guest"));
+      if (id === me) who.append(el("span", "you", L("you", "Sie")));
+      if (p && p.guest) who.append(el("span", "you", L("guest", "Gast")));
       const rc = el("td");
       if (isAdmin() && id !== me && r !== "admin") {
-        const sel = el("select"); sel.dataset.roleFor = id; sel.setAttribute("aria-label", "Role for " + nm(id));
-        sel.append(new Option("Member", "member"), new Option("Read-only", "readonly")); sel.value = r;
+        const sel = el("select"); sel.dataset.roleFor = id; sel.setAttribute("aria-label", L("Role for ", "Rolle für ") + nm(id));
+        sel.append(new Option(ROLE.member, "member"), new Option(ROLE.readonly, "readonly")); sel.value = r;
         rc.append(sel);
       } else rc.append(roleChip(r));
       const ac = el("td", "mono acc", accessLabel(access[id])); ac.hidden = !isAdmin();
       const m = memberDocs[id];
-      const seen = el("td", "mono when", m && m.lastSeen ? stamp(m.lastSeen) : "Not opened yet");
+      const seen = el("td", "mono when", m && m.lastSeen ? stamp(m.lastSeen) : L("Not opened yet", "Noch nicht geöffnet"));
       const ch = el("td", "mono num", String(counts[id] || 0));
       const act = el("td", "act-cell");
       if (isAdmin() && id !== me && r !== "admin") {
-        const b = el("button", "btn btn-sm btn-danger" + (removeArmed === id ? " armed" : ""), removeArmed === id ? "Remove for good" : "Remove");
+        const b = el("button", "btn btn-sm btn-danger" + (removeArmed === id ? " armed" : ""), removeArmed === id ? L("Remove for good", "Endgültig entfernen") : L("Remove", "Entfernen"));
         b.type = "button"; b.dataset.removeUser = id; act.append(b);
       }
       tr.append(cell, rc, ac, seen, ch, act);
@@ -1257,14 +1289,14 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
 
   async function setRole(id, r) {
-    try { await usersStore.setRole(id, r); toast(nm2(id) + " is now " + ROLE[r]); }
+    try { await usersStore.setRole(id, r); toast(nm2(id) + L(" is now ", " ist jetzt ") + ROLE[r]); }
     catch (err) { toast(errText(err)); renderUsers(); }
   }
-  const nm2 = (id) => names[id] || "This person";
+  const nm2 = (id) => names[id] || L("This person", "Diese Person");
   async function removeUser(id) {
     if (removeArmed !== id) { removeArmed = id; renderUsers(); return; }
     removeArmed = null;
-    try { await usersStore.removeUser(id); toast(nm2(id) + " removed from the user list"); }
+    try { await usersStore.removeUser(id); toast(nm2(id) + L(" removed from the user list", " aus der Benutzerliste entfernt")); }
     catch (err) { toast(errText(err)); }
     renderUsers();
   }
@@ -1303,7 +1335,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (!canWrite && !id) return;
     editingId = id || null;
     const it = id ? items.find((i) => i.id === id) : null;
-    $("dlgTitle").textContent = it ? (canWrite ? "Edit item" : "Item") : "New item";
+    $("dlgTitle").textContent = it ? (canWrite ? L("Edit item", "Eintrag bearbeiten") : L("Item", "Eintrag")) : L("New item", "Neuer Eintrag");
     $("fTitle").value = it ? it.title : "";
     $("fStatus").value = it ? it.status : "open";
     $("fPrio").value = it ? it.prio : "med";
@@ -1322,9 +1354,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     editAtts = it ? it.attachments.map((a) => ({ ...a })) : [];
     renderAtts(); setUploadUi();
     $("fErr").hidden = true;
-    const d = $("delBtn"); d.hidden = !it || !isAdmin(); d.classList.remove("armed"); d.textContent = "Delete";
+    const d = $("delBtn"); d.hidden = !it || !isAdmin(); d.classList.remove("armed"); d.textContent = L("Delete", "Löschen");
     $("saveBtn").hidden = !canWrite;
-    $("cancelBtn").textContent = canWrite ? "Cancel" : "Close";
+    $("cancelBtn").textContent = canWrite ? L("Cancel", "Abbrechen") : L("Close", "Schließen");
     $("form").querySelectorAll("input,select,textarea").forEach((x) => (x.disabled = !canWrite));
     if (it) renderHistory(it.id); else $("hist").hidden = true;
     $("dlg").showModal();
@@ -1347,7 +1379,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     $("imgBtn").hidden = $("attBtn").hidden = !ok;
     const h = $("attHint");
     h.hidden = !(canWrite && !ok);
-    h.textContent = "You can format notes, but adding screenshots and files isn't available for your access level here.";
+    h.textContent = L("You can format notes, but adding screenshots and files isn't available for your access level here.", "Sie können Notizen formatieren, aber Screenshots und Dateien hinzuzufügen ist mit Ihrer Zugriffsstufe hier nicht möglich.");
   }
   function typeFor(file) {
     const ext = (file.name.split(".").pop() || "").toLowerCase();
@@ -1369,16 +1401,16 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   function uploadError(err, name) {
     const c = err && err.code;
-    if (c === "unsupported_type") return name + ": this file type can't be stored. Allowed: images, PDF, video (MP4, WebM) and text files (TXT, CSV, JSON, Markdown, PS1, LOG).";
-    if (c === "too_large") return name + " is larger than 20 MB.";
-    if (c === "too_large_local") return name + " is larger than 2 MB, the limit for the local test copy.";
-    if (c === "quota_or_state") return "The tracker's file storage is full. Remove old attachments first.";
-    if (c === "rate_limited") return "Too many uploads at once. Wait a moment and try again.";
-    return name + " was not uploaded. Try again.";
+    if (c === "unsupported_type") return name + L(": this file type can't be stored. Allowed: images, PDF, video (MP4, WebM) and text files (TXT, CSV, JSON, Markdown, PS1, LOG).", ": Dieser Dateityp kann nicht gespeichert werden. Erlaubt: Bilder, PDF, Video (MP4, WebM) und Textdateien (TXT, CSV, JSON, Markdown, PS1, LOG).");
+    if (c === "too_large") return name + L(" is larger than 20 MB.", " ist größer als 20 MB.");
+    if (c === "too_large_local") return name + L(" is larger than 2 MB, the limit for the local test copy.", " ist größer als 2 MB, die Grenze der lokalen Testkopie.");
+    if (c === "quota_or_state") return L("The tracker's file storage is full. Remove old attachments first.", "Der Dateispeicher des Trackers ist voll. Entfernen Sie zuerst alte Anhänge.");
+    if (c === "rate_limited") return L("Too many uploads at once. Wait a moment and try again.", "Zu viele Uploads auf einmal. Warten Sie kurz und versuchen Sie es erneut.");
+    return name + L(" was not uploaded. Try again.", " wurde nicht hochgeladen. Versuchen Sie es erneut.");
   }
   async function withUpload(fn) {
-    pendingUploads++; $("saveBtn").disabled = true; $("saveBtn").textContent = "Uploading…";
-    try { return await fn(); } finally { if (--pendingUploads === 0) { $("saveBtn").disabled = false; $("saveBtn").textContent = "Save"; } }
+    pendingUploads++; $("saveBtn").disabled = true; $("saveBtn").textContent = L("Uploading…", "Lädt hoch…");
+    try { return await fn(); } finally { if (--pendingUploads === 0) { $("saveBtn").disabled = false; $("saveBtn").textContent = L("Save", "Speichern"); } }
   }
   function restoreRange() {
     const ed = $("fNotes"); ed.focus();
@@ -1386,7 +1418,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     else { const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
   }
   async function insertImages(files) {
-    if (!canUpload()) { toast("Adding images isn't available for your access level here."); return; }
+    if (!canUpload()) { toast(L("Adding images isn't available for your access level here.", "Bilder hinzufügen ist mit Ihrer Zugriffsstufe hier nicht möglich.")); return; }
     for (const f of files) {
       await withUpload(async () => {
         try {
@@ -1395,14 +1427,14 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
           restoreRange();
           document.execCommand("insertHTML", false, img + "<br>");
           saveRange();
-        } catch (err) { toast(uploadError(err, f.name || "Image")); }
+        } catch (err) { toast(uploadError(err, f.name || L("Image", "Bild"))); }
       });
     }
   }
   async function addAttachments(files) {
-    if (!canUpload()) { toast("Adding files isn't available for your access level here."); return; }
+    if (!canUpload()) { toast(L("Adding files isn't available for your access level here.", "Dateien hinzufügen ist mit Ihrer Zugriffsstufe hier nicht möglich.")); return; }
     for (const f of files) {
-      if (editAtts.length >= 30) { toast("An item can have up to 30 attachments."); break; }
+      if (editAtts.length >= 30) { toast(L("An item can have up to 30 attachments.", "Ein Eintrag kann höchstens 30 Anhänge haben.")); break; }
       const tmp = { id: "pending", name: f.name, size: f.size, pending: true };
       editAtts.push(tmp); renderAtts();
       await withUpload(async () => {
@@ -1415,12 +1447,12 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function renderAtts() {
     $("atts").replaceChildren(...editAtts.map((a, n) => {
       const c = el("span", "att" + (a.pending ? " pending" : ""));
-      if (a.pending) c.append(el("span", null, a.name + " · uploading…"));
+      if (a.pending) c.append(el("span", null, a.name + L(" · uploading…", " · lädt hoch…")));
       else {
-        const l = el("a", null, a.name); l.href = attUrl(a); l.target = "_blank"; l.rel = "noopener"; l.title = "Open " + a.name;
+        const l = el("a", null, a.name); l.href = attUrl(a); l.target = "_blank"; l.rel = "noopener"; l.title = L("Open ", "Öffnen: ") + a.name;
         if (a.data) l.download = a.name;
         c.append(l, el("span", "size", fmtSize(a.size)));
-        if (canWrite) { const x = el("button", null, "×"); x.type = "button"; x.dataset.rmAtt = String(n); x.setAttribute("aria-label", "Remove " + a.name); c.append(x); }
+        if (canWrite) { const x = el("button", null, "×"); x.type = "button"; x.dataset.rmAtt = String(n); x.setAttribute("aria-label", L("Remove ", "Entfernen: ") + a.name); c.append(x); }
       }
       return c;
     }));
@@ -1438,7 +1470,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function buildPalettes() {
     const mk = (box, colors, kind, none) => {
       box.replaceChildren(...colors.map((c) => { const b = el("button"); b.type = "button"; b.style.background = c; b.dataset.color = c; b.dataset.kind = kind; b.setAttribute("aria-label", c); b.title = c; return b; }));
-      if (none) { const b = el("button", "none", "×"); b.type = "button"; b.dataset.color = "transparent"; b.dataset.kind = kind; b.title = "No highlight"; b.setAttribute("aria-label", "No highlight"); box.append(b); }
+      if (none) { const b = el("button", "none", "×"); b.type = "button"; b.dataset.color = "transparent"; b.dataset.kind = kind; b.title = L("No highlight", "Keine Hervorhebung"); b.setAttribute("aria-label", b.title); box.append(b); }
     };
     mk($("palFore"), FORE, "fore", false);
     mk($("palHilite"), HILITE, "hilite", true);
@@ -1460,18 +1492,18 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const attNames = (list) => (list || []).map((a) => a.name).join(", ");
   async function writeLog(action, item, changes) {
     try { await store.addLog({ at: Date.now(), action, itemId: item.id, itemTitle: item.title, by: me || "", changes }); }
-    catch (_) { toast("Saved, but the change log entry failed"); }
+    catch (_) { toast(L("Saved, but the change log entry failed", "Gespeichert, aber der Protokolleintrag ist fehlgeschlagen")); }
   }
 
   async function save(e) {
     e.preventDefault();
     const title = $("fTitle").value.trim();
-    if (!title) { $("fErr").textContent = "Enter an item subject."; $("fErr").hidden = false; $("fTitle").focus(); return; }
-    if (pendingUploads) { $("fErr").textContent = "Wait until the uploads have finished."; $("fErr").hidden = false; return; }
+    if (!title) { $("fErr").textContent = L("Enter an item subject.", "Bitte einen Betreff eingeben."); $("fErr").hidden = false; $("fTitle").focus(); return; }
+    if (pendingUploads) { $("fErr").textContent = L("Wait until the uploads have finished.", "Bitte warten, bis die Uploads fertig sind."); $("fErr").hidden = false; return; }
     const prev = editingId ? items.find((i) => i.id === editingId) : null;
     const now = Date.now();
     const html = cleanHtml($("fNotes").innerHTML), text = htmlToText(html);
-    if (html.length > 200000) { $("fErr").textContent = "The notes are too long. Shorten them or move content into an attachment."; $("fErr").hidden = false; return; }
+    if (html.length > 200000) { $("fErr").textContent = L("The notes are too long. Shorten them or move content into an attachment.", "Die Notizen sind zu lang. Kürzen Sie sie oder legen Sie Inhalte als Anhang ab."); $("fErr").hidden = false; return; }
     const atts = editAtts.filter((a) => !a.pending).map(cleanAtt).filter(Boolean);
     const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: $("fDue").value,
       notes: text, notesHtml: text || /<img/i.test(html) ? html : "", attachments: atts };
@@ -1482,7 +1514,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (prev) {
       changes = diff({ ...prev, attachments: attNames(prev.attachments) }, cmpNext);
       if (!changes.some((c) => c.field === "notes") && notesHtmlOf(prev) !== next.notesHtml)
-        changes.push({ field: "notes", from: prev.notes, to: text + " (formatting or images changed)" });
+        changes.push({ field: "notes", from: prev.notes, to: text + L(" (formatting or images changed)", " (Formatierung oder Bilder geändert)") });
     } else changes = Object.keys(FIELD).filter((k) => cmpNext[k] && k !== "notes").map((k) => ({ field: k, from: "", to: cmpNext[k] }));
     if (prev && !changes.length) { $("dlg").close(); return; }
     const btn = $("saveBtn"); btn.disabled = true;
@@ -1491,7 +1523,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       const onlyStatus = prev && changes.length === 1 && changes[0].field === "status";
       await writeLog(prev ? (onlyStatus ? "status" : "updated") : "created", { id, title }, changes);
       $("dlg").close();
-      toast(prev ? "Item " + title + " saved" : "Item " + title + " added");
+      toast(prev ? L("Item " + title + " saved", "Eintrag " + title + " gespeichert") : L("Item " + title + " added", "Eintrag " + title + " angelegt"));
     } catch (err) { $("fErr").textContent = errText(err); $("fErr").hidden = false; }
     finally { btn.disabled = false; }
   }
@@ -1509,13 +1541,13 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 
   async function del() {
     const b = $("delBtn");
-    if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "Delete for good"; return; }
+    if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = L("Delete for good", "Endgültig löschen"); return; }
     const it = items.find((i) => i.id === editingId); if (!it) return;
     b.disabled = true;
     try {
       await store.removeItem(it.id);
       await writeLog("deleted", it, []);
-      $("dlg").close(); toast("Item " + it.title + " deleted");
+      $("dlg").close(); toast(L("Item " + it.title + " deleted", "Eintrag " + it.title + " gelöscht"));
     } catch (err) { $("fErr").textContent = errText(err); $("fErr").hidden = false; }
     finally { b.disabled = false; }
   }
@@ -1532,16 +1564,16 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     try {
       await store.removeItem(id);
       await writeLog("deleted", it, []);
-      toast("Item " + it.title + " deleted");
+      toast(L("Item " + it.title + " deleted", "Eintrag " + it.title + " gelöscht"));
     } catch (err) { toast(errText(err)); renderItems(); }
   }
 
   function errText(err) {
     const c = err && err.code;
-    if (c === "invalid_argument") { writeAllowed = false; applyRole(); render(); return "You can view this tracker but not change it."; }
-    if (c === "quota_exceeded") return "The tracker is full. Delete finished items, then try again.";
-    if (c === "resource_exhausted") return "Too many changes at once. Wait a moment, then try again.";
-    return "The change was not saved. Check the connection and try again.";
+    if (c === "invalid_argument") { writeAllowed = false; applyRole(); render(); return L("You can view this tracker but not change it.", "Sie können diesen Tracker ansehen, aber nicht ändern."); }
+    if (c === "quota_exceeded") return L("The tracker is full. Delete finished items, then try again.", "Der Tracker ist voll. Löschen Sie erledigte Einträge und versuchen Sie es erneut.");
+    if (c === "resource_exhausted") return L("Too many changes at once. Wait a moment, then try again.", "Zu viele Änderungen auf einmal. Warten Sie kurz und versuchen Sie es erneut.");
+    return L("The change was not saved. Check the connection and try again.", "Die Änderung wurde nicht gespeichert. Prüfen Sie die Verbindung und versuchen Sie es erneut.");
   }
 
   // ---------- wiring ----------
@@ -1626,11 +1658,11 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       const b = el("button", "hit"); b.type = "button"; b.dataset.addUser = h.id;
       if (h.avatarUrl) { const img = el("img"); img.src = h.avatarUrl; img.alt = ""; b.append(img); }
       b.append(el("span", null, h.name));
-      if (h.guest) b.append(el("span", "you", "guest"));
+      if (h.guest) b.append(el("span", "you", L("guest", "Gast")));
       profileCache[h.id] = h; names[h.id] = h.name;
       return b;
     }));
-    if (!hitsBox.children.length) hitsBox.append(el("span", "dash", q ? "No one new found" : "Type a name"));
+    if (!hitsBox.children.length) hitsBox.append(el("span", "dash", q ? L("No one new found", "Niemand Neues gefunden") : L("Type a name", "Namen eingeben")));
   }
   $("userSearch").addEventListener("input", searchUsers);
   $("userSearch").addEventListener("focus", searchUsers);
@@ -1665,9 +1697,11 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       theme: ["light", "dark"].includes(d.theme) ? d.theme : "system",
       defStatus: s(d.defStatus, 20), defSort: s(d.defSort, 20),
       hideLog: d.hideLog === true, hideUsers: d.hideUsers === true,
+      lang: d.lang === "de" || d.lang === "en" ? d.lang : "",
     };
     prefs = { last: s(p.last, 60), cards, display };
     prefCat = prefs.last === "__all" ? "" : prefs.last;
+    if (display.lang) setLang(display.lang, false);
     applyCard(); applyDisplay();
   }
   let saveT, saving = Promise.resolve();
@@ -1680,8 +1714,53 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       saving = saving.then(() => prefDoc.set(body)).catch(() => {});   // one write at a time
     }, 500);
   }
+  // ---------- switching the language ----------
+  function applyStaticTexts() {
+    document.documentElement.lang = lang;
+    const swap = (selector, deKey, enKey, setter) => document.querySelectorAll(selector).forEach((n) => {
+      if (n.dataset[enKey] == null) n.dataset[enKey] = setter(n);
+      setter(n, lang === "de" ? n.dataset[deKey] : n.dataset[enKey]);
+    });
+    swap("[data-de]", "de", "en", (n, v) => (v === undefined ? n.textContent : (n.textContent = v)));
+    swap("[data-de-ph]", "dePh", "enPh", (n, v) => (v === undefined ? n.getAttribute("placeholder") || "" : n.setAttribute("placeholder", v)));
+    swap("[data-de-title]", "deTitle", "enTitle", (n, v) => (v === undefined ? n.getAttribute("title") || "" : n.setAttribute("title", v)));
+    swap("[data-de-aria]", "deAria", "enAria", (n, v) => (v === undefined ? n.getAttribute("aria-label") || "" : n.setAttribute("aria-label", v)));
+    swap("[data-de-dph]", "deDph", "enDph", (n, v) => (v === undefined ? n.dataset.placeholder || "" : (n.dataset.placeholder = v)));
+    document.querySelectorAll("[data-lang-only]").forEach((n) => { n.hidden = n.dataset.langOnly !== lang; });
+    document.querySelectorAll(".flag").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  }
+  function setLang(l, rerender) {
+    lang = l === "de" ? "de" : "en";
+    const i = lang === "de" ? 1 : 0;
+    Object.keys(LABELS.status).forEach((k) => { STATUS[k] = LABELS.status[k][i]; });
+    Object.keys(LABELS.prio).forEach((k) => { PRIO[k] = LABELS.prio[k][i]; });
+    Object.keys(LABELS.field).forEach((k) => { FIELD[k] = LABELS.field[k][i]; });
+    Object.keys(LABELS.role).forEach((k) => { ROLE[k] = LABELS.role[k][i]; });
+    Object.keys(LABELS.test).forEach((k) => { TEST_USERS[k] = LABELS.test[k][i]; names["test-" + k] = TEST_USERS[k]; });
+    applyStaticTexts();
+    setSync(syncMsg[0], syncMsg[1], syncMsg[2]);
+    if (rerender === false) return;
+    buildPalettes(); render();
+    if ($("dlg").open) {
+      const it = editingId ? items.find((x) => x.id === editingId) : null;
+      $("dlgTitle").textContent = it ? (canWrite ? L("Edit item", "Eintrag bearbeiten") : L("Item", "Eintrag")) : L("New item", "Neuer Eintrag");
+      $("cancelBtn").textContent = canWrite ? L("Cancel", "Abbrechen") : L("Close", "Schließen");
+      $("delBtn").textContent = $("delBtn").classList.contains("armed") ? L("Delete for good", "Endgültig löschen") : L("Delete", "Löschen");
+      renderAtts(); setUploadUi(); if (it) renderHistory(it.id);
+    }
+    if (!$("acctMenu").hidden) renderAcctMenu();
+  }
+  document.querySelectorAll(".flag").forEach((b) => b.addEventListener("click", () => {
+    if (b.dataset.lang === lang) return;
+    setLang(b.dataset.lang);
+    prefs.display = { ...(prefs.display || {}), lang };
+    prefsTouched = true; savePrefs();
+  }));
+
   fillCompanySelects();
-  try { loadPrefs(JSON.parse(localStorage.getItem("trackerapp.prefs") || "null")); } catch (_) {}
+  let startLang = "";
+  try { const p0 = JSON.parse(localStorage.getItem("trackerapp.prefs") || "null"); startLang = (p0 && p0.display && p0.display.lang) || ""; loadPrefs(p0); } catch (_) {}
+  if (!startLang) setLang(/^de\b/i.test(navigator.language || "") ? "de" : "en", false);
 
   // Account menu and settings wiring
   $("acctBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleAcct(); });
@@ -1741,7 +1820,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       async addLog(d) { st.log.push(d); st.log = st.log.slice(-2000); flush(); sync(); },
       async removeLogs(ids) { const set = new Set(ids); st.log = st.log.filter((_, n) => !set.has("l" + n)); flush(); sync(); },
     };
-    setSync("Saved in this browser only", "warn");
+    setSync("Saved in this browser only", "Nur in diesem Browser gespeichert", "warn");
     sync();
   }
 
@@ -1804,12 +1883,12 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       },
     };
     let got = 0;
-    const timer = setTimeout(() => setSync("Can't reach the shared data yet", "warn"), 10000);
+    const timer = setTimeout(() => setSync("Can't reach the shared data yet", "Gemeinsame Daten noch nicht erreichbar", "warn"), 10000);
     const settle = (snap) => {
       if (snap.metadata.fromCache) return;
-      if (++got >= 2) { clearTimeout(timer); lastSync = Date.now(); setSync(canWrite ? "Shared · live" : "Shared · view only", "live"); }
+      if (++got >= 2) { clearTimeout(timer); lastSync = Date.now(); if (canWrite) setSync("Shared · live", "Geteilt · live", "live"); else setSync("Shared · view only", "Geteilt · nur lesen", "live"); }
     };
-    const fail = (err) => { clearTimeout(timer); setSync(err && err.code === "revoked" ? "Access changed" : "Live updates stopped · reload to reconnect", "warn"); };
+    const fail = (err) => { clearTimeout(timer); if (err && err.code === "revoked") setSync("Access changed", "Zugriff geändert", "warn"); else setSync("Live updates stopped · reload to reconnect", "Live-Updates gestoppt · neu laden", "warn"); };
     itemsCol.onSnapshot((snap) => { items = snap.docs.filter((d) => d.exists).map((d) => cleanItem(d.id, d.data() || {})); settle(snap); render(); }, fail);
     const catsCol = db.collection("categories"), compDoc = db.doc("settings/companies");
     cfgStore = {
