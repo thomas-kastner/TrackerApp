@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>TrackerApp</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -134,6 +135,8 @@ section > h2 small { font-size: 0.8125rem; font-weight: 400; color: var(--muted)
 .kv dd.bad { color: var(--bad-fg); }
 .card .asof { font-size: 0.75rem; color: var(--muted); margin-top: auto; padding-top: 6px; }
 .card .links { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card-new { flex: none; }
 
 /* Status chips */
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 0.125rem 0.625rem; border-radius: var(--radius-chip); font-size: 0.75rem; font-weight: 600; border: 1px solid transparent; white-space: nowrap; line-height: 1.5; }
@@ -229,6 +232,7 @@ td.due.late { color: var(--bad-fg); }
 
 /* Language flags */
 .langs { display: inline-flex; gap: 6px; }
+.hero-row .langs { margin-left: auto; }
 .flag { width: 32px; height: 22px; padding: 0; border: 2px solid transparent; border-radius: 3px; background: none; cursor: pointer; opacity: 0.55; overflow: hidden; display: inline-flex; }
 .flag:hover { opacity: 0.85; }
 .flag[aria-pressed="true"] { opacity: 1; border-color: var(--teal); }
@@ -359,14 +363,6 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <button class="icon-btn" id="gearBtn" type="button" aria-label="Settings" title="Settings" data-de-aria="Einstellungen" data-de-title="Einstellungen">
           <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
-        <div class="langs" role="group" aria-label="Language / Sprache">
-          <button class="flag" type="button" data-lang="en" aria-pressed="true" title="English" aria-label="English">
-            <svg viewBox="0 0 60 30" preserveAspectRatio="none" aria-hidden="true"><clipPath id="ujClip"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#ffffff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ujClip)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#ffffff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
-          </button>
-          <button class="flag" type="button" data-lang="de" aria-pressed="false" title="Deutsch" aria-label="Deutsch">
-            <svg viewBox="0 0 5 3" preserveAspectRatio="none" aria-hidden="true"><rect width="5" height="1" y="0" fill="#000000"/><rect width="5" height="1" y="1" fill="#DD0000"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>
-          </button>
-        </div>
       </div>
     </div>
     <div class="hero-row">
@@ -375,7 +371,14 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <h1 data-de="TrackerApp – Aufgaben, Nachverfolgung und Recherche">TrackerApp – tasks, follow-ups and research</h1>
         <p class="lead" data-de="Ein Ort für offene Arbeit, ihren Status und jede Änderung daran.">One place for open work, its status and every change made to it.</p>
       </div>
-      <button class="btn btn-accent" id="newBtn" type="button" data-de="Neuer Eintrag">New item</button>
+          <div class="langs" role="group" aria-label="Language / Sprache">
+            <button class="flag" type="button" data-lang="en" aria-pressed="true" title="English" aria-label="English">
+              <svg viewBox="0 0 60 30" preserveAspectRatio="none" aria-hidden="true"><clipPath id="ujClip"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#ffffff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ujClip)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#ffffff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></svg>
+            </button>
+            <button class="flag" type="button" data-lang="de" aria-pressed="false" title="Deutsch" aria-label="Deutsch">
+              <svg viewBox="0 0 5 3" preserveAspectRatio="none" aria-hidden="true"><rect width="5" height="1" y="0" fill="#000000"/><rect width="5" height="1" y="1" fill="#DD0000"/><rect width="5" height="1" y="2" fill="#FFCE00"/></svg>
+            </button>
+          </div>
     </div>
   </div>
 </header>
@@ -801,7 +804,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const last = list.reduce((m, i) => Math.max(m, i.updatedAt), 0);
     return { total: list.length, open: list.filter((i) => i.status === "open").length, backlog: list.filter((i) => i.status === "backlog").length, started: list.filter((i) => i.status === "started").length, doing: list.filter((i) => i.status === "doing").length, late, done, pct: list.length ? Math.round((100 * done) / list.length) : 0, last };
   }
-  function card(title, desc, st, onShow) {
+  function card(title, desc, st, onShow, newCat) {
     const c = el("article", "card");
     const h = el("div", "card-head");
     h.append(el("h3", null, title));
@@ -818,17 +821,21 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const a = el("button", "link", L("Show items", "Einträge anzeigen")); a.type = "button"; a.addEventListener("click", onShow);
     links.append(a);
     if (st.late) { const b = el("button", "link", L("Show overdue", "Überfällige anzeigen")); b.type = "button"; b.addEventListener("click", () => onShow("late")); links.append(b); }
-    c.append(links);
+    const nb = el("button", "btn btn-accent btn-sm card-new", L("New", "Neu")); nb.type = "button"; nb.hidden = !canWrite;
+    nb.title = L("New item", "Neuer Eintrag") + (newCat ? " – " + newCat : "");
+    nb.addEventListener("click", () => openEditor(null, newCat));
+    const foot = el("div", "card-foot"); foot.append(links, nb);
+    c.append(foot);
     return c;
   }
   function renderCards() {
-    const cards = [card(L("All items", "Alle Einträge"), L("Every task and follow-up in this tracker", "Alle Aufgaben und Nachverfolgungen in diesem Tracker"), statsFor(items), (f) => jump("", f))];
+    const cards = [card(L("All items", "Alle Einträge"), L("Every task and follow-up in this tracker", "Alle Aufgaben und Nachverfolgungen in diesem Tracker"), statsFor(items), (f) => jump("", f), "")];
     // Defined categories sit right after "All items" in their set order, then the rest alphabetically
     const rank = (c) => { const i = catDefs.indexOf(c); return i < 0 ? 1e6 : i; };
     const cats = categories().sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
-    cats.forEach((cat) => cards.push(card(cat, L("Items in the category ", "Einträge der Kategorie ") + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f))));
+    cats.forEach((cat) => cards.push(card(cat, L("Items in the category ", "Einträge der Kategorie ") + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f), cat)));
     const none = items.filter((i) => !i.category);
-    if (none.length && cats.length) cards.push(card(L("Uncategorized", "Ohne Kategorie"), L("Items without a category", "Einträge ohne Kategorie"), statsFor(none), (f) => jump("", f)));
+    if (none.length && cats.length) cards.push(card(L("Uncategorized", "Ohne Kategorie"), L("Items without a category", "Einträge ohne Kategorie"), statsFor(none), (f) => jump("", f), ""));
     $("cards").replaceChildren(...cards);
   }
   function jump(cat, f) {
@@ -870,7 +877,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (!list.length) {
       const td = el("td", "empty"); td.colSpan = 7;
       td.append(el("strong", null, items.length ? L("No items match", "Keine passenden Einträge") : L("No items yet", "Noch keine Einträge")),
-        el("span", null, items.length ? L("Change the status, category or search.", "Ändern Sie Status, Kategorie oder Suche.") : canWrite ? L("Add the first task or follow-up with New item.", "Legen Sie die erste Aufgabe mit „Neuer Eintrag“ an.") : L("Nothing has been added yet.", "Es wurde noch nichts angelegt.")));
+        el("span", null, items.length ? L("Change the status, category or search.", "Ändern Sie Status, Kategorie oder Suche.") : canWrite ? L("Add the first task or follow-up with New on an overview card.", "Legen Sie die erste Aufgabe mit „Neu“ auf einer Übersichtskachel an.") : L("Nothing has been added yet.", "Es wurde noch nichts angelegt.")));
       const tr = el("tr"); tr.append(td); tb.replaceChildren(tr); return;
     }
     const today = todayStr();
@@ -1328,7 +1335,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 
   function render() {
     fillCompanySelects(); renderCards(); renderItems(); renderLog(); renderUsers(); renderWho();
-    $("newBtn").hidden = !canWrite;
+    document.querySelectorAll(".card-new").forEach((b) => { b.hidden = !canWrite; });
     if ($("setDlg").open) renderSettings();
   }
 
@@ -1342,7 +1349,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       return li;
     }));
   }
-  function openEditor(id) {
+  function openEditor(id, presetCat) {
     if (!canWrite && !id) return;
     editingId = id || null;
     const it = id ? items.find((i) => i.id === id) : null;
@@ -1356,7 +1363,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     // Category: the complete list, in the same order as the overview cards
     const fc = $("fCat"), allCats = categories().sort((a, b) => { const ra = catDefs.indexOf(a), rb = catDefs.indexOf(b); return (ra < 0 ? 1e6 : ra) - (rb < 0 ? 1e6 : rb) || a.localeCompare(b); });
     fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
-    fc.value = it ? it.category || "" : allCats.includes($("cat").value) ? $("cat").value : "";
+    fc.value = it ? it.category || "" : presetCat !== undefined ? (allCats.includes(presetCat) ? presetCat : "") : allCats.includes($("cat").value) ? $("cat").value : "";
     $("fDue").value = it ? it.due : "";
     const ed = $("fNotes");
     ed.innerHTML = it ? notesHtmlOf(it) : "";
@@ -1588,7 +1595,6 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
 
   // ---------- wiring ----------
-  $("newBtn").addEventListener("click", () => openEditor(null));
   $("form").addEventListener("submit", save);
 
   // Notes editor wiring
