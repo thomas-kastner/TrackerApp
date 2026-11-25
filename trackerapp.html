@@ -147,6 +147,7 @@ section > h2 small { font-size: 0.8125rem; font-weight: 400; color: var(--muted)
 .st[disabled] { cursor: default; }
 .st::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .st.open { background: var(--quiet-bg); color: var(--quiet-fg); border-color: var(--quiet-line); }
+.st.backlog { background: var(--card); color: var(--muted); border: 1px dashed var(--sev-low-line); }
 .st.started { background: var(--mint-surface); color: var(--teal-text); border-color: var(--teal); }
 :root[data-theme="dark"] .st.started { background: #10372f; color: var(--mint); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .st.started { background: #10372f; color: var(--mint); } }
@@ -373,6 +374,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
           <select id="statusF" aria-label="Status">
             <option value="all" selected>All statuses</option>
             <option value="open">New</option>
+            <option value="backlog">Backlog</option>
             <option value="started">Started</option>
             <option value="doing">In progress</option>
             <option value="done">Done</option>
@@ -461,7 +463,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       <select id="fCompany"><option value="">-</option></select></div>
     <div class="grid2">
       <div class="field"><label for="fStatus">Status</label>
-        <select id="fStatus"><option value="open">New</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
+        <select id="fStatus"><option value="open">New</option><option value="backlog">Backlog</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
       <div class="field"><label for="fPrio">Priority</label>
         <select id="fPrio"><option value="vhigh">Very high</option><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>
       <div class="field"><label for="fCat">Category</label><select id="fCat"><option value="">-</option></select></div>
@@ -526,7 +528,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <div class="field"><label for="setDefSort">Default sort</label>
           <select id="setDefSort"><option value="due">Due date</option><option value="prio">Priority</option><option value="new">Newest first</option><option value="upd">Recently changed</option><option value="title">Title</option></select></div>
         <div class="field"><label for="setDefStatus">Default status filter</label>
-          <select id="setDefStatus"><option value="all">All statuses</option><option value="open">New</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option><option value="active">Not done</option><option value="late">Overdue</option></select></div>
+          <select id="setDefStatus"><option value="all">All statuses</option><option value="open">New</option><option value="backlog">Backlog</option><option value="started">Started</option><option value="doing">In progress</option><option value="done">Done</option><option value="active">Not done</option><option value="late">Overdue</option></select></div>
       </div>
       <p class="hint">The defaults apply to cards you haven't filtered yet. Cards you have used keep their own filters.</p>
       <div class="checks">
@@ -573,9 +575,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 (() => {
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
-  // Status sequence: New → Started → In progress → Done ("open" is the stored key for New)
-  const STATUS = { open: "New", started: "Started", doing: "In progress", done: "Done" };
-  const NEXT = { open: "started", started: "doing", doing: "done", done: "open" };
+  // Status sequence: New → Backlog → Started → In progress → Done ("open" is the stored key for New)
+  const STATUS = { open: "New", backlog: "Backlog", started: "Started", doing: "In progress", done: "Done" };
+  const NEXT = { open: "backlog", backlog: "started", started: "doing", doing: "done", done: "open" };
   const PRIO_RANK = { vhigh: 0, high: 1, med: 2, low: 3 };
   const PRIO = { vhigh: "Very high", high: "High", med: "Medium", low: "Low" };
   const COMPANIES = ["ICARO", "Private", "scdsoft", "smarterSec", "Spinifex"];
@@ -756,19 +758,19 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const late = list.filter(isLate).length;
     const done = list.length - active.length;
     const last = list.reduce((m, i) => Math.max(m, i.updatedAt), 0);
-    return { total: list.length, open: list.filter((i) => i.status === "open").length, started: list.filter((i) => i.status === "started").length, doing: list.filter((i) => i.status === "doing").length, late, done, pct: list.length ? Math.round((100 * done) / list.length) : 0, last };
+    return { total: list.length, open: list.filter((i) => i.status === "open").length, backlog: list.filter((i) => i.status === "backlog").length, started: list.filter((i) => i.status === "started").length, doing: list.filter((i) => i.status === "doing").length, late, done, pct: list.length ? Math.round((100 * done) / list.length) : 0, last };
   }
   function card(title, desc, st, onShow) {
     const c = el("article", "card");
     const h = el("div", "card-head");
     h.append(el("h3", null, title));
-    const chip = st.late ? el("span", "chip attn", st.late + " overdue") : st.total && st.open + st.started + st.doing === 0 ? el("span", "chip ok", "Done") : el("span", "chip ok", "OK");
+    const chip = st.late ? el("span", "chip attn", st.late + " overdue") : st.total && st.open + st.backlog + st.started + st.doing === 0 ? el("span", "chip ok", "Done") : el("span", "chip ok", "OK");
     if (!st.total) { chip.className = "chip idle"; chip.textContent = "Empty"; }
     h.append(chip);
     c.append(h, el("p", "desc", desc));
     const dl = el("dl", "kv");
     const row = (k, v, bad) => { dl.append(el("dt", null, k)); const dd = el("dd", bad ? "bad" : null, String(v)); dl.append(dd); };
-    row("New", st.open); row("Started", st.started); row("In progress", st.doing); row("Overdue", st.late, st.late > 0); row("Done", st.done); row("Completed", st.pct + " %");
+    row("New", st.open); row("Backlog", st.backlog); row("Started", st.started); row("In progress", st.doing); row("Overdue", st.late, st.late > 0); row("Done", st.done); row("Completed", st.pct + " %");
     c.append(dl);
     c.append(el("div", "asof", st.last ? "Last change " + stamp(st.last) : "No changes yet"));
     const links = el("div", "links");
