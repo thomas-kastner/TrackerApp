@@ -814,7 +814,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     c.append(h, el("p", "desc", desc));
     const dl = el("dl", "kv");
     const row = (k, v, bad) => { dl.append(el("dt", null, k)); const dd = el("dd", bad ? "bad" : null, String(v)); dl.append(dd); };
-    row(STATUS.open, st.open); row(STATUS.backlog, st.backlog); row(STATUS.started, st.started); row(STATUS.doing, st.doing); row(L("Overdue", "Überfällig"), st.late, st.late > 0); row(STATUS.done, st.done); row(L("Completed", "Abgeschlossen"), st.pct + " %");
+    row(STATUS.open, st.open); row(STATUS.backlog, st.backlog); row(STATUS.started, st.started); row(STATUS.doing, st.doing); row(L("Overdue", "Überfällig"), st.late, st.late > 0); row(STATUS.done, st.done);
     c.append(dl);
     c.append(el("div", "asof", st.last ? L("Last change ", "Letzte Änderung ") + stamp(st.last) : L("No changes yet", "Noch keine Änderungen")));
     const links = el("div", "links");
