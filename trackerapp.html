@@ -460,7 +460,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <select id="fStatus"><option value="open">Open</option><option value="doing">In progress</option><option value="done">Done</option></select></div>
       <div class="field"><label for="fPrio">Priority</label>
         <select id="fPrio"><option value="vhigh">Very high</option><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select></div>
-      <div class="field"><label for="fCat">Category</label><input id="fCat" list="catList" maxlength="60" autocomplete="off" placeholder="e.g. Outlook"><datalist id="catList"></datalist></div>
+      <div class="field"><label for="fCat">Category</label><select id="fCat"><option value="">-</option></select></div>
       <div class="field"><label for="fDue">Due date</label><input id="fDue" type="date"></div>
     </div>
     <div class="field">
@@ -797,7 +797,6 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const catSel = $("cat");
     catSel.replaceChildren(new Option("All categories", ""), ...cats.map((c) => new Option(c, c)));
     catSel.value = cats.includes(prefCat) ? prefCat : "";   // keep the remembered choice until its category has loaded
-    $("catList").replaceChildren(...cats.map((c) => new Option(c)));
 
     const q = $("q").value.trim().toLowerCase(), f = $("statusF").value;
     const list = items.filter((i) => {
@@ -1304,7 +1303,10 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     fillCompanySelects();
     if (it && it.company && !companies.includes(it.company)) $("fCompany").append(new Option(it.company, it.company));   // keep a removed company on old items
     $("fCompany").value = it ? it.company || "" : companies.includes($("comp").value) ? $("comp").value : "";
-    $("fCat").value = it ? it.category : $("cat").value || "";
+    // Category: the complete list, in the same order as the overview cards
+    const fc = $("fCat"), allCats = categories().sort((a, b) => { const ra = catDefs.indexOf(a), rb = catDefs.indexOf(b); return (ra < 0 ? 1e6 : ra) - (rb < 0 ? 1e6 : rb) || a.localeCompare(b); });
+    fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
+    fc.value = it ? it.category || "" : allCats.includes($("cat").value) ? $("cat").value : "";
     $("fDue").value = it ? it.due : "";
     const ed = $("fNotes");
     ed.innerHTML = it ? notesHtmlOf(it) : "";
