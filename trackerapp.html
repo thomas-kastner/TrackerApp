@@ -179,6 +179,44 @@ td.due.late { color: var(--bad-fg); }
 .empty { padding: 36px 20px; text-align: center; color: var(--muted); }
 .empty strong { display: block; color: var(--heading); font-size: 1rem; margin-bottom: 4px; }
 
+/* Rich-text notes */
+.lbl { font-size: 0.75rem; font-weight: 600; color: var(--heading); }
+.rt-wrap { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.rt-wrap:focus-within { border-color: var(--teal); box-shadow: var(--focus); }
+.rt-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; padding: 4px; border-bottom: 1px solid var(--line); background: var(--tert); border-radius: var(--radius) var(--radius) 0 0; }
+.rt-btn { min-width: 30px; height: 28px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; gap: 3px; background: none; border: 1px solid transparent; border-radius: 0.25rem; color: var(--heading); cursor: pointer; font-size: 0.875rem; line-height: 1; }
+.rt-btn:hover { background: var(--card); border-color: var(--line); }
+.rt-btn[aria-pressed="true"] { background: var(--card); border-color: var(--teal); }
+.rt-btn.wide { font-size: 0.8125rem; font-weight: 600; padding: 0 8px; }
+.rt-sep { width: 1px; height: 20px; background: var(--line); margin: 0 4px; }
+.rt-a { font-weight: 700; }
+.rt-hl { font-weight: 700; padding: 0 2px; background: #fff3a3; color: #0b2038; border-radius: 2px; }
+.rt-swatch { width: 14px; height: 4px; border-radius: 1px; background: currentColor; display: block; position: absolute; bottom: 3px; }
+.rt-btn[data-pal] { position: relative; padding-bottom: 4px; }
+.rt-pop-wrap { position: relative; }
+.rt-pop { position: absolute; z-index: 40; top: calc(100% + 4px); left: 0; display: grid; grid-template-columns: repeat(4, 26px); gap: 6px; padding: 8px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 6px 18px rgb(11 32 56 / 0.2); }
+.rt-pop button { width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--line); cursor: pointer; padding: 0; }
+.rt-pop button.none { background: var(--card); color: var(--muted); font-size: 0.7rem; }
+.rt { min-height: 140px; max-height: 420px; overflow-y: auto; padding: 10px 12px; color: var(--body); line-height: 1.55; overflow-wrap: anywhere; }
+.rt:focus { outline: 0; }
+.rt:empty::before { content: attr(data-placeholder); color: var(--muted); }
+.rt[contenteditable="false"] { background: var(--tert); }
+.rt img, .note-view img { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; margin: 4px 0; display: block; }
+.rt img.uploading { opacity: 0.5; }
+.rt ul, .rt ol { margin: 4px 0; padding-left: 1.4em; }
+.rt [style*="background-color"] { color: #0b2038; border-radius: 2px; padding: 0 1px; }
+.rt p, .rt div { margin: 0; }
+.atts { display: flex; flex-wrap: wrap; gap: 6px; }
+.atts:empty { display: none; }
+.att { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; border: 1px solid var(--line); border-radius: var(--radius-chip); padding: 2px 4px 2px 10px; background: var(--tert); font-size: 0.8125rem; }
+.att a { color: var(--heading); font-weight: 600; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22rem; }
+.att a:hover { text-decoration: underline; }
+.att .size { color: var(--muted); font-family: var(--font-mono); font-size: 0.72rem; }
+.att button { width: 22px; height: 22px; border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer; }
+.att button:hover { background: var(--bad-bg); color: var(--bad-fg); }
+.att.pending { opacity: 0.6; }
+.clip { margin-left: 6px; font-size: 0.72rem; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+
 /* Account menu, settings */
 .acct-wrap { position: relative; }
 .acct { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 6px; border-radius: var(--radius); cursor: pointer; color: #ffffff; }
@@ -425,7 +463,35 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       <div class="field"><label for="fCat">Category</label><input id="fCat" list="catList" maxlength="60" autocomplete="off" placeholder="e.g. Outlook"><datalist id="catList"></datalist></div>
       <div class="field"><label for="fDue">Due date</label><input id="fDue" type="date"></div>
     </div>
-    <div class="field"><label for="fNotes">Notes</label><textarea id="fNotes" maxlength="4000"></textarea></div>
+    <div class="field">
+      <span class="lbl" id="fNotesLbl">Notes</span>
+      <div class="rt-wrap">
+        <div class="rt-bar" id="rtBar" role="toolbar" aria-label="Format notes">
+          <button type="button" class="rt-btn" data-cmd="bold" title="Bold (Ctrl+B)" aria-label="Bold"><b>B</b></button>
+          <button type="button" class="rt-btn" data-cmd="italic" title="Italic (Ctrl+I)" aria-label="Italic"><i>I</i></button>
+          <button type="button" class="rt-btn" data-cmd="underline" title="Underline (Ctrl+U)" aria-label="Underline"><u>U</u></button>
+          <span class="rt-sep"></span>
+          <div class="rt-pop-wrap">
+            <button type="button" class="rt-btn" data-pal="fore" title="Text colour" aria-label="Text colour" aria-haspopup="true"><span class="rt-a">A</span><span class="rt-swatch" id="foreSw"></span></button>
+            <div class="rt-pop" id="palFore" hidden></div>
+          </div>
+          <div class="rt-pop-wrap">
+            <button type="button" class="rt-btn" data-pal="hilite" title="Highlight" aria-label="Highlight colour" aria-haspopup="true"><span class="rt-hl">ab</span><span class="rt-swatch" id="hiliteSw"></span></button>
+            <div class="rt-pop" id="palHilite" hidden></div>
+          </div>
+          <button type="button" class="rt-btn" data-cmd="insertUnorderedList" title="Bulleted list" aria-label="Bulleted list">•≡</button>
+          <button type="button" class="rt-btn" data-cmd="removeFormat" title="Clear formatting" aria-label="Clear formatting">T<sub>×</sub></button>
+          <span class="rt-sep"></span>
+          <button type="button" class="rt-btn wide" id="imgBtn" title="Insert screenshot or image (you can also paste or drop it)">Image</button>
+          <button type="button" class="rt-btn wide" id="attBtn" title="Attach a file">Attach</button>
+          <input type="file" id="imgFile" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>
+          <input type="file" id="attFile" multiple hidden>
+        </div>
+        <div class="rt" id="fNotes" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="fNotesLbl" data-placeholder="Notes. Paste screenshots straight in."></div>
+      </div>
+      <div class="atts" id="atts"></div>
+      <p class="hint" id="attHint" hidden></p>
+    </div>
     <p class="err" id="fErr" hidden></p>
     <div class="history" id="hist" hidden><h3>History</h3><ol id="histList"></ol></div>
     <div class="actions">
@@ -508,7 +574,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const PRIO_RANK = { vhigh: 0, high: 1, med: 2, low: 3 };
   const PRIO = { vhigh: "Very high", high: "High", med: "Medium", low: "Low" };
   const COMPANIES = ["ICARO", "Private", "scdsoft", "smarterSec", "Spinifex"];
-  const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due date", notes: "Notes" };
+  const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due date", notes: "Notes", attachments: "Attachments" };
   const LOG_PAGE = 50;
 
   let items = [];
@@ -560,6 +626,90 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const stamp = (ms) => { if (!ms) return "-"; const d = new Date(ms); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
   const isLate = (it) => it.status !== "done" && it.due && it.due < todayStr();
   const s = (v, max) => (typeof v === "string" ? v : "").slice(0, max);
+  // ---------- rich-text notes: everything stored is cleaned to a small allow-list ----------
+  const ASSET_ID = /^[a-f0-9]{32}$/;
+  const LOCAL_IMG = /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+/=]+$/;
+  const cleanAtt = (a) => {
+    if (!a || typeof a !== "object") return null;
+    const id = s(a.id, 64);
+    const local = /^l-[a-z0-9]+$/.test(id) && typeof a.data === "string" && /^data:[\w.+-]+\/[\w.+-]+;base64,/.test(a.data);
+    if (!ASSET_ID.test(id) && !local) return null;
+    return { id, name: s(a.name, 200) || "file", size: +a.size || 0, type: s(a.type, 80), ...(local ? { data: a.data } : {}) };
+  };
+  const attUrl = (a) => (a.data ? a.data : "/_blob/" + a.id);
+  const OK_TAGS = new Set(["B", "STRONG", "I", "EM", "U", "S", "SPAN", "P", "DIV", "BR", "UL", "OL", "LI", "IMG", "A", "FONT"]);
+  const DROP_TAGS = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "LINK", "META", "TEMPLATE", "SVG", "MATH", "FORM", "INPUT", "BUTTON", "TEXTAREA", "SELECT", "VIDEO", "AUDIO", "CANVAS", "NOSCRIPT", "HEAD", "TITLE"]);
+  const COLOR = /^(#[0-9a-f]{3,8}|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*(0|1|0?\.\d+)\s*)?\))$/i;
+  function cleanStyle(src) {
+    const out = [];
+    (src || "").split(";").forEach((decl) => {
+      const i = decl.indexOf(":"); if (i < 0) return;
+      const p = decl.slice(0, i).trim().toLowerCase(), v = decl.slice(i + 1).trim().toLowerCase();
+      if ((p === "color" || p === "background-color") && COLOR.test(v)) out.push(p + ": " + v);
+      else if (p === "font-weight" && (v === "bold" || v === "700")) out.push("font-weight: bold");
+      else if (p === "font-style" && v === "italic") out.push("font-style: italic");
+      else if (p === "text-decoration" || p === "text-decoration-line") { if (/underline/.test(v)) out.push("text-decoration: underline"); }
+    });
+    return out.join("; ");
+  }
+  function cleanHtml(html) {
+    const doc = new DOMParser().parseFromString("<body>" + (html || "") + "</body>", "text/html");
+    const walk = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) return;
+        if (n.nodeType !== 1) { n.remove(); return; }
+        const tag = n.tagName;
+        if (DROP_TAGS.has(tag)) { n.remove(); return; }
+        if (!OK_TAGS.has(tag)) { walk(n); n.replaceWith(...n.childNodes); return; }
+        // FONT (from older browsers' colour command) becomes a SPAN with a colour
+        let elx = n;
+        if (tag === "FONT") {
+          const sp = doc.createElement("span"); const c = n.getAttribute("color");
+          if (c && COLOR.test(c)) sp.setAttribute("style", "color: " + c);
+          sp.append(...n.childNodes); n.replaceWith(sp); elx = sp;
+        }
+        const keep = {};
+        if (elx.tagName === "IMG") {
+          const asset = elx.getAttribute("data-asset") || "", src = elx.getAttribute("src") || "";
+          if (ASSET_ID.test(asset)) { keep["data-asset"] = asset; keep.src = "/_blob/" + asset; }
+          else if (!dbMode && LOCAL_IMG.test(src)) keep.src = src;
+          else { elx.remove(); return; }
+          keep.alt = s(elx.getAttribute("alt"), 200) || "Screenshot";
+        } else if (elx.tagName === "A") {
+          const h = elx.getAttribute("href") || "";
+          if (/^https:\/\//i.test(h) || /^\/_blob\/[a-f0-9]{32}$/.test(h)) { keep.href = h; keep.target = "_blank"; keep.rel = "noopener noreferrer"; }
+        }
+        const st = cleanStyle(elx.getAttribute("style"));
+        if (st && elx.tagName !== "IMG") keep.style = st;
+        [...elx.attributes].forEach((a) => elx.removeAttribute(a.name));
+        Object.entries(keep).forEach(([k, v]) => elx.setAttribute(k, v));
+        walk(elx);
+      });
+    };
+    walk(doc.body);
+    return doc.body.innerHTML;
+  }
+  // Plain-text copy of the notes for search, previews, export and the change log
+  function htmlToText(html) {
+    const doc = new DOMParser().parseFromString("<body>" + (html || "") + "</body>", "text/html");
+    let out = "";
+    const walk = (n) => n.childNodes.forEach((c) => {
+      if (c.nodeType === 3) { out += c.nodeValue; return; }
+      if (c.nodeType !== 1) return;
+      if (c.tagName === "BR") { out += "\n"; return; }
+      if (c.tagName === "IMG") { out += "[image]"; return; }
+      const block = /^(P|DIV|LI|UL|OL)$/.test(c.tagName);
+      if (block && out && !out.endsWith("\n")) out += "\n";
+      if (c.tagName === "LI") out += "• ";
+      walk(c);
+      if (block && !out.endsWith("\n")) out += "\n";
+    });
+    walk(doc.body);
+    return out.replace(/ /g, " ").replace(/\n{3,}/g, "\n\n").trim();
+  }
+  const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const notesHtmlOf = (it) => (it.notesHtml ? cleanHtml(it.notesHtml) : esc(it.notes || "").replace(/\n/g, "<br>"));
+
   const cleanItem = (id, d) => ({
     id,
     title: s(d.title, 200) || "(untitled)",
@@ -568,7 +718,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     category: s(d.category, 60),
     company: s(d.company, 60),
     due: /^\d{4}-\d{2}-\d{2}$/.test(d.due || "") ? d.due : "",
-    notes: s(d.notes, 4000),
+    notes: s(d.notes, 20000),
+    notesHtml: typeof d.notesHtml === "string" ? d.notesHtml.slice(0, 200000) : "",
+    attachments: Array.isArray(d.attachments) ? d.attachments.slice(0, 30).map(cleanAtt).filter(Boolean) : [],
     createdAt: +d.createdAt || 0,
     updatedAt: +d.updatedAt || 0,
   });
@@ -680,7 +832,9 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       tr.tabIndex = 0; tr.dataset.id = it.id; tr.setAttribute("aria-label", "Open " + it.title);
       const st = el("button", "chip st " + it.status, STATUS[it.status]); st.type = "button"; st.dataset.cycle = it.id; st.disabled = !canWrite;
       st.title = canWrite ? "Set to " + STATUS[NEXT[it.status]] : STATUS[it.status];
-      const t = el("td", "t"); t.append(el("strong", null, it.title)); if (it.notes) t.append(el("small", null, it.notes.split("\n")[0]));
+      const t = el("td", "t"); const st0 = el("strong", null, it.title); t.append(st0);
+      if (it.attachments.length) st0.append(el("span", "clip", "+" + it.attachments.length + (it.attachments.length === 1 ? " file" : " files")));
+      if (it.notes) t.append(el("small", null, it.notes.split("\n")[0]));
       const pr = el("td"); pr.append(el("span", "prio " + it.prio, PRIO[it.prio]));
       const comp = el("td", "hide-sm" + (it.company ? "" : " dash"), it.company || "-");
       const cat = el("td", "hide-sm" + (it.category ? "" : " dash"), it.category || "-");
@@ -1039,8 +1193,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function exportData(kind) {
     const day = todayStr();
     if (kind === "items") {
-      const rows = [["Item subject", "Status", "Priority", "Company", "Category", "Due date", "Notes", "Created", "Last changed"]];
-      items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, i.due, i.notes, stamp(i.createdAt), stamp(i.updatedAt)]));
+      const rows = [["Item subject", "Status", "Priority", "Company", "Category", "Due date", "Notes", "Attachments", "Created", "Last changed"]];
+      items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, i.due, i.notes, attNames(i.attachments), stamp(i.createdAt), stamp(i.updatedAt)]));
       return saveFile("trackerapp-items-" + day + ".csv", csv(rows));
     }
     if (kind === "log") {
@@ -1152,7 +1306,12 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     $("fCompany").value = it ? it.company || "" : companies.includes($("comp").value) ? $("comp").value : "";
     $("fCat").value = it ? it.category : $("cat").value || "";
     $("fDue").value = it ? it.due : "";
-    $("fNotes").value = it ? it.notes : "";
+    const ed = $("fNotes");
+    ed.innerHTML = it ? notesHtmlOf(it) : "";
+    ed.contentEditable = String(canWrite);
+    $("rtBar").hidden = !canWrite;
+    editAtts = it ? it.attachments.map((a) => ({ ...a })) : [];
+    renderAtts(); setUploadUi();
     $("fErr").hidden = true;
     const d = $("delBtn"); d.hidden = !it || !isAdmin(); d.classList.remove("armed"); d.textContent = "Delete";
     $("saveBtn").hidden = !canWrite;
@@ -1163,9 +1322,133 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (canWrite) $("fTitle").focus();
   }
 
+  // ---------- notes editor: formatting, screenshots, attachments ----------
+  const FORE = ["#0b2038", "#c0392b", "#c76a00", "#1f8a4c", "#0b7a74", "#2463c4", "#7b3fb5", "#5e7a92"];
+  const HILITE = ["#fff3a3", "#ffe0b8", "#fbd3e0", "#c9f0d6", "#ccefe8", "#d3e4fb", "#e3e8ec"];
+  const UPLOAD_TYPES = { png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", svg: "image/svg+xml",
+    pdf: "application/pdf", mp4: "video/mp4", webm: "video/webm", csv: "text/csv", md: "text/markdown", json: "application/json",
+    txt: "text/plain", log: "text/plain", ps1: "text/plain", psm1: "text/plain", xml: "text/plain", ini: "text/plain" };
+  let editAtts = [], pendingUploads = 0, lastRange = null, assetsP = null, assetsApi = null;
+  const getAssets = () => (assetsP = assetsP || (dbMode && window.claude ? window.claude.use("assets").then((a) => (assetsApi = a)).catch(() => null) : Promise.resolve(null)));
+  const canUpload = () => !dbMode || !!assetsApi;
+  const fmtSize = (n) => (n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB");
+  async function setUploadUi() {
+    if (dbMode) await getAssets();
+    const ok = canWrite && canUpload();
+    $("imgBtn").hidden = $("attBtn").hidden = !ok;
+    const h = $("attHint");
+    h.hidden = !(canWrite && !ok);
+    h.textContent = "You can format notes, but adding screenshots and files isn't available for your access level here.";
+  }
+  function typeFor(file) {
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (Object.values(UPLOAD_TYPES).includes(file.type)) return file.type;
+    return UPLOAD_TYPES[ext] || "";
+  }
+  async function uploadFile(file) {
+    const type = typeFor(file);
+    if (!type) throw { code: "unsupported_type" };
+    if (!dbMode) {
+      if (file.size > 2 * 1048576) throw { code: "too_large_local" };
+      const data = await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = bad; r.readAsDataURL(file); });
+      return { id: "l-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: file.name || "file", size: file.size, type, data };
+    }
+    const api = await getAssets();
+    if (!api) throw { code: "not_granted" };
+    const r = await api.upload(file, { type });
+    return { id: r.id, name: file.name || "file", size: r.sizeBytes || file.size, type: r.contentType || type, url: r.url };
+  }
+  function uploadError(err, name) {
+    const c = err && err.code;
+    if (c === "unsupported_type") return name + ": this file type can't be stored. Allowed: images, PDF, video (MP4, WebM) and text files (TXT, CSV, JSON, Markdown, PS1, LOG).";
+    if (c === "too_large") return name + " is larger than 20 MB.";
+    if (c === "too_large_local") return name + " is larger than 2 MB, the limit for the local test copy.";
+    if (c === "quota_or_state") return "The tracker's file storage is full. Remove old attachments first.";
+    if (c === "rate_limited") return "Too many uploads at once. Wait a moment and try again.";
+    return name + " was not uploaded. Try again.";
+  }
+  async function withUpload(fn) {
+    pendingUploads++; $("saveBtn").disabled = true; $("saveBtn").textContent = "Uploading…";
+    try { return await fn(); } finally { if (--pendingUploads === 0) { $("saveBtn").disabled = false; $("saveBtn").textContent = "Save"; } }
+  }
+  function restoreRange() {
+    const ed = $("fNotes"); ed.focus();
+    if (lastRange && ed.contains(lastRange.commonAncestorContainer)) { const sel = getSelection(); sel.removeAllRanges(); sel.addRange(lastRange); }
+    else { const r = document.createRange(); r.selectNodeContents(ed); r.collapse(false); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+  }
+  async function insertImages(files) {
+    if (!canUpload()) { toast("Adding images isn't available for your access level here."); return; }
+    for (const f of files) {
+      await withUpload(async () => {
+        try {
+          const a = await uploadFile(f);
+          const img = a.data ? '<img src="' + a.data + '" alt="Screenshot">' : '<img src="' + "/_blob/" + a.id + '" data-asset="' + a.id + '" alt="Screenshot">';
+          restoreRange();
+          document.execCommand("insertHTML", false, img + "<br>");
+          saveRange();
+        } catch (err) { toast(uploadError(err, f.name || "Image")); }
+      });
+    }
+  }
+  async function addAttachments(files) {
+    if (!canUpload()) { toast("Adding files isn't available for your access level here."); return; }
+    for (const f of files) {
+      if (editAtts.length >= 30) { toast("An item can have up to 30 attachments."); break; }
+      const tmp = { id: "pending", name: f.name, size: f.size, pending: true };
+      editAtts.push(tmp); renderAtts();
+      await withUpload(async () => {
+        try { const a = await uploadFile(f); Object.assign(tmp, a, { pending: false }); delete tmp.url; }
+        catch (err) { editAtts = editAtts.filter((x) => x !== tmp); toast(uploadError(err, f.name)); }
+        renderAtts();
+      });
+    }
+  }
+  function renderAtts() {
+    $("atts").replaceChildren(...editAtts.map((a, n) => {
+      const c = el("span", "att" + (a.pending ? " pending" : ""));
+      if (a.pending) c.append(el("span", null, a.name + " · uploading…"));
+      else {
+        const l = el("a", null, a.name); l.href = attUrl(a); l.target = "_blank"; l.rel = "noopener"; l.title = "Open " + a.name;
+        if (a.data) l.download = a.name;
+        c.append(l, el("span", "size", fmtSize(a.size)));
+        if (canWrite) { const x = el("button", null, "×"); x.type = "button"; x.dataset.rmAtt = String(n); x.setAttribute("aria-label", "Remove " + a.name); c.append(x); }
+      }
+      return c;
+    }));
+  }
+  function saveRange() {
+    const sel = getSelection();
+    if (sel.rangeCount && $("fNotes").contains(sel.getRangeAt(0).commonAncestorContainer)) lastRange = sel.getRangeAt(0).cloneRange();
+  }
+  function updateToolbarState() {
+    ["bold", "italic", "underline"].forEach((c) => {
+      const b = document.querySelector('.rt-btn[data-cmd="' + c + '"]');
+      try { b.setAttribute("aria-pressed", String(document.queryCommandState(c))); } catch (_) {}
+    });
+  }
+  function buildPalettes() {
+    const mk = (box, colors, kind, none) => {
+      box.replaceChildren(...colors.map((c) => { const b = el("button"); b.type = "button"; b.style.background = c; b.dataset.color = c; b.dataset.kind = kind; b.setAttribute("aria-label", c); b.title = c; return b; }));
+      if (none) { const b = el("button", "none", "×"); b.type = "button"; b.dataset.color = "transparent"; b.dataset.kind = kind; b.title = "No highlight"; b.setAttribute("aria-label", "No highlight"); box.append(b); }
+    };
+    mk($("palFore"), FORE, "fore", false);
+    mk($("palHilite"), HILITE, "hilite", true);
+    $("foreSw").style.background = "#c0392b"; $("hiliteSw").style.background = "#fff3a3";
+  }
+  function applyColor(kind, color) {
+    restoreRange();
+    document.execCommand("styleWithCSS", false, true);
+    document.execCommand(kind === "fore" ? "foreColor" : "hiliteColor", false, color);
+    document.execCommand("styleWithCSS", false, false);
+    if (color !== "transparent") $(kind === "fore" ? "foreSw" : "hiliteSw").style.background = color;
+    saveRange();
+  }
+  const closePals = () => { $("palFore").hidden = $("palHilite").hidden = true; };
+
   function diff(prev, next) {
     return Object.keys(FIELD).filter((k) => (prev[k] || "") !== (next[k] || "")).map((k) => ({ field: k, from: prev[k] || "", to: next[k] || "" }));
   }
+  const attNames = (list) => (list || []).map((a) => a.name).join(", ");
   async function writeLog(action, item, changes) {
     try { await store.addLog({ at: Date.now(), action, itemId: item.id, itemTitle: item.title, by: me || "", changes }); }
     catch (_) { toast("Saved, but the change log entry failed"); }
@@ -1175,11 +1458,23 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     e.preventDefault();
     const title = $("fTitle").value.trim();
     if (!title) { $("fErr").textContent = "Enter an item subject."; $("fErr").hidden = false; $("fTitle").focus(); return; }
+    if (pendingUploads) { $("fErr").textContent = "Wait until the uploads have finished."; $("fErr").hidden = false; return; }
     const prev = editingId ? items.find((i) => i.id === editingId) : null;
     const now = Date.now();
-    const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: $("fDue").value, notes: $("fNotes").value.trim() };
+    const html = cleanHtml($("fNotes").innerHTML), text = htmlToText(html);
+    if (html.length > 200000) { $("fErr").textContent = "The notes are too long. Shorten them or move content into an attachment."; $("fErr").hidden = false; return; }
+    const atts = editAtts.filter((a) => !a.pending).map(cleanAtt).filter(Boolean);
+    const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: $("fDue").value,
+      notes: text, notesHtml: text || /<img/i.test(html) ? html : "", attachments: atts };
     const id = editingId || "i" + now.toString(36) + Math.random().toString(36).slice(2, 7);
-    const changes = prev ? diff(prev, next) : Object.keys(FIELD).filter((k) => next[k] && k !== "notes").map((k) => ({ field: k, from: "", to: next[k] }));
+    // Compare as text; attachments by their names
+    const cmpNext = { ...next, attachments: attNames(atts) };
+    let changes;
+    if (prev) {
+      changes = diff({ ...prev, attachments: attNames(prev.attachments) }, cmpNext);
+      if (!changes.some((c) => c.field === "notes") && notesHtmlOf(prev) !== next.notesHtml)
+        changes.push({ field: "notes", from: prev.notes, to: text + " (formatting or images changed)" });
+    } else changes = Object.keys(FIELD).filter((k) => cmpNext[k] && k !== "notes").map((k) => ({ field: k, from: "", to: cmpNext[k] }));
     if (prev && !changes.length) { $("dlg").close(); return; }
     const btn = $("saveBtn"); btn.disabled = true;
     try {
@@ -1243,6 +1538,45 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   // ---------- wiring ----------
   $("newBtn").addEventListener("click", () => openEditor(null));
   $("form").addEventListener("submit", save);
+
+  // Notes editor wiring
+  buildPalettes();
+  const ed = $("fNotes");
+  document.addEventListener("selectionchange", () => { if ($("dlg").open) { saveRange(); updateToolbarState(); } });
+  $("rtBar").addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });   // keep the text selection
+  $("rtBar").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.cmd) { closePals(); restoreRange(); document.execCommand(b.dataset.cmd, false, null); saveRange(); updateToolbarState(); return; }
+    if (b.dataset.pal) { const p = $(b.dataset.pal === "fore" ? "palFore" : "palHilite"), open = p.hidden; closePals(); p.hidden = !open; return; }
+    if (b.dataset.color) { applyColor(b.dataset.kind, b.dataset.color); closePals(); return; }
+    if (b.id === "imgBtn") { closePals(); $("imgFile").click(); return; }
+    if (b.id === "attBtn") { closePals(); $("attFile").click(); }
+  });
+  $("dlg").addEventListener("click", (e) => { if (!e.target.closest(".rt-pop-wrap")) closePals(); });
+  $("imgFile").addEventListener("change", (e) => { const f = [...e.target.files]; e.target.value = ""; insertImages(f); });
+  $("attFile").addEventListener("change", (e) => { const f = [...e.target.files]; e.target.value = ""; addAttachments(f); });
+  ed.addEventListener("paste", (e) => {
+    if (!canWrite) return;
+    const cd = e.clipboardData; if (!cd) return;
+    const imgs = [...cd.files].filter((f) => /^image\//.test(f.type));
+    if (imgs.length) { e.preventDefault(); saveRange(); insertImages(imgs); return; }
+    const html = cd.getData("text/html");
+    if (html) { e.preventDefault(); document.execCommand("insertHTML", false, cleanHtml(html)); }
+  });
+  ed.addEventListener("dragover", (e) => { if (canWrite && e.dataTransfer && [...e.dataTransfer.types].includes("Files")) e.preventDefault(); });
+  ed.addEventListener("drop", (e) => {
+    if (!canWrite || !e.dataTransfer || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    const files = [...e.dataTransfer.files];
+    if (document.caretRangeFromPoint) { const r = document.caretRangeFromPoint(e.clientX, e.clientY); if (r) lastRange = r; }
+    const imgs = files.filter((f) => /^image\/(png|jpeg|gif|webp)$/.test(f.type)), others = files.filter((f) => !imgs.includes(f));
+    if (imgs.length) insertImages(imgs);
+    if (others.length) addAttachments(others);
+  });
+  $("atts").addEventListener("click", (e) => {
+    const x = e.target.closest("[data-rm-att]"); if (!x) return;
+    editAtts.splice(+x.dataset.rmAtt, 1); renderAtts();
+  });
   $("cancelBtn").addEventListener("click", () => $("dlg").close());
   $("delBtn").addEventListener("click", del);
   $("rows").addEventListener("click", (e) => {
