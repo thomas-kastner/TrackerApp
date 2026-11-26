@@ -268,6 +268,7 @@ dialog.wide { width: min(640px, calc(100vw - 32px)); }
 .check input { width: 16px; height: 16px; accent-color: var(--teal); }
 .cfg-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 320px; overflow-y: auto; }
 .cfg-list li { display: flex; align-items: center; gap: 6px; }
+.cfg-list input.card-title { flex: 0 1 9em; }
 .cfg-list input { flex: 1 1 auto; min-width: 0; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius); padding: 0.3rem 0.6rem; color: var(--body); }
 .cfg-list .n { font-size: 0.75rem; color: var(--muted); min-width: 4.5em; text-align: right; }
 .cfg-add { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -832,7 +833,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     // Defined categories sit right after "All items" in their set order, then the rest alphabetically
     const rank = (c) => { const i = catDefs.indexOf(c); return i < 0 ? 1e6 : i; };
     const cats = categories().sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
-    cats.forEach((cat) => cards.push(card(cat, L("Items in the category ", "Einträge der Kategorie ") + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f), cat)));
+    cats.forEach((cat) => cards.push(card(cardTitle(cat), L("Items in the category ", "Einträge der Kategorie ") + cat, statsFor(items.filter((i) => i.category === cat)), (f) => jump(cat, f), cat)));
     const none = items.filter((i) => !i.category);
     if (none.length && cats.length) cards.push(card(L("Uncategorized", "Ohne Kategorie"), L("Items without a category", "Einträge ohne Kategorie"), statsFor(none), (f) => jump("", f), ""));
     $("cards").replaceChildren(...cards);
@@ -1088,10 +1089,13 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
 
   // ---------- categories and companies ----------
   function setCatDocs(list) {
-    catDocs = list.map((d) => ({ id: d.id, name: s(d.name, 60), order: +d.order || 999 })).filter((d) => d.name)
+    catDocs = list.map((d) => ({ id: d.id, name: s(d.name, 60), title: s(d.title, 60).trim(), order: +d.order || 999 })).filter((d) => d.name)
       .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
     catDefs = catDocs.map((d) => d.name);
   }
+  // A category can have its own card headline; everywhere else it shows its name
+  const cardTitle = (cat) => { const d = catDocs.find((x) => x.name === cat); return (d && d.title) || cat; };
+  const catDoc = (c, extra) => ({ name: c.name, order: c.order, ...(c.title ? { title: c.title } : {}), ...extra });
   const byName = (a, b) => a.localeCompare(b, undefined, { sensitivity: "base" });
   function setCompanies(list) {
     companies = (Array.isArray(list) ? [...new Set(list.map((c) => s(c, 60).trim()).filter(Boolean))] : COMPANIES.slice()).sort(byName);
@@ -1149,7 +1153,15 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const li = el("li");
     const inp = el("input"); inp.value = name; inp.maxLength = 60; inp.disabled = !admin;
     inp.dataset.kind = kind; inp.dataset.key = key; inp.setAttribute("aria-label", L("Name of ", "Name von ") + name);
-    li.append(inp, el("span", "n", nItems(n)));
+    li.append(inp);
+    if (kind === "cat") {
+      const c = catDocs.find((d) => d.id === key) || {};
+      const t = el("input", "card-title"); t.value = c.title || ""; t.maxLength = 60; t.disabled = !admin; t.placeholder = L("Card headline", "Kacheltitel");
+      t.title = L("Shown as the card headline instead of the name (optional)", "Wird statt des Namens als Kacheltitel angezeigt (optional)");
+      t.dataset.kind = "cattitle"; t.dataset.key = key; t.setAttribute("aria-label", L("Card headline of ", "Kacheltitel von ") + name);
+      li.append(t);
+    }
+    li.append(el("span", "n", nItems(n)));
     if (admin) {
       if (kind === "cat") {
         const up = el("button", "btn-icon", "↑"); up.type = "button"; up.disabled = idx === 0; up.dataset.move = "-1"; up.dataset.key = key; up.setAttribute("aria-label", L("Move " + name + " up", name + " nach oben"));
@@ -1165,11 +1177,20 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   async function renameCfg(kind, key, value) {
     const to = value.trim();
+    if (kind === "cattitle") {
+      const c = catDocs.find((d) => d.id === key); if (!c || to === (c.title || "") ) { renderSettings(); return; }
+      try {
+        const d = catDoc(c); delete d.title; if (to && to !== c.name) d.title = to;
+        await cfgStore.saveCategory(key, d);
+        toast(d.title ? L("Card headline set to ", "Kacheltitel gesetzt: ") + to : L("Card headline reset to ", "Kacheltitel zurückgesetzt auf ") + c.name);
+      } catch (err) { toast(errText(err)); renderSettings(); }
+      return;
+    }
     if (kind === "cat") {
       const c = catDocs.find((d) => d.id === key); if (!c || !to || to === c.name) { renderSettings(); return; }
       if (catDocs.some((d) => d.id !== key && d.name.toLowerCase() === to.toLowerCase())) { toast(L("A category called " + to + " already exists", "Eine Kategorie „" + to + "“ gibt es schon")); renderSettings(); return; }
       try {
-        await cfgStore.saveCategory(key, { name: to, order: c.order });
+        await cfgStore.saveCategory(key, catDoc(c, { name: to }));
         const n = await renameOnItems("category", c.name, to);
         if (prefCat === c.name) { prefCat = to; savePrefs(); }
         toast(L("Category renamed to ", "Kategorie umbenannt in ") + to + (n ? " (" + nItems(n) + ")" : ""));
@@ -1189,7 +1210,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     if (i < 0 || j < 0 || j >= list.length) return;
     [list[i], list[j]] = [list[j], list[i]];
     try {
-      for (let n = 0; n < list.length; n++) if (list[n].order !== n + 1) await cfgStore.saveCategory(list[n].id, { name: list[n].name, order: n + 1 });
+      for (let n = 0; n < list.length; n++) if (list[n].order !== n + 1) await cfgStore.saveCategory(list[n].id, catDoc(list[n], { order: n + 1 }));
     } catch (err) { toast(errText(err)); }
   }
   async function removeCfg(kind, key) {
