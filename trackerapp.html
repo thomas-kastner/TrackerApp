@@ -843,7 +843,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     prefs.last = cardKey(); prefsTouched = true;
     renderItems(); savePrefs(); $("itH").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
-  const categories = () => [...new Set([...catDefs, ...items.map((i) => i.category)].filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  const categories = () => [...new Set([...catDefs, ...items.map((i) => i.category)].filter(Boolean))].sort((a, b) => a.localeCompare(b, lang, { sensitivity: "base", numeric: true }));   // alphabetical in the current language
 
   // ---------- items table ----------
   function renderItems() {
@@ -1363,8 +1363,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     fillCompanySelects();
     if (it && it.company && !companies.includes(it.company)) $("fCompany").append(new Option(it.company, it.company));   // keep a removed company on old items
     $("fCompany").value = it ? it.company || "" : companies.includes($("comp").value) ? $("comp").value : "";
-    // Category: the complete list, in the same order as the overview cards
-    const fc = $("fCat"), allCats = categories().sort((a, b) => { const ra = catDefs.indexOf(a), rb = catDefs.indexOf(b); return (ra < 0 ? 1e6 : ra) - (rb < 0 ? 1e6 : rb) || a.localeCompare(b); });
+    // Category: the complete list, alphabetical in the current language
+    const fc = $("fCat"), allCats = categories();
     fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
     fc.value = it ? it.category || "" : presetCat !== undefined ? (allCats.includes(presetCat) ? presetCat : "") : allCats.includes($("cat").value) ? $("cat").value : "";
     $("fDue").value = it ? it.due : "";
