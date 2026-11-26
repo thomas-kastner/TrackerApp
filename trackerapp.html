@@ -185,7 +185,13 @@ td.due.late { color: var(--bad-fg); }
 td.due.rep { white-space: normal; min-width: 9rem; }
 td.due .next { display: block; font-size: 0.75rem; color: var(--muted); }
 .sched-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sched { display: grid; gap: 8px; }
 .sched-line > span { display: inline-flex; align-items: center; gap: 6px; }
+.sched-line .radio { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 0.875rem; color: var(--body); }
+.dow-pick { gap: 6px; }
+.dow-pick button { min-width: 2.75rem; padding: 0.25rem 0.5rem; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--body); font: inherit; font-size: 0.8125rem; cursor: pointer; }
+.dow-pick button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.dow-pick button:disabled { cursor: default; opacity: 0.7; }
 .sched-line label { margin: 0; font-size: 0.8125rem; color: var(--muted); }
 .sched-line input[type="number"] { width: 4.5rem; }
 #schedHint { margin: 6px 0 0; font-size: 0.8125rem; color: var(--muted); }
@@ -505,19 +511,33 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
         <select id="fDueKind">
           <option value="open" data-de="Offenes Ende">Open end</option>
           <option value="date" data-de="Einmalig (Datum)">One date</option>
-          <option value="week" data-de="Wöchentlich">Weekly</option>
-          <option value="mnth" data-de="Monatlich (Wochentag)">Monthly (weekday)</option>
-          <option value="mday" data-de="Monatlich (Tag im Monat)">Monthly (day of month)</option>
+          <option value="rep" data-de="Wiederkehrend">Repeating</option>
         </select></div>
     </div>
     <div class="field sched" id="schedRow" hidden>
-      <div class="sched-line">
-        <span data-sched="date"><input id="fDue" type="date" aria-label="Date" data-de-aria="Datum"></span>
-        <span data-sched="week"><select id="fEvery" aria-label="Repeat" data-de-aria="Wiederholung"><option value="1" data-de="Jede Woche">Every week</option><option value="2" data-de="Alle 2 Wochen">Every 2 weeks</option><option value="3" data-de="Alle 3 Wochen">Every 3 weeks</option><option value="4" data-de="Alle 4 Wochen">Every 4 weeks</option></select></span>
-        <span data-sched="mnth"><select id="fNth" aria-label="Which one in the month" data-de-aria="Welcher im Monat"><option value="1" data-de="1.">1st</option><option value="2" data-de="2.">2nd</option><option value="3" data-de="3.">3rd</option><option value="4" data-de="4.">4th</option><option value="5" data-de="Letzter">Last</option></select></span>
-        <span data-sched="week mnth"><select id="fDow" aria-label="Weekday" data-de-aria="Wochentag"></select></span>
-        <span data-sched="mday"><label for="fDom" data-de="Tag">Day</label><input id="fDom" type="number" min="1" max="31" value="1"></span>
-        <span data-sched="date week mnth mday"><label for="fTime" data-de="um">at</label><input id="fTime" type="time" title="Optional" data-de-title="Optional"></span>
+      <div class="sched-line" data-sched="date"><input id="fDue" type="date" aria-label="Date" data-de-aria="Datum"></div>
+      <div class="sched-line" data-sched="rep">
+        <label for="fEvery" data-de="Alle">Every</label><input id="fEvery" type="number" min="1" max="99" value="1">
+        <select id="fFreq" aria-label="Unit" data-de-aria="Einheit">
+          <option value="day" data-de="Tag(e)">day(s)</option>
+          <option value="week" data-de="Woche(n)">week(s)</option>
+          <option value="month" data-de="Monat(e)">month(s)</option>
+          <option value="year" data-de="Jahr(e)">year(s)</option>
+        </select>
+      </div>
+      <div class="sched-line dow-pick" data-sched="rep" data-freq="week" id="fDays" role="group" aria-label="Weekdays" data-de-aria="Wochentage"></div>
+      <div class="sched-line" data-sched="rep" data-freq="year"><label for="fMonth" data-de="im Monat">in</label><select id="fMonth"></select></div>
+      <div class="sched-line" data-sched="rep" data-freq="month year">
+        <label class="radio"><input type="radio" name="fBy" value="day" checked><span data-de="am Tag">on day</span></label><select id="fDom" aria-label="Day" data-de-aria="Tag"></select>
+      </div>
+      <div class="sched-line" data-sched="rep" data-freq="month year">
+        <label class="radio"><input type="radio" name="fBy" value="nth"><span data-de="am">on the</span></label>
+        <select id="fNth" aria-label="Which one" data-de-aria="Welcher"><option value="1" data-de="1.">1st</option><option value="2" data-de="2.">2nd</option><option value="3" data-de="3.">3rd</option><option value="4" data-de="4.">4th</option><option value="5" data-de="letzten">last</option></select>
+        <select id="fDow" aria-label="Weekday" data-de-aria="Wochentag"></select>
+      </div>
+      <div class="sched-line" data-sched="date rep">
+        <label for="fTime" data-de="um">at</label><input id="fTime" type="time" title="Optional" data-de-title="Optional">
+        <span class="sched-line" data-sched="rep"><label for="fFrom" data-de="ab">from</label><input id="fFrom" type="date"><label for="fUntil" data-de="bis">until</label><input id="fUntil" type="date" title="Optional" data-de-title="Optional"></span>
       </div>
       <p class="hint" id="schedHint"></p>
     </div>
@@ -704,50 +724,72 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const parseYmd = (v) => { const [y, m, d] = v.split("-").map(Number); return new Date(y, m - 1, d); };
   const atTime = (d, t) => { const x = new Date(d); if (t) { const [h, m] = t.split(":").map(Number); x.setHours(h, m, 0, 0); } else x.setHours(23, 59, 59, 999); return x; };
   const TIME_RE = /^\d{2}:\d{2}$/, DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  // A repeat rule: every i days / weeks (on chosen weekdays) / months / years (in month m),
+  // months and years either on day d (-1 = last day) or on the nth (5 = last) weekday; optional time, start and end date.
   const cleanRep = (r) => {
-    if (!r || typeof r !== "object" || !["week", "mnth", "mday"].includes(r.k)) return null;
-    const t = TIME_RE.test(r.t || "") ? r.t : "", dow = Math.min(6, Math.max(0, Math.floor(+r.dow || 0)));
-    if (r.k === "week") return { k: "week", n: Math.min(4, Math.max(1, Math.floor(+r.n || 1))), dow, t, from: DATE_RE.test(r.from || "") ? r.from : "" };
-    if (r.k === "mnth") return { k: "mnth", nth: Math.min(5, Math.max(1, Math.floor(+r.nth || 1))), dow, t };
-    return { k: "mday", d: Math.min(31, Math.max(1, Math.floor(+r.d || 1))), t };
+    if (!r || typeof r !== "object") return null;
+    const t = TIME_RE.test(r.t || "") ? r.t : "", dowc = (v) => Math.min(6, Math.max(0, Math.floor(+v || 0)));
+    // rules saved by the first version (week / mnth / mday) map onto the generic form
+    if (r.k === "week") r = { f: "week", i: r.n, days: [r.dow], from: r.from };
+    else if (r.k === "mnth") r = { f: "month", i: 1, by: "nth", nth: r.nth, dow: r.dow };
+    else if (r.k === "mday") r = { f: "month", i: 1, by: "day", d: r.d };
+    if (!["day", "week", "month", "year"].includes(r.f)) return null;
+    const out = { f: r.f, i: Math.min(99, Math.max(1, Math.floor(+r.i || 1))), t, from: DATE_RE.test(r.from || "") ? r.from : "", until: DATE_RE.test(r.until || "") ? r.until : "" };
+    if (r.f === "week") out.days = [...new Set((Array.isArray(r.days) ? r.days : []).map(dowc))].sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
+    if (r.f === "month" || r.f === "year") {
+      out.by = r.by === "nth" ? "nth" : "day";
+      if (out.by === "day") out.d = +r.d === -1 ? -1 : Math.min(31, Math.max(1, Math.floor(+r.d || 1)));
+      else { out.nth = Math.min(5, Math.max(1, Math.floor(+r.nth || 1))); out.dow = dowc(r.dow); }
+      if (r.f === "year") out.m = Math.min(11, Math.max(0, Math.floor(+r.m || 0)));
+    }
+    return out;
   };
-  const dowName = (dow) => new Intl.DateTimeFormat(lang === "de" ? "de-DE" : "en-GB", { weekday: "long" }).format(new Date(2026, 10, 22 + dow));   // 22 Nov 2026 is a Sunday
+  const locale = () => (lang === "de" ? "de-DE" : "en-GB");
+  const dowName = (dow, style) => new Intl.DateTimeFormat(locale(), { weekday: style || "long" }).format(new Date(2026, 10, 22 + dow));   // 22 Nov 2026 is a Sunday
+  const monthName = (m) => new Intl.DateTimeFormat(locale(), { month: "long" }).format(new Date(2026, m, 1));
   const mondayOf = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
   const monthLen = (y, m) => new Date(y, m + 1, 0).getDate();
   function nthDow(y, m, nth, dow) {
     if (nth === 5) { const last = monthLen(y, m), ld = new Date(y, m, last).getDay(); return new Date(y, m, last - ((ld - dow + 7) % 7)); }
     const fd = new Date(y, m, 1).getDay(); return new Date(y, m, 1 + ((dow - fd + 7) % 7) + (nth - 1) * 7);
   }
-  // Next occurrence at or after `from` (default: now). One date: that date. Open end: null.
+  // Next occurrence at or after `from` (default: now). One date: that date. Open end or a finished rule: null.
   function nextDue(it, from) {
     const now = from || new Date();
     if (!it.rep) return it.due ? atTime(parseYmd(it.due), it.dueTime) : null;
-    const r = it.rep, y = now.getFullYear(), m = now.getMonth();
-    if (r.k === "week") {
-      const anchor = mondayOf(r.from ? parseYmd(r.from) : now);
-      for (let i = 0; i < 7 * (r.n + 1); i++) {
-        const d = new Date(y, m, now.getDate() + i);
-        if (d.getDay() !== r.dow) continue;
-        const wk = Math.round((mondayOf(d) - anchor) / 6048e5);
-        if (((wk % r.n) + r.n) % r.n !== 0) continue;
-        const at = atTime(d, r.t); if (at >= now) return at;
-      }
-      return null;
-    }
-    for (let k = 0; k < 3; k++) {
-      const yy = y + Math.floor((m + k) / 12), mm = (m + k) % 12;
-      const d = r.k === "mnth" ? nthDow(yy, mm, r.nth, r.dow) : new Date(yy, mm, Math.min(r.d, monthLen(yy, mm)));
-      const at = atTime(d, r.t); if (at >= now) return at;
+    const r = it.rep, start = r.from ? parseYmd(r.from) : null, end = r.until ? atTime(parseYmd(r.until), "") : null;
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()), base = start || today, ref = today < base ? base : today;
+    // a candidate day: the time if it counts, null to keep looking, false once past the end date
+    const ok = (d) => { if (start && d < start) return null; const at = atTime(d, r.t); if (end && at > end) return false; return at >= now ? at : null; };
+    const align = (k) => k - (((k % r.i) + r.i) % r.i);
+    const dayIn = (y, m) => (r.by === "nth" ? nthDow(y, m, r.nth, r.dow) : new Date(y, m, r.d === -1 ? monthLen(y, m) : Math.min(r.d, monthLen(y, m))));
+    const tryAll = (cands) => { for (const d of cands) { const x = ok(d); if (x === false) return false; if (x) return x; } return null; };
+    for (let n = 0; n < 4; n++) {
+      let x;
+      if (r.f === "day") { const k = align(Math.round((ref - base) / 864e5)) + n * r.i; x = tryAll([new Date(base.getFullYear(), base.getMonth(), base.getDate() + k)]); }
+      else if (r.f === "week") {
+        const a = mondayOf(base), w = align(Math.round((mondayOf(ref) - a) / 6048e5)) + n * r.i, days = r.days && r.days.length ? r.days : [base.getDay()];
+        x = tryAll(days.map((dw) => new Date(a.getFullYear(), a.getMonth(), a.getDate() + w * 7 + ((dw + 6) % 7))));
+      } else if (r.f === "month") {
+        const b = base.getFullYear() * 12 + base.getMonth(), mm = b + align(ref.getFullYear() * 12 + ref.getMonth() - b) + n * r.i;
+        x = tryAll([dayIn(Math.floor(mm / 12), mm % 12)]);
+      } else { const yy = base.getFullYear() + align(ref.getFullYear() - base.getFullYear()) + n * r.i; x = tryAll([dayIn(yy, r.m)]); }
+      if (x === false) return null;
+      if (x) return x;
     }
     return null;
   }
-  // Plain-language rule, e.g. "Every Tuesday, 13:00" / "2. Dienstag im Monat, 08:00 Uhr"
+  // Plain-language rule, e.g. "Weekly on Tuesday, 13:00" / "Jährlich am 2. Dienstag im März, 08:00 Uhr"
   function dueText(it) {
     const r = it.rep, tm = (t) => (t ? ", " + t + L("", " Uhr") : "");
     if (!r) return it.due ? it.due + (it.dueTime ? " " + it.dueTime : "") : "";
-    if (r.k === "week") return (r.n === 1 ? L("Every " + dowName(r.dow), "Jeden " + dowName(r.dow)) : L(`Every ${r.n} weeks on ${dowName(r.dow)}`, `Alle ${r.n} Wochen am ${dowName(r.dow)}`)) + tm(r.t);
-    if (r.k === "mnth") { const o = r.nth === 5 ? L("Last", "Letzter") : L(["1st", "2nd", "3rd", "4th"][r.nth - 1], r.nth + "."); return L(`${o} ${dowName(r.dow)} of each month`, `${o} ${dowName(r.dow)} im Monat`) + tm(r.t); }
-    return L(`Day ${r.d} of each month`, `Am ${r.d}. jedes Monats`) + tm(r.t);
+    const unit = { day: ["days", "Tage"], week: ["weeks", "Wochen"], month: ["months", "Monate"], year: ["years", "Jahre"] }[r.f];
+    let out = r.i === 1 ? L({ day: "Daily", week: "Weekly", month: "Monthly", year: "Yearly" }[r.f], { day: "Täglich", week: "Wöchentlich", month: "Monatlich", year: "Jährlich" }[r.f]) : L(`Every ${r.i} ${unit[0]}`, `Alle ${r.i} ${unit[1]}`);
+    const ord = (k) => (k === 5 ? L("last", "letzten") : L(["1st", "2nd", "3rd", "4th"][k - 1], k + "."));
+    if (r.f === "week" && r.days && r.days.length) out += L(" on ", " am ") + r.days.map((d) => dowName(d, r.days.length > 1 ? "short" : "long")).join(", ");
+    if (r.f === "month") out += r.by === "nth" ? L(` on the ${ord(r.nth)} ${dowName(r.dow)}`, ` am ${ord(r.nth)} ${dowName(r.dow)}`) : r.d === -1 ? L(" on the last day", " am letzten Tag") : L(` on day ${r.d}`, ` am ${r.d}.`);
+    if (r.f === "year") { const mn = monthName(r.m); out += r.by === "nth" ? L(` on the ${ord(r.nth)} ${dowName(r.dow)} of ${mn}`, ` am ${ord(r.nth)} ${dowName(r.dow)} im ${mn}`) : r.d === -1 ? L(` on the last day of ${mn}`, ` am letzten Tag im ${mn}`) : L(` on ${r.d} ${mn}`, ` am ${r.d}. ${mn}`); }
+    return out + tm(r.t) + (r.until ? L(" until ", " bis ") + r.until : "");
   }
   const isLate = (it) => { if (it.status === "done" || it.rep || !it.due) return false; return nextDue(it) < new Date(); };
   const s = (v, max) => (typeof v === "string" ? v : "").slice(0, max);
@@ -1474,12 +1516,17 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const fc = $("fCat"), allCats = categories();
     fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
     fc.value = it ? it.category || "" : "";   // a new item always starts without a category
-    const r = (it && it.rep) || {};
-    $("fDueKind").value = it ? (it.rep ? it.rep.k : it.due ? "date" : "open") : "open";
+    const r = (it && it.rep) || null, td = new Date();
+    $("fDueKind").value = it ? (r ? "rep" : it.due ? "date" : "open") : "open";
     $("fDue").value = it ? it.due : "";
-    $("fEvery").value = String(r.n || 1); $("fNth").value = String(r.nth || 1); $("fDom").value = String(r.d || 1);
-    fillDow(); $("fDow").value = String(r.dow !== undefined ? r.dow : new Date().getDay());
-    $("fTime").value = it ? (it.rep ? r.t : it.dueTime) || "" : "";
+    fillSchedOptions();
+    $("fEvery").value = String(r ? r.i : 1); $("fFreq").value = r ? r.f : "week";
+    setDays(r && r.days && r.days.length ? r.days : [td.getDay()]);
+    document.querySelector(`input[name="fBy"][value="${r && r.by === "nth" ? "nth" : "day"}"]`).checked = true;
+    $("fDom").value = String(r && r.d ? r.d : td.getDate()); $("fNth").value = String((r && r.nth) || 1);
+    $("fDow").value = String(r && r.dow !== undefined ? r.dow : td.getDay()); $("fMonth").value = String(r && r.m !== undefined ? r.m : td.getMonth());
+    $("fTime").value = it ? (r ? r.t : it.dueTime) || "" : "";
+    $("fFrom").value = (r && r.from) || todayStr(); $("fUntil").value = (r && r.until) || "";
     updateSched();
     const ed = $("fNotes");
     ed.innerHTML = it ? notesHtmlOf(it) : "";
@@ -1620,37 +1667,53 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   const closePals = () => { $("palFore").hidden = $("palHilite").hidden = true; };
 
-  function fillDow() {
-    const sel = $("fDow"), v = sel.value;
-    sel.replaceChildren(...[1, 2, 3, 4, 5, 6, 0].map((d) => new Option(dowName(d), String(d))));
-    if (v) sel.value = v;
+  // Localised option lists of the repeat fields (weekday names, months, days)
+  function fillSchedOptions() {
+    const keep = (id, build) => { const sel = $(id), v = sel.value; sel.replaceChildren(...build()); if (v) sel.value = v; };
+    keep("fDow", () => [1, 2, 3, 4, 5, 6, 0].map((d) => new Option(dowName(d), String(d))));
+    keep("fMonth", () => [...Array(12).keys()].map((m) => new Option(monthName(m), String(m))));
+    keep("fDom", () => [...[...Array(31).keys()].map((d) => new Option(String(d + 1), String(d + 1))), new Option(L("last", "letzter"), "-1")]);
+    const on = new Set([...$("fDays").querySelectorAll('button[aria-pressed="true"]')].map((b) => b.dataset.dow));
+    $("fDays").replaceChildren(...[1, 2, 3, 4, 5, 6, 0].map((d) => {
+      const b = el("button", null, dowName(d, "short")); b.type = "button"; b.dataset.dow = String(d); b.title = dowName(d);
+      b.setAttribute("aria-pressed", String(on.has(String(d)))); b.disabled = !canWrite; return b;
+    }));
   }
+  const setDays = (days) => $("fDays").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(days.includes(+b.dataset.dow))));
   // Read the due fields of the dialog: {due, dueTime, rep} or {err}
-  function readSched(prev) {
+  function readSched() {
     const k = $("fDueKind").value, t = TIME_RE.test($("fTime").value) ? $("fTime").value : "";
     if (k === "open") return { due: "", dueTime: "", rep: null };
     if (k === "date") return $("fDue").value ? { due: $("fDue").value, dueTime: t, rep: null } : { err: L("Pick a date, or choose Open end.", "Bitte ein Datum wählen oder „Offenes Ende“.") };
-    const dow = +$("fDow").value;
-    if (k === "week") {
-      const n = +$("fEvery").value, p = prev && prev.rep;
-      // keep the week the rhythm started in, so "every 2 weeks" does not shift on each save
-      const from = p && p.k === "week" && p.n === n && p.dow === dow && p.from ? p.from : todayStr();
-      return { due: "", dueTime: "", rep: cleanRep({ k, n, dow, t, from }) };
-    }
-    if (k === "mnth") return { due: "", dueTime: "", rep: cleanRep({ k, nth: +$("fNth").value, dow, t }) };
-    return { due: "", dueTime: "", rep: cleanRep({ k, d: +$("fDom").value, t }) };
+    const f = $("fFreq").value, by = (document.querySelector('input[name="fBy"]:checked') || {}).value || "day";
+    const days = [...$("fDays").querySelectorAll('button[aria-pressed="true"]')].map((b) => +b.dataset.dow);
+    if (f === "week" && !days.length) return { err: L("Pick at least one weekday.", "Bitte mindestens einen Wochentag wählen.") };
+    const from = $("fFrom").value || todayStr(), until = $("fUntil").value;
+    if (until && until < from) return { err: L("The end date is before the start date.", "Das Enddatum liegt vor dem Startdatum.") };
+    return { due: "", dueTime: "", rep: cleanRep({ f, i: +$("fEvery").value, days, by, d: +$("fDom").value, nth: +$("fNth").value, dow: +$("fDow").value, m: +$("fMonth").value, t, from, until }) };
   }
   function updateSched() {
-    const k = $("fDueKind").value;
+    const k = $("fDueKind").value, f = $("fFreq").value;
     $("schedRow").hidden = k === "open";
-    document.querySelectorAll("#schedRow [data-sched]").forEach((x) => { x.hidden = !x.dataset.sched.split(" ").includes(k); });
-    const sc = readSched(editingId ? items.find((i) => i.id === editingId) : null);
+    document.querySelectorAll("#schedRow [data-sched]").forEach((x) => {
+      x.hidden = !x.dataset.sched.split(" ").includes(k) || (!!x.dataset.freq && !x.dataset.freq.split(" ").includes(f));
+    });
+    const sc = readSched();
     let hint = "";
-    if (!sc.err && sc.rep) { const n = nextDue(sc); hint = dueText(sc) + (n ? " · " + L("next: ", "nächster Termin: ") + ymd(n) + (sc.rep.t ? " " + sc.rep.t : "") : ""); }
-    else if (k === "date" && !sc.err && !sc.dueTime) hint = L("Without a time the item is due at the end of the day.", "Ohne Uhrzeit ist der Eintrag zum Tagesende fällig.");
+    if (sc.err) hint = k === "rep" ? sc.err : "";
+    else if (sc.rep) {
+      const next = []; let at = nextDue(sc);
+      while (at && next.length < 3) { next.push(ymd(at) + (sc.rep.t ? " " + sc.rep.t : "")); at = nextDue(sc, new Date(at.getTime() + 60000)); }
+      hint = dueText(sc) + " · " + (next.length ? L("next: ", "nächste Termine: ") + next.join(", ") : L("no further dates", "keine weiteren Termine"));
+    } else if (k === "date" && !sc.dueTime) hint = L("Without a time the item is due at the end of the day.", "Ohne Uhrzeit ist der Eintrag zum Tagesende fällig.");
     $("schedHint").textContent = hint; $("schedHint").hidden = !hint;
   }
-  ["fDueKind", "fDue", "fEvery", "fNth", "fDow", "fDom", "fTime"].forEach((id) => { $(id).addEventListener("change", updateSched); $(id).addEventListener("input", updateSched); });
+  ["fDueKind", "fDue", "fEvery", "fFreq", "fMonth", "fTime", "fFrom", "fUntil"].forEach((id) => { $(id).addEventListener("change", updateSched); $(id).addEventListener("input", updateSched); });
+  document.querySelectorAll('input[name="fBy"]').forEach((x) => x.addEventListener("change", updateSched));
+  // picking a value selects its option ("on day ..." or "on the nth weekday")
+  $("fDom").addEventListener("change", () => { document.querySelector('input[name="fBy"][value="day"]').checked = true; updateSched(); });
+  ["fNth", "fDow"].forEach((id) => $(id).addEventListener("change", () => { document.querySelector('input[name="fBy"][value="nth"]').checked = true; updateSched(); }));
+  $("fDays").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b || b.disabled) return; b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); updateSched(); });
 
   function diff(prev, next) {
     return Object.keys(FIELD).filter((k) => (prev[k] || "") !== (next[k] || "")).map((k) => ({ field: k, from: prev[k] || "", to: next[k] || "" }));
@@ -1671,7 +1734,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const html = cleanHtml($("fNotes").innerHTML), text = htmlToText(html);
     if (html.length > 200000) { $("fErr").textContent = L("The notes are too long. Shorten them or move content into an attachment.", "Die Notizen sind zu lang. Kürzen Sie sie oder legen Sie Inhalte als Anhang ab."); $("fErr").hidden = false; return; }
     const atts = editAtts.filter((a) => !a.pending).map(cleanAtt).filter(Boolean);
-    const sched = readSched(prev);
+    const sched = readSched();
     if (sched.err) { $("fErr").textContent = sched.err; $("fErr").hidden = false; return; }
     const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: sched.due, dueTime: sched.dueTime, rep: sched.rep,
       notes: text, notesHtml: text || /<img/i.test(html) ? html : "", attachments: atts };
@@ -1926,7 +1989,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       $("cancelBtn").textContent = canWrite ? L("Cancel", "Abbrechen") : L("Close", "Schließen");
       $("delBtn").textContent = $("delBtn").classList.contains("armed") ? L("Delete for good", "Endgültig löschen") : L("Delete", "Löschen");
       renderAtts(); setUploadUi(); if (it) renderHistory(it.id);
-      fillDow(); updateSched();
+      fillSchedOptions(); updateSched();
     }
     if (!$("acctMenu").hidden) renderAcctMenu();
   }
