@@ -1387,7 +1387,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     // Category: the complete list, alphabetical in the current language
     const fc = $("fCat"), allCats = categories();
     fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
-    fc.value = it ? it.category || "" : presetCat !== undefined ? (allCats.includes(presetCat) ? presetCat : "") : allCats.includes($("cat").value) ? $("cat").value : "";
+    fc.value = it ? it.category || "" : "";   // a new item always starts without a category
     $("fDue").value = it ? it.due : "";
     const ed = $("fNotes");
     ed.innerHTML = it ? notesHtmlOf(it) : "";
