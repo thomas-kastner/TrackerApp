@@ -182,6 +182,13 @@ td.t small { color: var(--muted); display: block; max-width: 48ch; white-space: 
 tr.is-done td.t strong { color: var(--muted); font-weight: 400; text-decoration: line-through; }
 td.due { white-space: nowrap; }
 td.due.late { color: var(--bad-fg); }
+td.due.rep { white-space: normal; min-width: 9rem; }
+td.due .next { display: block; font-size: 0.75rem; color: var(--muted); }
+.sched-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sched-line > span { display: inline-flex; align-items: center; gap: 6px; }
+.sched-line label { margin: 0; font-size: 0.8125rem; color: var(--muted); }
+.sched-line input[type="number"] { width: 4.5rem; }
+#schedHint { margin: 6px 0 0; font-size: 0.8125rem; color: var(--muted); }
 .dash { color: var(--muted); }
 .empty { padding: 36px 20px; text-align: center; color: var(--muted); }
 .empty strong { display: block; color: var(--heading); font-size: 1rem; margin-bottom: 4px; }
@@ -494,7 +501,25 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       <div class="field"><label for="fPrio" data-de="Priorität">Priority</label>
         <select id="fPrio"><option value="vhigh" data-de="Sehr hoch">Very high</option><option value="high" data-de="Hoch">High</option><option value="med" selected data-de="Mittel">Medium</option><option value="low" data-de="Niedrig">Low</option></select></div>
       <div class="field"><label for="fCat" data-de="Kategorie">Category</label><select id="fCat"><option value="">-</option></select></div>
-      <div class="field"><label for="fDue" data-de="Fällig am">Due date</label><input id="fDue" type="date"></div>
+      <div class="field"><label for="fDueKind" data-de="Fälligkeit">Due</label>
+        <select id="fDueKind">
+          <option value="open" data-de="Offenes Ende">Open end</option>
+          <option value="date" data-de="Einmalig (Datum)">One date</option>
+          <option value="week" data-de="Wöchentlich">Weekly</option>
+          <option value="mnth" data-de="Monatlich (Wochentag)">Monthly (weekday)</option>
+          <option value="mday" data-de="Monatlich (Tag im Monat)">Monthly (day of month)</option>
+        </select></div>
+    </div>
+    <div class="field sched" id="schedRow" hidden>
+      <div class="sched-line">
+        <span data-sched="date"><input id="fDue" type="date" aria-label="Date" data-de-aria="Datum"></span>
+        <span data-sched="week"><select id="fEvery" aria-label="Repeat" data-de-aria="Wiederholung"><option value="1" data-de="Jede Woche">Every week</option><option value="2" data-de="Alle 2 Wochen">Every 2 weeks</option><option value="3" data-de="Alle 3 Wochen">Every 3 weeks</option><option value="4" data-de="Alle 4 Wochen">Every 4 weeks</option></select></span>
+        <span data-sched="mnth"><select id="fNth" aria-label="Which one in the month" data-de-aria="Welcher im Monat"><option value="1" data-de="1.">1st</option><option value="2" data-de="2.">2nd</option><option value="3" data-de="3.">3rd</option><option value="4" data-de="4.">4th</option><option value="5" data-de="Letzter">Last</option></select></span>
+        <span data-sched="week mnth"><select id="fDow" aria-label="Weekday" data-de-aria="Wochentag"></select></span>
+        <span data-sched="mday"><label for="fDom" data-de="Tag">Day</label><input id="fDom" type="number" min="1" max="31" value="1"></span>
+        <span data-sched="date week mnth mday"><label for="fTime" data-de="um">at</label><input id="fTime" type="time" title="Optional" data-de-title="Optional"></span>
+      </div>
+      <p class="hint" id="schedHint"></p>
     </div>
     <div class="field">
       <span class="lbl" id="fNotesLbl" data-de="Notizen">Notes</span>
@@ -615,13 +640,13 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const PRIO_RANK = { vhigh: 0, high: 1, med: 2, low: 3 };
   const PRIO = { vhigh: "Very high", high: "High", med: "Medium", low: "Low" };
   const COMPANIES = ["ICARO", "Private", "scdsoft", "smarterSec", "Spinifex"];
-  const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due date", notes: "Notes", attachments: "Attachments" };
+  const FIELD = { title: "Item subject", status: "Status", prio: "Priority", company: "Company", category: "Category", due: "Due", notes: "Notes", attachments: "Attachments" };
   const LOG_PAGE = 50;
   // Label sets that switch with the language (keys stay the same)
   const LABELS = {
     status: { open: ["New", "Neu"], backlog: ["Backlog", "Backlog"], started: ["Started", "Begonnen"], doing: ["In progress", "In Arbeit"], done: ["Done", "Erledigt"] },
     prio: { vhigh: ["Very high", "Sehr hoch"], high: ["High", "Hoch"], med: ["Medium", "Mittel"], low: ["Low", "Niedrig"] },
-    field: { title: ["Item subject", "Betreff"], status: ["Status", "Status"], prio: ["Priority", "Priorität"], company: ["Company", "Firma"], category: ["Category", "Kategorie"], due: ["Due date", "Fällig am"], notes: ["Notes", "Notizen"], attachments: ["Attachments", "Anhänge"] },
+    field: { title: ["Item subject", "Betreff"], status: ["Status", "Status"], prio: ["Priority", "Priorität"], company: ["Company", "Firma"], category: ["Category", "Kategorie"], due: ["Due", "Fälligkeit"], notes: ["Notes", "Notizen"], attachments: ["Attachments", "Anhänge"] },
     role: { admin: ["Admin", "Admin"], member: ["Member", "Mitglied"], readonly: ["Read-only", "Nur lesen"] },
     test: { admin: ["Test Admin", "Test-Admin"], member: ["Test Member", "Test-Mitglied"], readonly: ["Test Read-only", "Test-Nur-lesen"] },
   };
@@ -674,7 +699,57 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   const p2 = (n) => String(n).padStart(2, "0");
   const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`; };
   const stamp = (ms) => { if (!ms) return "-"; const d = new Date(ms); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
-  const isLate = (it) => it.status !== "done" && it.due && it.due < todayStr();
+  // ---------- due: one date, a repeating rule, or open end ----------
+  const ymd = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+  const parseYmd = (v) => { const [y, m, d] = v.split("-").map(Number); return new Date(y, m - 1, d); };
+  const atTime = (d, t) => { const x = new Date(d); if (t) { const [h, m] = t.split(":").map(Number); x.setHours(h, m, 0, 0); } else x.setHours(23, 59, 59, 999); return x; };
+  const TIME_RE = /^\d{2}:\d{2}$/, DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const cleanRep = (r) => {
+    if (!r || typeof r !== "object" || !["week", "mnth", "mday"].includes(r.k)) return null;
+    const t = TIME_RE.test(r.t || "") ? r.t : "", dow = Math.min(6, Math.max(0, Math.floor(+r.dow || 0)));
+    if (r.k === "week") return { k: "week", n: Math.min(4, Math.max(1, Math.floor(+r.n || 1))), dow, t, from: DATE_RE.test(r.from || "") ? r.from : "" };
+    if (r.k === "mnth") return { k: "mnth", nth: Math.min(5, Math.max(1, Math.floor(+r.nth || 1))), dow, t };
+    return { k: "mday", d: Math.min(31, Math.max(1, Math.floor(+r.d || 1))), t };
+  };
+  const dowName = (dow) => new Intl.DateTimeFormat(lang === "de" ? "de-DE" : "en-GB", { weekday: "long" }).format(new Date(2026, 10, 22 + dow));   // 22 Nov 2026 is a Sunday
+  const mondayOf = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+  const monthLen = (y, m) => new Date(y, m + 1, 0).getDate();
+  function nthDow(y, m, nth, dow) {
+    if (nth === 5) { const last = monthLen(y, m), ld = new Date(y, m, last).getDay(); return new Date(y, m, last - ((ld - dow + 7) % 7)); }
+    const fd = new Date(y, m, 1).getDay(); return new Date(y, m, 1 + ((dow - fd + 7) % 7) + (nth - 1) * 7);
+  }
+  // Next occurrence at or after `from` (default: now). One date: that date. Open end: null.
+  function nextDue(it, from) {
+    const now = from || new Date();
+    if (!it.rep) return it.due ? atTime(parseYmd(it.due), it.dueTime) : null;
+    const r = it.rep, y = now.getFullYear(), m = now.getMonth();
+    if (r.k === "week") {
+      const anchor = mondayOf(r.from ? parseYmd(r.from) : now);
+      for (let i = 0; i < 7 * (r.n + 1); i++) {
+        const d = new Date(y, m, now.getDate() + i);
+        if (d.getDay() !== r.dow) continue;
+        const wk = Math.round((mondayOf(d) - anchor) / 6048e5);
+        if (((wk % r.n) + r.n) % r.n !== 0) continue;
+        const at = atTime(d, r.t); if (at >= now) return at;
+      }
+      return null;
+    }
+    for (let k = 0; k < 3; k++) {
+      const yy = y + Math.floor((m + k) / 12), mm = (m + k) % 12;
+      const d = r.k === "mnth" ? nthDow(yy, mm, r.nth, r.dow) : new Date(yy, mm, Math.min(r.d, monthLen(yy, mm)));
+      const at = atTime(d, r.t); if (at >= now) return at;
+    }
+    return null;
+  }
+  // Plain-language rule, e.g. "Every Tuesday, 13:00" / "2. Dienstag im Monat, 08:00 Uhr"
+  function dueText(it) {
+    const r = it.rep, tm = (t) => (t ? ", " + t + L("", " Uhr") : "");
+    if (!r) return it.due ? it.due + (it.dueTime ? " " + it.dueTime : "") : "";
+    if (r.k === "week") return (r.n === 1 ? L("Every " + dowName(r.dow), "Jeden " + dowName(r.dow)) : L(`Every ${r.n} weeks on ${dowName(r.dow)}`, `Alle ${r.n} Wochen am ${dowName(r.dow)}`)) + tm(r.t);
+    if (r.k === "mnth") { const o = r.nth === 5 ? L("Last", "Letzter") : L(["1st", "2nd", "3rd", "4th"][r.nth - 1], r.nth + "."); return L(`${o} ${dowName(r.dow)} of each month`, `${o} ${dowName(r.dow)} im Monat`) + tm(r.t); }
+    return L(`Day ${r.d} of each month`, `Am ${r.d}. jedes Monats`) + tm(r.t);
+  }
+  const isLate = (it) => { if (it.status === "done" || it.rep || !it.due) return false; return nextDue(it) < new Date(); };
   const s = (v, max) => (typeof v === "string" ? v : "").slice(0, max);
   // ---------- rich-text notes: everything stored is cleaned to a small allow-list ----------
   const ASSET_ID = /^[a-f0-9]{32}$/;
@@ -770,6 +845,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     category: s(d.category, 60),
     company: s(d.company, 60),
     due: /^\d{4}-\d{2}-\d{2}$/.test(d.due || "") ? d.due : "",
+    dueTime: /^\d{2}:\d{2}$/.test(d.dueTime || "") ? d.dueTime : "",
+    rep: cleanRep(d.rep),
     notes: s(d.notes, 20000),
     notesHtml: typeof d.notesHtml === "string" ? d.notesHtml.slice(0, 200000) : "",
     attachments: Array.isArray(d.attachments) ? d.attachments.slice(0, 30).map(cleanAtt).filter(Boolean) : [],
@@ -786,7 +863,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     changes: Array.isArray(d.changes) ? d.changes.slice(0, 10).map((c) => ({ field: s(c && c.field, 20), from: s(c && c.from, 300), to: s(c && c.to, 300) })) : [],
   });
   const showVal = (field, v) => {
-    if (!v) return "-";
+    if (!v) return field === "due" ? L("Open end", "Offenes Ende") : "-";
     if (field === "status") return STATUS[v] || v;
     if (field === "prio") return PRIO[v] || v;
     if (field === "notes") return v.length > 60 ? v.slice(0, 60) + "…" : v;
@@ -864,7 +941,8 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       return true;
     });
     const sort = $("sort").value;
-    const byDue = (a, b) => (a.due || "9999").localeCompare(b.due || "9999");
+    const nd = new Map(list.map((i) => { const d = nextDue(i); return [i.id, d ? d.getTime() : Infinity]; }));
+    const byDue = (a, b) => (nd.get(a.id) === nd.get(b.id) ? 0 : nd.get(a.id) < nd.get(b.id) ? -1 : 1);
     list.sort((a, b) =>
       sort === "prio" ? PRIO_RANK[a.prio] - PRIO_RANK[b.prio] || byDue(a, b)
       : sort === "new" ? b.createdAt - a.createdAt
@@ -893,7 +971,15 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       const comp = el("td", "hide-sm" + (it.company ? "" : " dash"), it.company || "-");
       const cat = el("td", "hide-sm" + (it.category ? "" : " dash"), it.category || "-");
       const late = isLate(it);
-      const due = el("td", "due mono" + (late ? " late" : it.due ? "" : " dash"), it.due ? (it.due === today && it.status !== "done" ? it.due + L(" today", " heute") : it.due) : "-");
+      let due;
+      if (it.rep) {
+        const n = nextDue(it);
+        due = el("td", "due rep", dueText(it));
+        if (n && it.status !== "done") due.append(el("span", "next mono", L("next ", "nächster ") + (ymd(n) === today ? L("today", "heute") : ymd(n)) + (it.rep.t ? " " + it.rep.t : "")));
+      } else {
+        const txt = it.due ? (it.due === today && it.status !== "done" ? it.due + L(" today", " heute") : it.due) + (it.dueTime ? " " + it.dueTime : "") : L("Open end", "Offenes Ende");
+        due = el("td", "due mono" + (late ? " late" : it.due ? "" : " dash"), txt);
+      }
       if (late) due.title = L("Overdue", "Überfällig");
       const c0 = el("td"); c0.append(st);
       // Done items get their own delete button (Admins only), with a confirm click
@@ -1274,7 +1360,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const day = todayStr();
     if (kind === "items") {
       const rows = [[FIELD.title, FIELD.status, FIELD.prio, FIELD.company, FIELD.category, FIELD.due, FIELD.notes, FIELD.attachments, L("Created", "Angelegt"), L("Last changed", "Zuletzt geändert")]];
-      items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, i.due, i.notes, attNames(i.attachments), stamp(i.createdAt), stamp(i.updatedAt)]));
+      items.forEach((i) => rows.push([i.title, STATUS[i.status], PRIO[i.prio], i.company, i.category, dueText(i) || L("Open end", "Offenes Ende"), i.notes, attNames(i.attachments), stamp(i.createdAt), stamp(i.updatedAt)]));
       return saveFile("trackerapp-items-" + day + ".csv", csv(rows));
     }
     if (kind === "log") {
@@ -1388,7 +1474,13 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const fc = $("fCat"), allCats = categories();
     fc.replaceChildren(new Option("-", ""), ...allCats.map((c) => new Option(c, c)));
     fc.value = it ? it.category || "" : "";   // a new item always starts without a category
+    const r = (it && it.rep) || {};
+    $("fDueKind").value = it ? (it.rep ? it.rep.k : it.due ? "date" : "open") : "open";
     $("fDue").value = it ? it.due : "";
+    $("fEvery").value = String(r.n || 1); $("fNth").value = String(r.nth || 1); $("fDom").value = String(r.d || 1);
+    fillDow(); $("fDow").value = String(r.dow !== undefined ? r.dow : new Date().getDay());
+    $("fTime").value = it ? (it.rep ? r.t : it.dueTime) || "" : "";
+    updateSched();
     const ed = $("fNotes");
     ed.innerHTML = it ? notesHtmlOf(it) : "";
     ed.contentEditable = String(canWrite);
@@ -1528,6 +1620,38 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }
   const closePals = () => { $("palFore").hidden = $("palHilite").hidden = true; };
 
+  function fillDow() {
+    const sel = $("fDow"), v = sel.value;
+    sel.replaceChildren(...[1, 2, 3, 4, 5, 6, 0].map((d) => new Option(dowName(d), String(d))));
+    if (v) sel.value = v;
+  }
+  // Read the due fields of the dialog: {due, dueTime, rep} or {err}
+  function readSched(prev) {
+    const k = $("fDueKind").value, t = TIME_RE.test($("fTime").value) ? $("fTime").value : "";
+    if (k === "open") return { due: "", dueTime: "", rep: null };
+    if (k === "date") return $("fDue").value ? { due: $("fDue").value, dueTime: t, rep: null } : { err: L("Pick a date, or choose Open end.", "Bitte ein Datum wählen oder „Offenes Ende“.") };
+    const dow = +$("fDow").value;
+    if (k === "week") {
+      const n = +$("fEvery").value, p = prev && prev.rep;
+      // keep the week the rhythm started in, so "every 2 weeks" does not shift on each save
+      const from = p && p.k === "week" && p.n === n && p.dow === dow && p.from ? p.from : todayStr();
+      return { due: "", dueTime: "", rep: cleanRep({ k, n, dow, t, from }) };
+    }
+    if (k === "mnth") return { due: "", dueTime: "", rep: cleanRep({ k, nth: +$("fNth").value, dow, t }) };
+    return { due: "", dueTime: "", rep: cleanRep({ k, d: +$("fDom").value, t }) };
+  }
+  function updateSched() {
+    const k = $("fDueKind").value;
+    $("schedRow").hidden = k === "open";
+    document.querySelectorAll("#schedRow [data-sched]").forEach((x) => { x.hidden = !x.dataset.sched.split(" ").includes(k); });
+    const sc = readSched(editingId ? items.find((i) => i.id === editingId) : null);
+    let hint = "";
+    if (!sc.err && sc.rep) { const n = nextDue(sc); hint = dueText(sc) + (n ? " · " + L("next: ", "nächster Termin: ") + ymd(n) + (sc.rep.t ? " " + sc.rep.t : "") : ""); }
+    else if (k === "date" && !sc.err && !sc.dueTime) hint = L("Without a time the item is due at the end of the day.", "Ohne Uhrzeit ist der Eintrag zum Tagesende fällig.");
+    $("schedHint").textContent = hint; $("schedHint").hidden = !hint;
+  }
+  ["fDueKind", "fDue", "fEvery", "fNth", "fDow", "fDom", "fTime"].forEach((id) => { $(id).addEventListener("change", updateSched); $(id).addEventListener("input", updateSched); });
+
   function diff(prev, next) {
     return Object.keys(FIELD).filter((k) => (prev[k] || "") !== (next[k] || "")).map((k) => ({ field: k, from: prev[k] || "", to: next[k] || "" }));
   }
@@ -1547,14 +1671,16 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     const html = cleanHtml($("fNotes").innerHTML), text = htmlToText(html);
     if (html.length > 200000) { $("fErr").textContent = L("The notes are too long. Shorten them or move content into an attachment.", "Die Notizen sind zu lang. Kürzen Sie sie oder legen Sie Inhalte als Anhang ab."); $("fErr").hidden = false; return; }
     const atts = editAtts.filter((a) => !a.pending).map(cleanAtt).filter(Boolean);
-    const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: $("fDue").value,
+    const sched = readSched(prev);
+    if (sched.err) { $("fErr").textContent = sched.err; $("fErr").hidden = false; return; }
+    const next = { title, status: $("fStatus").value, prio: $("fPrio").value, company: $("fCompany").value, category: $("fCat").value.trim(), due: sched.due, dueTime: sched.dueTime, rep: sched.rep,
       notes: text, notesHtml: text || /<img/i.test(html) ? html : "", attachments: atts };
     const id = editingId || "i" + now.toString(36) + Math.random().toString(36).slice(2, 7);
     // Compare as text; attachments by their names
-    const cmpNext = { ...next, attachments: attNames(atts) };
+    const cmpNext = { ...next, attachments: attNames(atts), due: dueText(next) };
     let changes;
     if (prev) {
-      changes = diff({ ...prev, attachments: attNames(prev.attachments) }, cmpNext);
+      changes = diff({ ...prev, attachments: attNames(prev.attachments), due: dueText(prev) }, cmpNext);
       if (!changes.some((c) => c.field === "notes") && notesHtmlOf(prev) !== next.notesHtml)
         changes.push({ field: "notes", from: prev.notes, to: text + L(" (formatting or images changed)", " (Formatierung oder Bilder geändert)") });
     } else changes = Object.keys(FIELD).filter((k) => cmpNext[k] && k !== "notes").map((k) => ({ field: k, from: "", to: cmpNext[k] }));
@@ -1800,6 +1926,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       $("cancelBtn").textContent = canWrite ? L("Cancel", "Abbrechen") : L("Close", "Schließen");
       $("delBtn").textContent = $("delBtn").classList.contains("armed") ? L("Delete for good", "Endgültig löschen") : L("Delete", "Löschen");
       renderAtts(); setUploadUi(); if (it) renderHistory(it.id);
+      fillDow(); updateSched();
     }
     if (!$("acctMenu").hidden) renderAcctMenu();
   }
