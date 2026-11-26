@@ -438,7 +438,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
           </select>
           <span class="range" id="delRange">
             <label for="delFrom" data-de="Einträge löschen von">Delete entries from</label><input type="date" id="delFrom">
-            <label for="delTo" data-de="bis">to</label><input type="date" id="delTo">
+            <label for="delTo" data-de="bis">to</label><input type="date" id="delTo"><input type="time" id="delToTime" title="End time (empty = end of day)" aria-label="End time" data-de-title="Endzeit (leer = Tagesende)" data-de-aria="Endzeit">
             <button class="btn btn-danger" id="delLogBtn" type="button" disabled>Delete entries</button>
             <button class="btn" id="delLogCancel" type="button" hidden data-de="Abbrechen">Cancel</button>
           </span>
@@ -959,7 +959,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   function logRange() {
     const f = $("delFrom").value, t = $("delTo").value;
     if (!f || !t) return null;
-    const a = new Date(f + "T00:00:00").getTime(), b = new Date(t + "T23:59:59.999").getTime();
+    const a = new Date(f + "T00:00:00").getTime(), tm = $("delToTime").value, b = new Date(t + "T" + (tm ? tm.slice(0, 5) + ":59.999" : "23:59:59.999")).getTime();
     return a <= b ? [a, b] : null;
   }
   const inRange = () => { const r = logRange(); return r ? logs.filter((l) => l.at >= r[0] && l.at <= r[1]) : []; };
@@ -982,7 +982,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     try {
       await store.removeLogs(list.map((l) => l.id));
       toast(L(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted", list.length + (list.length === 1 ? " Protokolleintrag" : " Protokolleinträge") + " gelöscht"));
-      $("delFrom").value = ""; $("delTo").value = "";
+      $("delFrom").value = ""; $("delTo").value = ""; $("delToTime").value = "";
     } catch (err) { toast(errText(err)); }
     delArmed = false; updateDelBtn();
   }
@@ -1667,7 +1667,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }));
   ["logItem", "logAct"].forEach((id) => $(id).addEventListener("input", () => { logLimit = LOG_PAGE; renderLog(); }));
   $("logMore").addEventListener("click", () => { logLimit += LOG_PAGE; renderLog(); });
-  ["delFrom", "delTo"].forEach((id) => $(id).addEventListener("input", disarm));
+  ["delFrom", "delTo", "delToTime"].forEach((id) => $(id).addEventListener("input", disarm));
   $("delLogBtn").addEventListener("click", deleteLogRange);
   $("delLogCancel").addEventListener("click", disarm);
 
