@@ -438,7 +438,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
           </select>
           <span class="range" id="delRange">
             <label for="delFrom" data-de="Einträge löschen von">Delete entries from</label><input type="date" id="delFrom">
-            <label for="delTo" data-de="bis">to</label><input type="date" id="delTo"><input type="time" id="delToTime" title="End time (empty = end of day)" aria-label="End time" data-de-title="Endzeit (leer = Tagesende)" data-de-aria="Endzeit">
+            <label for="delTo" data-de="bis">to</label><input type="date" id="delTo"><input type="time" id="delToTime" value="13:00" title="End time (empty = end of day)" aria-label="End time" data-de-title="Endzeit (leer = Tagesende)" data-de-aria="Endzeit">
             <button class="btn btn-danger" id="delLogBtn" type="button" disabled>Delete entries</button>
             <button class="btn" id="delLogCancel" type="button" hidden data-de="Abbrechen">Cancel</button>
           </span>
@@ -982,7 +982,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     try {
       await store.removeLogs(list.map((l) => l.id));
       toast(L(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted", list.length + (list.length === 1 ? " Protokolleintrag" : " Protokolleinträge") + " gelöscht"));
-      $("delFrom").value = ""; $("delTo").value = ""; $("delToTime").value = "";
+      $("delFrom").value = ""; $("delTo").value = ""; $("delToTime").value = "13:00";
     } catch (err) { toast(errText(err)); }
     delArmed = false; updateDelBtn();
   }
