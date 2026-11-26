@@ -974,6 +974,10 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
       : delArmed ? L("Delete " + what + " for good", what + " endgültig löschen") : L("Delete " + what, what + " löschen");
     $("delLogCancel").hidden = !delArmed;
   }
+  function presetDelRange() {
+    const d = new Date(), t = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    $("delFrom").value = t; $("delTo").value = t; $("delToTime").value = "13:00";
+  }
   function disarm() { delArmed = false; updateDelBtn(); }
   async function deleteLogRange() {
     const list = inRange(); if (!list.length) return;
@@ -982,7 +986,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
     try {
       await store.removeLogs(list.map((l) => l.id));
       toast(L(list.length + " change log entr" + (list.length === 1 ? "y" : "ies") + " deleted", list.length + (list.length === 1 ? " Protokolleintrag" : " Protokolleinträge") + " gelöscht"));
-      $("delFrom").value = ""; $("delTo").value = ""; $("delToTime").value = "13:00";
+      presetDelRange();
     } catch (err) { toast(errText(err)); }
     delArmed = false; updateDelBtn();
   }
@@ -1667,6 +1671,7 @@ form.edit { display: grid; gap: 14px; padding: 18px 20px 20px; }
   }));
   ["logItem", "logAct"].forEach((id) => $(id).addEventListener("input", () => { logLimit = LOG_PAGE; renderLog(); }));
   $("logMore").addEventListener("click", () => { logLimit += LOG_PAGE; renderLog(); });
+  presetDelRange();
   ["delFrom", "delTo", "delToTime"].forEach((id) => $(id).addEventListener("input", disarm));
   $("delLogBtn").addEventListener("click", deleteLogRange);
   $("delLogCancel").addEventListener("click", disarm);
